@@ -34,10 +34,6 @@ export function FAQ() {
       a: "Yes. Every build includes basic SEO structure. Ongoing SEO support can be quoted separately."
     },
     {
-      q: "Do you host the website?",
-      a: "We build modern deployment-ready websites and can guide setup through platforms such as Vercel. Ongoing support can be discussed depending on the project."
-    },
-    {
       q: "Do you do video as well?",
       a: "Yes. Video and media content are available as supporting services, especially when a business needs stronger visuals for the website or social campaigns."
     }

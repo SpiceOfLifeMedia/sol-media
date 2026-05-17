@@ -37,9 +37,16 @@ export function Hero() {
             </h1>
           </Reveal>
           
+          <Reveal delay={0.15}>
+            <p className="text-foreground font-semibold text-lg md:text-xl mb-6 flex items-baseline gap-3">
+              <span className="inline-block w-8 h-px bg-accent mb-1"></span>
+              5-page business websites from <span className="text-primary font-serif">$1,950</span>.
+            </p>
+          </Reveal>
+
           <Reveal delay={0.2}>
             <p className="text-lg md:text-xl text-foreground/70 leading-relaxed mb-10 max-w-xl">
-              We design and build fast, modern, conversion-focused websites for Australian businesses that want agency-quality results without the bloated agency price tag.
+              Fast, modern, mobile-first websites for Australian businesses that want agency-quality results without bloated agency pricing.
             </p>
           </Reveal>
           
@@ -49,7 +56,7 @@ export function Hero() {
                 onClick={() => scrollTo("contact")}
                 className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-4 rounded-sm text-base font-semibold transition-all duration-200"
               >
-                Start Your Website
+                Book a Website Review
               </button>
               <button 
                 onClick={() => scrollTo("packages")}

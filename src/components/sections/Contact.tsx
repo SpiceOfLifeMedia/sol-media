@@ -55,18 +55,33 @@ export function Contact() {
 
   const onSubmit = async (data: FormValues) => {
     setIsSubmitting(true);
-    
-    // Simulate network request
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    console.log("Form data:", data);
-    setIsSubmitting(false);
-    setIsSuccess(true);
-    
-    toast({
-      title: "Request received",
-      description: "We'll be in touch shortly to discuss your website.",
-    });
+
+    try {
+      const res = await fetch("/api/sol-leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (!res.ok) {
+        throw new Error(`Submission failed (${res.status})`);
+      }
+
+      setIsSuccess(true);
+      toast({
+        title: "Request received",
+        description: "We'll be in touch shortly to discuss your website.",
+      });
+    } catch (err) {
+      toast({
+        title: "Something went wrong",
+        description:
+          "We couldn't submit your request just now. Please try again, or email info@spiceoflifemedia.com.au directly.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -107,7 +122,7 @@ export function Contact() {
                     </motion.div>
                     <h3 className="text-3xl font-serif font-medium text-foreground mb-4">Request Received</h3>
                     <p className="text-foreground/70 max-w-md mx-auto">
-                      Thank you for reaching out. We will review your details and get back to you within 1-2 business days with next steps.
+                      Thanks — your website review request has been received. We'll be in touch within 1–2 business days with next steps.
                     </p>
                     <button 
                       onClick={() => {

@@ -108,17 +108,9 @@ export function Packages() {
             <Reveal key={i} delay={0.2 + (i * 0.1)} className="h-full">
               <div className={`flex flex-col h-full rounded-sm border p-8 transition-all duration-300 ${
                 pkg.accent 
-                  ? "bg-primary text-primary-foreground border-primary shadow-xl scale-[1.02] lg:scale-105 z-10 relative" 
+                  ? "bg-primary text-primary-foreground border-primary shadow-xl relative" 
                   : "bg-white text-foreground border-border hover:border-primary/30"
               }`}>
-                {pkg.accent && (
-                  <div className="absolute top-0 right-8 transform -translate-y-1/2">
-                    <span className="bg-accent text-accent-foreground text-xs font-bold px-3 py-1 uppercase tracking-wider rounded-sm">
-                      Most Popular
-                    </span>
-                  </div>
-                )}
-                
                 <div className="mb-6">
                   <h3 className={`text-xl font-semibold mb-2 ${pkg.accent ? "text-white" : "text-foreground"}`}>
                     {pkg.name}

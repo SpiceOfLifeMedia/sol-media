@@ -11,38 +11,44 @@ import serviceImg from "@/assets/work-service.png";
 export function SelectedWork() {
   const projects = [
     {
+      label: "Concept rebuild",
       title: "Premium Trade Website",
-      desc: "Modern rebuild for a trade business needing a stronger first impression and clearer enquiry flow.",
+      desc: "Concept rebuild for a trade business needing a sharper first impression, clearer service structure and a stronger enquiry flow.",
       tags: ["Trust", "Local SEO", "Enquiries"],
       image: tradeImg
     },
     {
+      label: "Demo direction",
       title: "Finance Broker Website",
-      desc: "Clean, authoritative digital presence built to convert high-value leads and establish immediate credibility.",
+      desc: "Demo direction for a finance broker — clean, authoritative layout built to establish immediate credibility before the first call.",
       tags: ["Authority", "Conversion", "Professional"],
       image: financeImg
     },
     {
+      label: "Concept rebuild",
       title: "Boutique Salon Website",
-      desc: "Elegant visual direction paired with seamless booking integration for a high-end service business.",
+      desc: "Concept rebuild for a salon — elegant visual direction paired with a clear path to bookings.",
       tags: ["Aesthetic", "Bookings", "Mobile-first"],
       image: salonImg
     },
     {
+      label: "Example website system",
       title: "Education Media Platform",
-      desc: "Structured, scalable architecture designed to host content and drive institutional engagement.",
+      desc: "Example website system for an education-led brand — structured, scalable architecture designed to host content and drive enquiries.",
       tags: ["Architecture", "Content", "Scalable"],
       image: eduImg
     },
     {
+      label: "Demo direction",
       title: "Hospitality Venue Website",
-      desc: "Cinematic, atmosphere-driven site that captures the venue's vibe while making reservations effortless.",
+      desc: "Demo direction for a hospitality venue — cinematic, atmosphere-led layout that captures the room and makes reservations effortless.",
       tags: ["Cinematic", "Reservations", "Vibe"],
       image: hospImg
     },
     {
+      label: "Example website system",
       title: "Local Service Business Website",
-      desc: "Practical, fast-loading site built around clear local service pages and a direct path to call or enquire.",
+      desc: "Example website system for a local service business — practical, fast-loading layout built around clear service pages and a direct path to enquire.",
       tags: ["Speed", "Local", "Direct Response"],
       image: serviceImg
     }
@@ -73,6 +79,14 @@ export function SelectedWork() {
                   />
                 </div>
                 
+                <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-foreground/50 mb-3">
+                  {project.label}
+                </div>
+
+                <h3 className="text-xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
+                  {project.title}
+                </h3>
+
                 <div className="flex flex-wrap gap-2 mb-4">
                   {project.tags.map((tag, j) => (
                     <span key={j} className="text-xs font-semibold uppercase tracking-wider text-accent border border-accent/20 bg-accent/5 px-2 py-1 rounded-sm">
@@ -80,10 +94,6 @@ export function SelectedWork() {
                     </span>
                   ))}
                 </div>
-                
-                <h3 className="text-xl font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
-                  {project.title}
-                </h3>
                 <p className="text-foreground/70 text-sm leading-relaxed">
                   {project.desc}
                 </p>

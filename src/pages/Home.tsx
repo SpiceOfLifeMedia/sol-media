@@ -10,6 +10,7 @@ import { WhyUs } from "@/components/sections/WhyUs";
 import { SelectedWork } from "@/components/sections/SelectedWork";
 import { Comparison } from "@/components/sections/Comparison";
 import { FAQ } from "@/components/sections/FAQ";
+import { Urgency } from "@/components/sections/Urgency";
 import { Contact } from "@/components/sections/Contact";
 
 export default function Home() {
@@ -26,6 +27,7 @@ export default function Home() {
       <SelectedWork />
       <Comparison />
       <FAQ />
+      <Urgency />
       <Contact />
     </Layout>
   );

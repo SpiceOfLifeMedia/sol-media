@@ -74,7 +74,7 @@ export function Navbar() {
             onClick={() => scrollTo("contact")}
             className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2.5 rounded-sm text-sm font-semibold transition-all duration-200"
           >
-            Start Your Website
+            Book a Website Review
           </button>
         </nav>
 
@@ -109,7 +109,7 @@ export function Navbar() {
               onClick={() => scrollTo("contact")}
               className="bg-primary text-primary-foreground w-full py-4 rounded-sm text-lg font-semibold"
             >
-              Start Your Website
+              Book a Website Review
             </button>
           </div>
         </div>
