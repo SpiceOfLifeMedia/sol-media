@@ -49,7 +49,7 @@ export function Navbar() {
           <img
             src={logo}
             alt="Spice Of Life Media"
-            className="w-7 h-7 object-contain"
+            className="w-9 h-9 object-contain [filter:brightness(0)] opacity-90"
           />
           <span className="font-serif font-medium text-[15px] text-foreground hidden sm:block tracking-tight">
             Spice Of Life Media

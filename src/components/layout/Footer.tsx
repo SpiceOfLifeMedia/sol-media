@@ -29,7 +29,7 @@ export function Footer() {
               <img
                 src={logo}
                 alt="Spice Of Life Media"
-                className="w-8 h-8 object-contain brightness-0 invert opacity-90"
+                className="w-10 h-10 object-contain opacity-95"
               />
               <span className="font-serif font-medium text-base tracking-tight">
                 Spice Of Life Media
