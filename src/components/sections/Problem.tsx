@@ -33,7 +33,7 @@ export function Problem() {
           </div>
           <div className="lg:col-span-11">
             <Reveal>
-              <h2 className="font-serif font-medium text-foreground tracking-[-0.02em] leading-[1.02] text-[clamp(2.25rem,5.5vw,5rem)] mb-10 max-w-5xl">
+              <h2 className="font-serif font-medium text-foreground tracking-[-0.02em] leading-[1.05] text-[clamp(2.25rem,4vw,3.5rem)] mb-8 max-w-4xl">
                 Your website shouldn't make your business look{" "}
                 <span className="italic text-primary/90">smaller</span> than it
                 is.

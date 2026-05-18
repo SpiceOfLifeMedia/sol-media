@@ -81,7 +81,7 @@ export function Packages() {
   };
 
   return (
-    <Section id="packages" className="bg-background" spacing="loose">
+    <Section id="packages" className="bg-background" spacing="compact">
       <div className="container mx-auto px-6 md:px-12">
         <div className="grid lg:grid-cols-12 gap-12 mb-20 md:mb-28">
           <div className="lg:col-span-7">
@@ -111,7 +111,7 @@ export function Packages() {
           {packages.map((pkg, i) => (
             <Reveal key={i} delay={0.05 + i * 0.04}>
               <div
-                className={`group grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-10 py-10 md:py-14 border-b border-foreground/10 transition-colors duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                className={`group grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-10 py-8 border-b border-foreground/10 transition-colors duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
                   pkg.featured ? "md:pl-6 border-l-2 border-l-accent" : ""
                 } hover:border-b-foreground/30`}
               >

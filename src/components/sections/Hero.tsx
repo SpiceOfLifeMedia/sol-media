@@ -15,7 +15,7 @@ export function Hero() {
   return (
     <section
       id="hero"
-      className="relative min-h-[100dvh] flex flex-col justify-end bg-background overflow-hidden"
+      className="relative min-h-[100dvh] flex flex-col justify-end bg-background overflow-hidden pb-10"
     >
       {/* Subtle architectural vertical accent — far right */}
       <div
@@ -80,9 +80,6 @@ export function Hero() {
                 className="group relative inline-flex items-center justify-center bg-primary text-primary-foreground px-9 py-[18px] text-[11px] font-semibold tracking-[0.18em] uppercase transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-accent hover:text-foreground"
               >
                 Book a Free Review
-                <span className="ml-3 inline-block transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-1">
-                  →
-                </span>
               </button>
               <button
                 onClick={() => scrollTo("packages")}

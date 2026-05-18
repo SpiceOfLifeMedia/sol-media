@@ -16,7 +16,7 @@ export function Urgency() {
   return (
     <section
       id="urgency"
-      className="bg-foreground text-background py-32 md:py-44 relative overflow-hidden"
+      className="bg-foreground text-background py-20 relative overflow-hidden"
     >
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] rounded-full bg-accent/[0.04] blur-3xl" />
@@ -35,9 +35,8 @@ export function Urgency() {
             </Reveal>
 
             <Reveal delay={0.05}>
-              <h2 className="font-serif font-medium tracking-[-0.02em] leading-[1.0] text-[clamp(2.75rem,7vw,7rem)]">
-                Your website is either<br />
-                building trust or{" "}
+              <h2 className="font-serif font-medium tracking-[-0.02em] leading-[1.05] text-[clamp(2.25rem,4.5vw,3.5rem)] max-w-3xl">
+                Your website is either building trust or{" "}
                 <span className="italic text-accent">leaking it.</span>
               </h2>
             </Reveal>

@@ -87,14 +87,14 @@ export function SelectedWork() {
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-12 gap-x-8 gap-y-20 md:gap-y-28">
+        <div className="grid lg:grid-cols-12 gap-x-8 gap-y-12 md:gap-y-16">
           {projects.map((p, i) => {
-            const offset = i % 2 === 1 ? "lg:mt-24" : "";
+            const offset = i % 2 === 1 ? "lg:mt-16" : "";
             return (
               <Reveal key={i} delay={0.05 * (i % 2)} className={`${p.span} ${offset}`}>
                 <div className="group cursor-default">
                   <div
-                    className={`relative overflow-hidden rounded-sm mb-8 bg-foreground/[0.04] ${p.ratio}`}
+                    className={`relative overflow-hidden rounded-sm mb-5 bg-foreground/[0.04] ${p.ratio}`}
                   >
                     <img
                       src={p.image}

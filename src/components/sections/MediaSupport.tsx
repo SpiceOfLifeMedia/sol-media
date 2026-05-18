@@ -26,7 +26,7 @@ export function MediaSupport() {
   ];
 
   return (
-    <Section id="media-support" className="bg-background" spacing="default">
+    <Section id="media-support" className="bg-background" spacing="compact">
       <div className="container mx-auto px-6 md:px-12">
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-20">
           <div className="lg:col-span-5">
