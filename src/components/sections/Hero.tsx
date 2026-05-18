@@ -1,5 +1,4 @@
 import { Reveal } from "@/components/Reveal";
-import heroImg from "@/assets/hero-abstract.png";
 
 export function Hero() {
   const scrollTo = (id: string) => {
@@ -16,99 +15,112 @@ export function Hero() {
   return (
     <section
       id="hero"
-      className="relative min-h-[100dvh] flex items-end pt-32 pb-16 md:pb-24 overflow-hidden bg-background"
+      className="relative min-h-[100dvh] flex flex-col justify-end bg-background overflow-hidden"
     >
-      {/* Subtle radial wash */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute -top-32 -right-32 w-[60vw] h-[60vw] rounded-full bg-primary/[0.04] blur-3xl" />
-        <div className="absolute bottom-0 -left-20 w-[40vw] h-[40vw] rounded-full bg-accent/[0.04] blur-3xl" />
-      </div>
+      {/* Subtle architectural vertical accent — far right */}
+      <div
+        aria-hidden="true"
+        className="hidden md:block absolute right-6 md:right-12 top-24 bottom-0 w-px pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(to bottom, transparent 0%, rgba(201,169,110,0.18) 50%, transparent 100%)",
+          animation: "fadeIn 1.2s ease-out 1.2s both",
+        }}
+      />
 
-      {/* Floating, off-grid image — desktop only, sits behind type */}
-      <div className="hidden lg:block absolute top-[18vh] right-[-6vw] w-[58vw] h-[68vh] z-0 pointer-events-none">
-        <Reveal direction="left" className="h-full">
-          <div className="relative h-full w-full">
-            <div className="absolute inset-y-8 inset-x-12 bg-primary/[0.06] rounded-sm" />
-            <img
-              src={heroImg}
-              alt=""
-              aria-hidden="true"
-              className="absolute inset-0 w-full h-full object-cover object-left rounded-sm shadow-[0_40px_120px_-30px_rgba(31,36,51,0.35)]"
-            />
-            <div className="absolute inset-0 rounded-sm bg-gradient-to-r from-background/85 via-background/10 to-transparent" />
+      {/* Headline block — pushed to bottom, massive void above */}
+      <div className="container relative z-10 mx-auto px-6 md:px-12 pb-10 md:pb-12">
+        <Reveal>
+          <div className="flex items-center gap-4 mb-8 md:mb-10">
+            <span className="block w-10 h-px bg-accent" />
+            <p className="text-[10px] font-medium tracking-[0.28em] uppercase text-foreground/60">
+              Adelaide · Premium Digital Studio
+            </p>
           </div>
+        </Reveal>
+
+        <Reveal delay={0.05}>
+          <h1 className="font-serif font-medium text-foreground tracking-[-0.03em] leading-[0.95] text-[clamp(3.25rem,7.5vw,6.75rem)] max-w-[1100px]">
+            Websites built<br />
+            <span className="italic text-primary/95">to look the part.</span>
+          </h1>
         </Reveal>
       </div>
 
-      <div className="container relative z-10 mx-auto px-6 md:px-12 grid lg:grid-cols-12 gap-12 items-end">
-        <div className="lg:col-span-8 xl:col-span-7">
-          <Reveal>
-            <div className="flex items-center gap-4 mb-10">
-              <span className="block w-10 h-px bg-accent" />
-              <p className="text-[10px] md:text-xs font-medium tracking-[0.28em] uppercase text-foreground/60">
-                Adelaide · Premium Digital Studio
-              </p>
-            </div>
-          </Reveal>
+      {/* Hairline separator */}
+      <div className="border-t border-foreground/10" />
 
-          <Reveal delay={0.05}>
-            <h1 className="font-serif font-medium text-foreground tracking-[-0.02em] leading-[0.95] text-[clamp(3.25rem,9vw,8rem)] mb-10">
-              Websites built<br />
-              <span className="italic text-primary/95">to look the part.</span>
-            </h1>
-          </Reveal>
-
-          <Reveal delay={0.1}>
-            <div className="max-w-xl">
-              <p className="text-foreground/90 font-medium text-base md:text-lg mb-5">
-                5-page business websites from{" "}
-                <span className="font-serif text-primary">$1,950</span>.
-              </p>
-              <p className="text-foreground/65 text-base md:text-lg leading-relaxed">
+      {/* Bottom info bar — 3-column: body text | pricing | CTA */}
+      <div className="container mx-auto px-6 md:px-12 py-8 md:py-10">
+        <Reveal delay={0.15}>
+          <div className="flex flex-col md:flex-row md:items-center gap-8 md:gap-12">
+            {/* LEFT — descriptive body text */}
+            <div className="flex-1 max-w-[480px]">
+              <p className="text-foreground/55 text-[15px] md:text-base leading-[1.7]">
                 A premium digital product and website studio for Australian
                 businesses that want agency-quality results without the bloated
                 agency price tag.
               </p>
             </div>
-          </Reveal>
 
-          <Reveal delay={0.18}>
-            <div className="flex flex-col sm:flex-row gap-3 mt-12">
+            {/* CENTRE — pricing lockup */}
+            <div className="flex-shrink-0 md:border-l md:border-r md:border-foreground/10 md:px-12">
+              <p className="text-[10px] tracking-[0.28em] uppercase text-foreground/40 mb-2">
+                5-Page Websites From
+              </p>
+              <p className="font-serif text-foreground text-[28px] md:text-[32px] leading-none">
+                $1,950
+              </p>
+            </div>
+
+            {/* RIGHT — primary CTA */}
+            <div className="flex-shrink-0 flex flex-col sm:flex-row gap-3 md:ml-auto">
               <button
                 onClick={() => scrollTo("contact")}
-                className="group relative inline-flex items-center justify-center bg-primary text-primary-foreground px-7 py-4 rounded-sm text-sm font-semibold tracking-wide transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-primary/90 hover:translate-y-[-1px] hover:shadow-[0_12px_30px_-12px_rgba(31,36,51,0.45)]"
+                className="group relative inline-flex items-center justify-center bg-primary text-primary-foreground px-9 py-[18px] text-[11px] font-semibold tracking-[0.18em] uppercase transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-accent hover:text-foreground"
               >
-                Book a Website Review
+                Book a Free Review
                 <span className="ml-3 inline-block transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-1">
                   →
                 </span>
               </button>
               <button
                 onClick={() => scrollTo("packages")}
-                className="inline-flex items-center justify-center text-foreground/80 hover:text-foreground px-2 py-4 text-sm font-semibold tracking-wide transition-colors"
+                className="inline-flex items-center justify-center text-foreground/70 hover:text-foreground px-2 py-[18px] text-[11px] font-semibold tracking-[0.18em] uppercase transition-colors"
               >
                 View Packages
                 <span className="ml-2 inline-block">↓</span>
               </button>
             </div>
-          </Reveal>
-        </div>
-
-        {/* Right rail: meta strip */}
-        <div className="lg:col-span-4 xl:col-span-5 hidden lg:flex flex-col items-end">
-          <Reveal delay={0.3} direction="left">
-            <div className="text-right max-w-[220px]">
-              <p className="text-[10px] tracking-[0.28em] uppercase text-foreground/40 mb-3">
-                Currently building
-              </p>
-              <p className="text-sm text-foreground/70 leading-relaxed">
-                Premium websites, digital platforms and web applications for
-                businesses across Australia.
-              </p>
-            </div>
-          </Reveal>
-        </div>
+          </div>
+        </Reveal>
       </div>
+
+      {/* Scroll indicator — bottom-left */}
+      <div
+        aria-hidden="true"
+        className="hidden md:flex absolute left-6 md:left-12 bottom-8 flex-col items-center gap-3 pointer-events-none"
+        style={{ animation: "fadeIn 0.8s ease-out 1.6s both" }}
+      >
+        <span
+          className="block w-px bg-foreground/30"
+          style={{ height: "32px", animation: "pulseHeight 2s ease-in-out infinite" }}
+        />
+        <span className="text-[10px] tracking-[0.18em] uppercase text-foreground/20 [writing-mode:vertical-rl] rotate-180">
+          Scroll
+        </span>
+      </div>
+
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes pulseHeight {
+          0%, 100% { opacity: 0.3; transform: scaleY(1); }
+          50% { opacity: 0.6; transform: scaleY(1.15); }
+        }
+      `}</style>
     </section>
   );
 }

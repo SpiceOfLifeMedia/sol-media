@@ -34,24 +34,24 @@ export function Navbar() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] h-[72px] flex items-center ${
         isScrolled
-          ? "bg-background/90 backdrop-blur-md border-b border-foreground/8 py-3"
-          : "bg-transparent py-6"
+          ? "bg-background/75 backdrop-blur-xl backdrop-saturate-150"
+          : "bg-transparent"
       }`}
     >
       <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
         <button
           onClick={() => scrollTo("hero")}
-          className="flex items-center gap-3 hover:opacity-70 transition-opacity duration-500"
+          className="flex items-center gap-2 hover:opacity-70 transition-opacity duration-500"
           aria-label="Home"
         >
           <img
             src={logo}
             alt="Spice Of Life Media"
-            className="w-8 h-8 object-contain"
+            className="w-7 h-7 object-contain"
           />
-          <span className="font-serif font-medium text-base text-foreground hidden sm:block tracking-tight">
+          <span className="font-serif font-medium text-[15px] text-foreground hidden sm:block tracking-tight">
             Spice Of Life Media
           </span>
         </button>
@@ -61,16 +61,16 @@ export function Navbar() {
             <button
               key={item.name}
               onClick={() => scrollTo(item.href)}
-              className="text-xs font-medium tracking-[0.2em] uppercase text-foreground/60 hover:text-foreground transition-colors duration-500"
+              className="text-[11px] font-medium tracking-[0.14em] uppercase text-foreground/45 hover:text-foreground transition-colors duration-500"
             >
               {item.name}
             </button>
           ))}
           <button
             onClick={() => scrollTo("contact")}
-            className="group inline-flex items-center gap-2 text-xs font-semibold tracking-[0.2em] uppercase text-foreground transition-colors"
+            className="group inline-flex items-center gap-2 text-[11px] font-semibold tracking-[0.14em] uppercase text-foreground transition-colors"
           >
-            <span className="w-6 h-px bg-accent transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:w-10" />
+            <span className="w-4 h-px bg-accent transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:w-8" />
             Book a Review
           </button>
         </nav>
