@@ -47,7 +47,7 @@ export function Reveal({
         }}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: "-80px" }}
+        viewport={{ once: true, amount: 0.05, margin: "0px 0px -10% 0px" }}
       >
         {children}
       </motion.div>
