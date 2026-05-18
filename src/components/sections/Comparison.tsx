@@ -50,8 +50,8 @@ export function Comparison() {
             </Reveal>
             <Reveal delay={0.05}>
               <h2 className="font-serif font-medium text-foreground tracking-[-0.02em] leading-[1.02] text-[clamp(2.5rem,5.5vw,5rem)]">
-                Not cheap. Not bloated.<br />
-                <span className="italic text-primary/90">The better middle.</span>
+                Premium without<br />
+                <span className="italic text-primary/90">the agency overhead.</span>
               </h2>
             </Reveal>
           </div>

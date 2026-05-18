@@ -72,8 +72,8 @@ export function SelectedWork() {
             </Reveal>
             <Reveal delay={0.05} overflow="visible">
               <h2 className="font-serif font-medium text-foreground tracking-[-0.02em] leading-[1.08] text-[clamp(2.5rem,5.5vw,5rem)] pb-2">
-                Built for businesses that need to{" "}
-                <span className="italic text-primary/90">look sharper.</span>
+                Built to{" "}
+                <span className="italic text-primary/90">look the part.</span>
               </h2>
             </Reveal>
           </div>
