@@ -15,7 +15,7 @@ export function Hero() {
   return (
     <section
       id="hero"
-      className="relative min-h-[88dvh] flex flex-col justify-center bg-background overflow-hidden pt-24 md:pt-28"
+      className="relative min-h-[88dvh] flex flex-col justify-start bg-background overflow-hidden pt-[100px] md:pt-[108px]"
     >
       {/* Subtle architectural vertical accent — far right */}
       <div
@@ -28,8 +28,8 @@ export function Hero() {
         }}
       />
 
-      {/* Headline block — vertically centered in compressed hero */}
-      <div className="container relative z-10 mx-auto px-6 md:px-12 pb-10 md:pb-14 mt-auto">
+      {/* Headline block — top-anchored just below navbar */}
+      <div className="container relative z-10 mx-auto px-6 md:px-12 pb-10 md:pb-14">
         <Reveal>
           <div className="flex items-center gap-4 mb-8 md:mb-10">
             <span className="block w-10 h-px bg-accent" />
