@@ -13,93 +13,118 @@ export function SelectedWork() {
     {
       label: "Concept rebuild",
       title: "Premium Trade Website",
-      desc: "Concept rebuild for a trade business needing a sharper first impression, clearer service structure and a stronger enquiry flow.",
-      tags: ["Trust", "Local SEO", "Enquiries"],
-      image: tradeImg
+      desc: "Concept rebuild for a trade business needing a sharper first impression and a stronger enquiry flow.",
+      image: tradeImg,
+      span: "lg:col-span-7",
+      ratio: "aspect-[16/11]",
     },
     {
       label: "Demo direction",
       title: "Finance Broker Website",
-      desc: "Demo direction for a finance broker — clean, authoritative layout built to establish immediate credibility before the first call.",
-      tags: ["Authority", "Conversion", "Professional"],
-      image: financeImg
+      desc: "Demo direction for a finance broker — clean, authoritative layout built to establish credibility before the first call.",
+      image: financeImg,
+      span: "lg:col-span-5",
+      ratio: "aspect-[4/3]",
     },
     {
       label: "Concept rebuild",
       title: "Boutique Salon Website",
       desc: "Concept rebuild for a salon — elegant visual direction paired with a clear path to bookings.",
-      tags: ["Aesthetic", "Bookings", "Mobile-first"],
-      image: salonImg
+      image: salonImg,
+      span: "lg:col-span-5",
+      ratio: "aspect-[4/3]",
     },
     {
-      label: "Example website system",
+      label: "Example system",
       title: "Education Media Platform",
-      desc: "Example website system for an education-led brand — structured, scalable architecture designed to host content and drive enquiries.",
-      tags: ["Architecture", "Content", "Scalable"],
-      image: eduImg
+      desc: "Example website system for an education-led brand — structured, scalable architecture for content and enquiries.",
+      image: eduImg,
+      span: "lg:col-span-7",
+      ratio: "aspect-[16/11]",
     },
     {
       label: "Demo direction",
       title: "Hospitality Venue Website",
       desc: "Demo direction for a hospitality venue — cinematic, atmosphere-led layout that captures the room and makes reservations effortless.",
-      tags: ["Cinematic", "Reservations", "Vibe"],
-      image: hospImg
+      image: hospImg,
+      span: "lg:col-span-7",
+      ratio: "aspect-[16/11]",
     },
     {
-      label: "Example website system",
-      title: "Local Service Business Website",
-      desc: "Example website system for a local service business — practical, fast-loading layout built around clear service pages and a direct path to enquire.",
-      tags: ["Speed", "Local", "Direct Response"],
-      image: serviceImg
-    }
+      label: "Example system",
+      title: "Local Service Business",
+      desc: "Example website system for a local service business — practical, fast-loading layout built around clear service pages.",
+      image: serviceImg,
+      span: "lg:col-span-5",
+      ratio: "aspect-[4/3]",
+    },
   ];
 
   return (
-    <Section id="work" className="bg-background">
+    <Section id="work" className="bg-background" spacing="loose">
       <div className="container mx-auto px-6 md:px-12">
-        <Reveal>
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif font-medium text-foreground max-w-2xl">
-              Built for businesses that need to look sharper.
-            </h2>
-          </div>
-        </Reveal>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {projects.map((project, i) => (
-            <Reveal key={i} delay={0.1 * (i % 3)}>
-              <div className="group cursor-pointer">
-                <div className="relative aspect-[4/3] overflow-hidden rounded-sm mb-6 border border-border/50 bg-white">
-                  <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 mix-blend-multiply"></div>
-                  <img 
-                    src={project.image} 
-                    alt={project.title} 
-                    className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
-                    loading="lazy"
-                  />
-                </div>
-                
-                <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-foreground/50 mb-3">
-                  {project.label}
-                </div>
-
-                <h3 className="text-xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
-                  {project.title}
-                </h3>
-
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {project.tags.map((tag, j) => (
-                    <span key={j} className="text-xs font-semibold uppercase tracking-wider text-accent border border-accent/20 bg-accent/5 px-2 py-1 rounded-sm">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-                <p className="text-foreground/70 text-sm leading-relaxed">
-                  {project.desc}
-                </p>
-              </div>
+        <div className="grid lg:grid-cols-12 gap-12 mb-20 md:mb-28">
+          <div className="lg:col-span-8">
+            <Reveal>
+              <p className="text-[10px] tracking-[0.28em] uppercase text-foreground/40 mb-8">
+                07 / Selected work
+              </p>
             </Reveal>
-          ))}
+            <Reveal delay={0.05}>
+              <h2 className="font-serif font-medium text-foreground tracking-[-0.02em] leading-[1.02] text-[clamp(2.5rem,5.5vw,5rem)]">
+                Built for businesses that need to{" "}
+                <span className="italic text-primary/90">look sharper.</span>
+              </h2>
+            </Reveal>
+          </div>
+          <div className="lg:col-span-4 lg:pt-16">
+            <Reveal delay={0.15}>
+              <p className="text-sm text-foreground/55 leading-relaxed italic">
+                A mix of concept rebuilds, demo directions and example website
+                systems — shown honestly.
+              </p>
+            </Reveal>
+          </div>
+        </div>
+
+        <div className="grid lg:grid-cols-12 gap-x-8 gap-y-20 md:gap-y-28">
+          {projects.map((p, i) => {
+            const offset = i % 2 === 1 ? "lg:mt-24" : "";
+            return (
+              <Reveal key={i} delay={0.05 * (i % 2)} className={`${p.span} ${offset}`}>
+                <div className="group cursor-default">
+                  <div
+                    className={`relative overflow-hidden rounded-sm mb-8 bg-foreground/[0.04] ${p.ratio}`}
+                  >
+                    <img
+                      src={p.image}
+                      alt={p.title}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-foreground/15 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                  </div>
+
+                  <div className="flex items-baseline gap-4 mb-3">
+                    <span className="text-[10px] tracking-[0.28em] uppercase text-accent">
+                      {p.label}
+                    </span>
+                    <span className="flex-1 h-px bg-foreground/15" />
+                    <span className="text-[10px] tracking-[0.28em] uppercase text-foreground/40">
+                      {String(i + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}
+                    </span>
+                  </div>
+
+                  <h3 className="text-2xl md:text-3xl font-serif font-medium text-foreground mb-3 leading-snug transition-colors duration-500 group-hover:text-primary">
+                    {p.title}
+                  </h3>
+                  <p className="text-foreground/65 text-[15px] leading-relaxed max-w-xl">
+                    {p.desc}
+                  </p>
+                </div>
+              </Reveal>
+            );
+          })}
         </div>
       </div>
     </Section>

@@ -17,10 +17,10 @@ export function Reveal({
   width = "w-full",
 }: RevealProps) {
   const directions = {
-    up: { y: 40, x: 0 },
-    down: { y: -40, x: 0 },
-    left: { x: 40, y: 0 },
-    right: { x: -40, y: 0 },
+    up: { y: 28, x: 0 },
+    down: { y: -28, x: 0 },
+    left: { x: 28, y: 0 },
+    right: { x: -28, y: 0 },
     none: { x: 0, y: 0 },
   };
 
@@ -37,15 +37,15 @@ export function Reveal({
             x: 0,
             y: 0,
             transition: {
-              duration: 0.8,
-              ease: [0.16, 1, 0.3, 1], // easeOutExpo
+              duration: 1.1,
+              ease: [0.16, 1, 0.3, 1],
               delay: delay,
             },
           },
         }}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: "-50px" }}
+        viewport={{ once: true, margin: "-80px" }}
       >
         {children}
       </motion.div>

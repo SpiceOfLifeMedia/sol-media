@@ -14,33 +14,51 @@ export function Urgency() {
   };
 
   return (
-    <section id="urgency" className="bg-foreground text-background py-24 md:py-32 border-y border-white/10">
-      <div className="container mx-auto px-6 md:px-12">
-        <div className="max-w-3xl mx-auto text-center">
-          <Reveal>
-            <span className="inline-block w-12 h-px bg-accent mb-8"></span>
-          </Reveal>
+    <section
+      id="urgency"
+      className="bg-foreground text-background py-32 md:py-44 relative overflow-hidden"
+    >
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] rounded-full bg-accent/[0.04] blur-3xl" />
+      </div>
 
-          <Reveal delay={0.05}>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-medium leading-[1.15] mb-8">
-              Your website is either building trust or <span className="italic text-accent">leaking it.</span>
-            </h2>
-          </Reveal>
+      <div className="container relative z-10 mx-auto px-6 md:px-12">
+        <div className="grid lg:grid-cols-12 gap-12 items-end">
+          <div className="lg:col-span-8">
+            <Reveal>
+              <div className="flex items-center gap-4 mb-10">
+                <span className="block w-10 h-px bg-accent" />
+                <p className="text-[10px] tracking-[0.28em] uppercase text-accent/90">
+                  10 / Why now
+                </p>
+              </div>
+            </Reveal>
 
-          <Reveal delay={0.15}>
-            <p className="text-lg text-background/75 leading-relaxed mb-12 max-w-2xl mx-auto">
-              If your website feels outdated, slow or unclear, people notice before they ever contact you. A sharper website changes how customers judge your business — before the first call, before the first quote, before the first email.
-            </p>
-          </Reveal>
+            <Reveal delay={0.05}>
+              <h2 className="font-serif font-medium tracking-[-0.02em] leading-[1.0] text-[clamp(2.75rem,7vw,7rem)]">
+                Your website is either<br />
+                building trust or{" "}
+                <span className="italic text-accent">leaking it.</span>
+              </h2>
+            </Reveal>
+          </div>
 
-          <Reveal delay={0.25}>
-            <button
-              onClick={scrollToContact}
-              className="bg-accent hover:bg-accent/90 text-foreground px-8 py-4 rounded-sm text-base font-semibold transition-all duration-200"
-            >
-              Request Website Review
-            </button>
-          </Reveal>
+          <div className="lg:col-span-4">
+            <Reveal delay={0.15}>
+              <p className="text-background/65 leading-relaxed text-base md:text-lg mb-10">
+                If your site feels outdated, slow or unclear, people notice
+                before they ever contact you. A sharper website changes how
+                customers judge the business — before the first call.
+              </p>
+              <button
+                onClick={scrollToContact}
+                className="group inline-flex items-center gap-3 text-accent hover:text-accent/80 text-base font-semibold tracking-wide transition-colors"
+              >
+                Request a Website Review
+                <span className="block w-8 h-px bg-accent transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:w-14" />
+              </button>
+            </Reveal>
+          </div>
         </div>
       </div>
     </section>
