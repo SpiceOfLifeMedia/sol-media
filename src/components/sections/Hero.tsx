@@ -40,7 +40,7 @@ export function Hero() {
         </Reveal>
 
         <Reveal delay={0.05} overflow="visible">
-          <h1 className="font-serif font-medium text-foreground tracking-[-0.03em] leading-[1.02] text-[clamp(3.25rem,7.5vw,6.75rem)] max-w-[1100px] pb-3 md:pb-4">
+          <h1 className="font-serif font-medium text-foreground tracking-[-0.03em] leading-[1.02] text-[clamp(2.5rem,11vw,6.75rem)] max-w-[1100px] pb-3 md:pb-4">
             Websites built<br />
             <span className="italic text-primary/95">to look the part.</span>
           </h1>
