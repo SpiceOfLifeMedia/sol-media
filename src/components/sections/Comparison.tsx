@@ -41,15 +41,15 @@ export function Comparison() {
   return (
     <Section id="comparison" className="bg-background" spacing="tight">
       <div className="container mx-auto px-6 md:px-12">
-        <div className="grid lg:grid-cols-12 gap-12 mb-20 md:mb-24">
+        <div className="grid lg:grid-cols-12 gap-12 mb-12 md:mb-16">
           <div className="lg:col-span-8">
             <Reveal>
               <p className="text-[10px] tracking-[0.28em] uppercase text-foreground/40 mb-8">
                 08 / Positioning
               </p>
             </Reveal>
-            <Reveal delay={0.05}>
-              <h2 className="font-serif font-medium text-foreground tracking-[-0.02em] leading-[1.02] text-[clamp(2.5rem,5.5vw,5rem)]">
+            <Reveal delay={0.05} overflow="visible">
+              <h2 className="font-serif font-medium text-foreground tracking-[-0.02em] leading-[1.08] text-[clamp(2.5rem,5.5vw,5rem)] pb-2">
                 Premium without<br />
                 <span className="italic text-primary/90">the agency overhead.</span>
               </h2>

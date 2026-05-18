@@ -35,7 +35,7 @@ export function Footer() {
                 Spice Of Life Media
               </span>
             </div>
-            <h2 className="font-serif font-medium tracking-[-0.02em] leading-[1.02] text-[clamp(2.5rem,5.5vw,5rem)] max-w-2xl">
+            <h2 className="font-serif font-medium tracking-[-0.02em] leading-[1.08] text-[clamp(2.5rem,5.5vw,5rem)] max-w-2xl pb-2">
               A premium digital studio,<br />
               <span className="italic text-accent">based in Adelaide.</span>
             </h2>
