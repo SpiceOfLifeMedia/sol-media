@@ -14,7 +14,7 @@ export function WhyUs() {
   ];
 
   return (
-    <Section id="why-us" className="bg-background" spacing="loose">
+    <Section id="why-us" className="bg-background" spacing="tight">
       <div className="container mx-auto px-6 md:px-12">
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-20 items-start">
           <div className="lg:col-span-7">

@@ -34,8 +34,8 @@ export function Urgency() {
               </div>
             </Reveal>
 
-            <Reveal delay={0.05}>
-              <h2 className="font-serif font-medium tracking-[-0.02em] leading-[1.05] text-[clamp(2.25rem,4.5vw,3.5rem)] max-w-3xl">
+            <Reveal delay={0.05} overflow="visible">
+              <h2 className="font-serif font-medium tracking-[-0.02em] leading-[1.08] text-[clamp(2.25rem,4.5vw,3.5rem)] max-w-3xl pb-2">
                 Your website is either building trust or{" "}
                 <span className="italic text-accent">leaking it.</span>
               </h2>

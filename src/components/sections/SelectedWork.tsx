@@ -61,7 +61,7 @@ export function SelectedWork() {
   ];
 
   return (
-    <Section id="work" className="bg-background" spacing="loose">
+    <Section id="work" className="bg-background" spacing="tight">
       <div className="container mx-auto px-6 md:px-12">
         <div className="grid lg:grid-cols-12 gap-12 mb-20 md:mb-28">
           <div className="lg:col-span-8">
@@ -70,8 +70,8 @@ export function SelectedWork() {
                 07 / Selected work
               </p>
             </Reveal>
-            <Reveal delay={0.05}>
-              <h2 className="font-serif font-medium text-foreground tracking-[-0.02em] leading-[1.02] text-[clamp(2.5rem,5.5vw,5rem)]">
+            <Reveal delay={0.05} overflow="visible">
+              <h2 className="font-serif font-medium text-foreground tracking-[-0.02em] leading-[1.08] text-[clamp(2.5rem,5.5vw,5rem)] pb-2">
                 Built for businesses that need to{" "}
                 <span className="italic text-primary/90">look sharper.</span>
               </h2>

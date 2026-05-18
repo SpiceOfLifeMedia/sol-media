@@ -39,7 +39,7 @@ export function Comparison() {
   ];
 
   return (
-    <Section id="comparison" className="bg-background" spacing="loose">
+    <Section id="comparison" className="bg-background" spacing="tight">
       <div className="container mx-auto px-6 md:px-12">
         <div className="grid lg:grid-cols-12 gap-12 mb-20 md:mb-24">
           <div className="lg:col-span-8">

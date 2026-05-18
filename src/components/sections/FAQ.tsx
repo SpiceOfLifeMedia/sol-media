@@ -40,7 +40,7 @@ export function FAQ() {
   ];
 
   return (
-    <Section id="faq" className="bg-background" spacing="default">
+    <Section id="faq" className="bg-background" spacing="tight">
       <div className="container mx-auto px-6 md:px-12">
         <div className="grid lg:grid-cols-12 gap-12">
           <div className="lg:col-span-4">

@@ -4,11 +4,12 @@ interface SectionProps {
   id: string;
   className?: string;
   children: ReactNode;
-  spacing?: "compact" | "default" | "loose";
+  spacing?: "tight" | "compact" | "default" | "loose";
   divider?: boolean;
 }
 
 const SPACING = {
+  tight: "py-8 md:py-12",
   compact: "py-14 md:py-20",
   default: "py-20 md:py-28",
   loose: "py-24 md:py-36",

@@ -7,6 +7,7 @@ interface RevealProps {
   direction?: "up" | "down" | "left" | "right" | "none";
   className?: string;
   width?: "w-fit" | "w-full";
+  overflow?: "hidden" | "visible";
 }
 
 export function Reveal({
@@ -15,6 +16,7 @@ export function Reveal({
   direction = "up",
   className = "",
   width = "w-full",
+  overflow = "hidden",
 }: RevealProps) {
   const directions = {
     up: { y: 28, x: 0 },
@@ -25,7 +27,7 @@ export function Reveal({
   };
 
   return (
-    <div className={`relative overflow-hidden ${width} ${className}`}>
+    <div className={`relative ${overflow === "visible" ? "overflow-visible" : "overflow-hidden"} ${width} ${className}`}>
       <motion.div
         variants={{
           hidden: {

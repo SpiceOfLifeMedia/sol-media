@@ -90,8 +90,8 @@ export function Packages() {
                 03 / Pricing
               </p>
             </Reveal>
-            <Reveal delay={0.05}>
-              <h2 className="font-serif font-medium text-foreground tracking-[-0.02em] leading-[1.02] text-[clamp(2.5rem,5.5vw,5rem)]">
+            <Reveal delay={0.05} overflow="visible">
+              <h2 className="font-serif font-medium text-foreground tracking-[-0.02em] leading-[1.08] text-[clamp(2.5rem,5.5vw,5rem)] pb-2">
                 Premium websites,<br />
                 <span className="italic text-primary/90">honest pricing.</span>
               </h2>
