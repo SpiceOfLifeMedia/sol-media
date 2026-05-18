@@ -34,7 +34,7 @@ export function Navbar() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] h-[72px] flex items-center ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] h-[84px] flex items-center ${
         isScrolled
           ? "bg-background/75 backdrop-blur-xl backdrop-saturate-150"
           : "bg-transparent"

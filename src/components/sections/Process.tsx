@@ -34,7 +34,7 @@ export function Process() {
     <Section
       id="process"
       className="bg-foreground text-background"
-      spacing="loose"
+      spacing="compact"
       divider={false}
     >
       <div className="container mx-auto px-6 md:px-12">
