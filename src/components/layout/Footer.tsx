@@ -14,9 +14,8 @@ export function Footer() {
 
   const navItems = [
     { name: "Services", href: "services" },
-    { name: "Reviews", href: "reviews" },
     { name: "Work", href: "work" },
-    { name: "Process", href: "process" },
+    { name: "Reviews", href: "reviews" },
     { name: "Contact", href: "contact" },
   ];
 
