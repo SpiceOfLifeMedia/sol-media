@@ -15,26 +15,15 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { CheckCircle2 } from "lucide-react";
 
 const formSchema = z.object({
-  name: z.string().min(2, "Name is required"),
-  businessName: z.string().min(2, "Business name is required"),
   email: z.string().email("Please enter a valid email address"),
-  phone: z.string().min(8, "Phone number is required"),
-  website: z.string().optional(),
-  needs: z.string().min(10, "Please briefly describe what you need"),
-  budget: z.string({ required_error: "Please select a budget range" }),
-  timeline: z.string().min(2, "Please indicate your timeline"),
-  message: z.string().optional(),
+  message: z.string().min(10, "Please briefly tell us about the project"),
+  name: z.string().optional(),
+  phone: z.string().optional(),
+  projectType: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -53,15 +42,11 @@ export function Contact() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      businessName: "",
       email: "",
-      phone: "",
-      website: "",
-      needs: "",
-      budget: "",
-      timeline: "",
       message: "",
+      name: "",
+      phone: "",
+      projectType: "",
     },
   });
 
@@ -76,14 +61,14 @@ export function Contact() {
       if (!res.ok) throw new Error(`Submission failed (${res.status})`);
       setIsSuccess(true);
       toast({
-        title: "Request received",
-        description: "We'll be in touch shortly to discuss your website.",
+        title: "Enquiry received",
+        description: "Thanks — your enquiry has been received.",
       });
     } catch {
       toast({
         title: "Something went wrong",
         description:
-          "We couldn't submit your request just now. Please try again, or email info@spiceoflifemedia.com.au directly.",
+          "We couldn't submit your enquiry just now. Please try again, or email info@spiceoflifemedia.com.au directly.",
         variant: "destructive",
       });
     } finally {
@@ -92,38 +77,39 @@ export function Contact() {
   };
 
   return (
-    <Section id="contact" className="bg-background" spacing="loose">
+    <Section id="contact" className="bg-background" spacing="compact">
       <div className="container mx-auto px-6 md:px-12">
-        <div className="grid lg:grid-cols-12 gap-12 lg:gap-20">
+        <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
           <div className="lg:col-span-5 lg:sticky lg:top-32 lg:self-start">
             <Reveal>
-              <p className="text-[10px] tracking-[0.28em] uppercase text-foreground/40 mb-8">
-                11 / Contact
+              <p className="text-[10px] tracking-[0.28em] uppercase text-foreground/40 mb-6">
+                07 / Contact
               </p>
             </Reveal>
             <Reveal delay={0.05}>
-              <h2 className="font-serif font-medium text-foreground tracking-[-0.02em] leading-[1.02] text-[clamp(2.5rem,5.5vw,5rem)] mb-8">
-                Ready for a website<br />
-                that{" "}
-                <span className="italic text-primary/90">
-                  finally matches the business?
-                </span>
+              <h2 className="font-serif font-medium text-foreground tracking-[-0.02em] leading-[1.02] text-[clamp(2.25rem,5vw,4.5rem)] mb-6">
+                Start a{" "}
+                <span className="italic text-primary/90">project.</span>
               </h2>
             </Reveal>
             <Reveal delay={0.1}>
-              <p className="text-foreground/65 leading-relaxed text-base md:text-lg max-w-md mb-10">
-                Tell us what you do, where your current website is letting you
-                down, and what you want the new site to achieve.
+              <p className="text-foreground/65 leading-relaxed text-base md:text-lg max-w-md mb-8">
+                Tell us briefly what you need — a website, a video, a podcast
+                edit, an event piece, a brand asset. Only email and message are
+                required.
               </p>
             </Reveal>
             <Reveal delay={0.15}>
-              <div className="border-t border-foreground/10 pt-6">
+              <div className="border-t border-foreground/10 pt-5">
                 <p className="text-[10px] tracking-[0.28em] uppercase text-accent mb-3">
-                  No pressure
+                  Direct
                 </p>
-                <p className="text-sm text-foreground/60 leading-relaxed italic max-w-sm">
-                  No hard sell. Just a clear look at what your website needs.
-                </p>
+                <a
+                  href="mailto:info@spiceoflifemedia.com.au"
+                  className="text-sm text-foreground/70 hover:text-foreground transition-colors break-all"
+                >
+                  info@spiceoflifemedia.com.au
+                </a>
               </div>
             </Reveal>
           </div>
@@ -131,27 +117,27 @@ export function Contact() {
           <div className="lg:col-span-7">
             <Reveal delay={0.2}>
               {isSuccess ? (
-                <div className="flex flex-col items-start py-16">
+                <div className="flex flex-col items-start py-12">
                   <motion.div
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ type: "spring", bounce: 0.5 }}
                   >
-                    <CheckCircle2 className="w-14 h-14 text-accent mb-8" />
+                    <CheckCircle2 className="w-12 h-12 text-accent mb-6" />
                   </motion.div>
-                  <h3 className="text-3xl md:text-4xl font-serif font-medium text-foreground mb-4">
-                    Request received.
+                  <h3 className="text-3xl md:text-4xl font-serif font-medium text-foreground mb-3">
+                    Enquiry received.
                   </h3>
                   <p className="text-foreground/65 max-w-md leading-relaxed">
-                    Thanks — your website review request has been received.
-                    We'll be in touch within 1–2 business days with next steps.
+                    Thanks — your enquiry has been received. We'll be in touch
+                    shortly with next steps.
                   </p>
                   <button
                     onClick={() => {
                       form.reset();
                       setIsSuccess(false);
                     }}
-                    className="mt-8 text-sm font-semibold text-primary hover:text-accent transition-colors duration-500 inline-flex items-center gap-2"
+                    className="mt-6 text-sm font-semibold text-primary hover:text-accent transition-colors duration-500 inline-flex items-center gap-2"
                   >
                     Submit another enquiry
                     <span>→</span>
@@ -161,50 +147,9 @@ export function Contact() {
                 <Form {...form}>
                   <form
                     onSubmit={form.handleSubmit(onSubmit)}
-                    className="space-y-8"
+                    className="space-y-7"
                   >
-                    <div className="grid md:grid-cols-2 gap-8">
-                      <FormField
-                        control={form.control}
-                        name="name"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className={labelClass}>
-                              Your Name *
-                            </FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder="Full name"
-                                className={inputClass}
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="businessName"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className={labelClass}>
-                              Business Name *
-                            </FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder="Business / brand"
-                                className={inputClass}
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-
-                    <div className="grid md:grid-cols-2 gap-8">
+                    <div className="grid md:grid-cols-2 gap-7">
                       <FormField
                         control={form.control}
                         name="email"
@@ -227,16 +172,36 @@ export function Contact() {
                       />
                       <FormField
                         control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className={labelClass}>
+                              Your Name
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Optional"
+                                className={inputClass}
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-7">
+                      <FormField
+                        control={form.control}
                         name="phone"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className={labelClass}>
-                              Phone *
-                            </FormLabel>
+                            <FormLabel className={labelClass}>Phone</FormLabel>
                             <FormControl>
                               <Input
                                 type="tel"
-                                placeholder="0400 000 000"
+                                placeholder="Optional"
                                 className={inputClass}
                                 {...field}
                               />
@@ -245,79 +210,18 @@ export function Contact() {
                           </FormItem>
                         )}
                       />
-                    </div>
-
-                    <FormField
-                      control={form.control}
-                      name="website"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className={labelClass}>
-                            Current Website (if any)
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="www.yourwebsite.com.au"
-                              className={inputClass}
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <div className="grid md:grid-cols-2 gap-8">
                       <FormField
                         control={form.control}
-                        name="budget"
+                        name="projectType"
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel className={labelClass}>
-                              Budget Range *
-                            </FormLabel>
-                            <Select
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
-                            >
-                              <FormControl>
-                                <SelectTrigger
-                                  className={`${inputClass} text-foreground/80`}
-                                >
-                                  <SelectValue placeholder="Select a range" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="Under $1,500">
-                                  Under $1,500
-                                </SelectItem>
-                                <SelectItem value="$1,500–$3,500">
-                                  $1,500–$3,500
-                                </SelectItem>
-                                <SelectItem value="$3,500–$6,500">
-                                  $3,500–$6,500
-                                </SelectItem>
-                                <SelectItem value="$6,500+">$6,500+</SelectItem>
-                                <SelectItem value="Not sure yet">
-                                  Not sure yet
-                                </SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="timeline"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className={labelClass}>
-                              Timeline *
+                              Business / Project Type
                             </FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="e.g. Next month, ASAP"
+                                id="contact-project-type"
+                                placeholder="e.g. Web, Video, Podcast, Event"
                                 className={inputClass}
                                 {...field}
                               />
@@ -327,26 +231,6 @@ export function Contact() {
                         )}
                       />
                     </div>
-
-                    <FormField
-                      control={form.control}
-                      name="needs"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className={labelClass}>
-                            What do you need? *
-                          </FormLabel>
-                          <FormControl>
-                            <Textarea
-                              placeholder="Tell us briefly about the project goals…"
-                              className="bg-transparent border-0 border-b border-foreground/15 rounded-none px-0 min-h-[100px] resize-y focus-visible:ring-0 focus-visible:border-foreground placeholder:text-foreground/30 transition-colors"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
 
                     <FormField
                       control={form.control}
@@ -354,12 +238,12 @@ export function Contact() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className={labelClass}>
-                            Any other details?
+                            What do you need? *
                           </FormLabel>
                           <FormControl>
                             <Textarea
-                              placeholder="Additional context…"
-                              className="bg-transparent border-0 border-b border-foreground/15 rounded-none px-0 min-h-[80px] resize-y focus-visible:ring-0 focus-visible:border-foreground placeholder:text-foreground/30 transition-colors"
+                              placeholder="A few sentences about the project…"
+                              className="bg-transparent border-0 border-b border-foreground/15 rounded-none px-0 min-h-[110px] resize-y focus-visible:ring-0 focus-visible:border-foreground placeholder:text-foreground/30 transition-colors"
                               {...field}
                             />
                           </FormControl>
@@ -371,13 +255,13 @@ export function Contact() {
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="group inline-flex items-center justify-center bg-primary text-primary-foreground px-8 py-4 rounded-sm text-sm font-semibold tracking-wide transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-primary/90 hover:translate-y-[-1px] hover:shadow-[0_12px_30px_-12px_rgba(31,36,51,0.45)] disabled:opacity-70 disabled:cursor-not-allowed mt-4"
+                      className="group inline-flex items-center justify-center bg-primary text-primary-foreground px-8 py-4 rounded-sm text-sm font-semibold tracking-wide transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-primary/90 hover:translate-y-[-1px] hover:shadow-[0_12px_30px_-12px_rgba(31,36,51,0.45)] disabled:opacity-70 disabled:cursor-not-allowed mt-2"
                     >
                       {isSubmitting ? (
                         <div className="w-5 h-5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
                       ) : (
                         <>
-                          Request Website Review
+                          Send Enquiry
                           <span className="ml-3 inline-block transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-1">
                             →
                           </span>

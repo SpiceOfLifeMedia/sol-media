@@ -3,15 +3,11 @@ import { z } from "zod";
 import { Resend } from "resend";
 
 const LeadSchema = z.object({
-  name: z.string().trim().min(1).max(120),
-  businessName: z.string().trim().min(1).max(200),
   email: z.string().trim().email().max(254),
-  phone: z.string().trim().min(1).max(40),
-  website: z.string().trim().max(500).optional().default(""),
-  needs: z.string().trim().min(1).max(4000),
-  budget: z.string().trim().min(1).max(60),
-  timeline: z.string().trim().min(1).max(200),
-  message: z.string().trim().max(4000).optional().default(""),
+  message: z.string().trim().min(1).max(4000),
+  name: z.string().trim().max(120).optional().default(""),
+  phone: z.string().trim().max(40).optional().default(""),
+  projectType: z.string().trim().max(120).optional().default(""),
 });
 
 type Lead = z.infer<typeof LeadSchema>;
@@ -41,31 +37,32 @@ function escapeHtml(s: string): string {
 
 function buildHtml(lead: Lead): string {
   const rows: Array<[string, string]> = [
-    ["Name", lead.name],
-    ["Business", lead.businessName],
     ["Email", lead.email],
+    ["Name", lead.name],
     ["Phone", lead.phone],
-    ["Current website", lead.website || "—"],
-    ["Budget", lead.budget],
-    ["Timeline", lead.timeline],
-    ["What they need", lead.needs],
-    ["Other details", lead.message || "—"],
-  ];
+    ["Project type", lead.projectType],
+    ["Message", lead.message],
+  ].filter(([, v]) => v && v.length > 0) as Array<[string, string]>;
+
   const body = rows
     .map(
       ([k, v]) =>
         `<tr><td style="padding:8px 14px;border-bottom:1px solid #e6e6e6;color:#555;font-weight:600;white-space:nowrap;vertical-align:top;">${escapeHtml(
-          k
+          k,
         )}</td><td style="padding:8px 14px;border-bottom:1px solid #e6e6e6;color:#111;white-space:pre-wrap;">${escapeHtml(
-          v
-        )}</td></tr>`
+          v,
+        )}</td></tr>`,
     )
     .join("");
+
+  const headlineLeft = lead.projectType || "New Enquiry";
+  const headlineRight = lead.name || lead.email;
+
   return `<!doctype html><html><body style="font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;background:#f5f3ee;padding:24px;color:#111;">
   <table style="max-width:640px;margin:0 auto;background:#ffffff;border:1px solid #e6e6e6;border-radius:6px;overflow:hidden;border-collapse:collapse;width:100%;">
     <tr><td style="padding:20px 24px;background:#1F2433;color:#F5F3EE;">
-      <div style="font-size:13px;letter-spacing:0.15em;text-transform:uppercase;color:#C8A96A;margin-bottom:6px;">New Website Review Request</div>
-      <div style="font-size:20px;font-weight:600;">${escapeHtml(lead.businessName)} — ${escapeHtml(lead.name)}</div>
+      <div style="font-size:13px;letter-spacing:0.15em;text-transform:uppercase;color:#C8A96A;margin-bottom:6px;">New Studio Enquiry</div>
+      <div style="font-size:20px;font-weight:600;">${escapeHtml(headlineLeft)} — ${escapeHtml(headlineRight)}</div>
     </td></tr>
     <tr><td style="padding:0;"><table style="width:100%;border-collapse:collapse;">${body}</table></td></tr>
     <tr><td style="padding:14px 24px;background:#fafaf7;font-size:12px;color:#777;">Submitted from spiceoflifemedia.com.au</td></tr>
@@ -74,23 +71,16 @@ function buildHtml(lead: Lead): string {
 }
 
 function buildText(lead: Lead): string {
-  return [
-    `New Website Review Request`,
+  const lines: string[] = [
+    `New Studio Enquiry`,
     ``,
-    `Name: ${lead.name}`,
-    `Business: ${lead.businessName}`,
     `Email: ${lead.email}`,
-    `Phone: ${lead.phone}`,
-    `Current website: ${lead.website || "—"}`,
-    `Budget: ${lead.budget}`,
-    `Timeline: ${lead.timeline}`,
-    ``,
-    `What they need:`,
-    lead.needs,
-    ``,
-    `Other details:`,
-    lead.message || "—",
-  ].join("\n");
+  ];
+  if (lead.name) lines.push(`Name: ${lead.name}`);
+  if (lead.phone) lines.push(`Phone: ${lead.phone}`);
+  if (lead.projectType) lines.push(`Project type: ${lead.projectType}`);
+  lines.push(``, `Message:`, lead.message);
+  return lines.join("\n");
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -118,8 +108,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   if (!apiKey) {
     console.error("[sol-leads] RESEND_API_KEY not set — lead received but email not sent", {
-      business: lead.businessName,
       email: lead.email,
+      projectType: lead.projectType,
     });
     return res.status(202).json({
       ok: true,
@@ -129,11 +119,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     const resend = new Resend(apiKey);
+    const subjectPart = lead.projectType || lead.name || lead.email;
     const sent = await resend.emails.send({
       from: fromEmail,
       to: [toEmail],
       replyTo: lead.email,
-      subject: `Website review: ${lead.businessName} (${lead.name})`,
+      subject: `Studio enquiry: ${subjectPart}`,
       html: buildHtml(lead),
       text: buildText(lead),
     });

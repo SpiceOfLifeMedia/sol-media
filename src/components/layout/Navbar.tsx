@@ -25,9 +25,9 @@ export function Navbar() {
   };
 
   const navItems = [
+    { name: "Services", href: "services" },
+    { name: "Reviews", href: "reviews" },
     { name: "Work", href: "work" },
-    { name: "Services", href: "websites" },
-    { name: "Packages", href: "packages" },
     { name: "Process", href: "process" },
     { name: "Contact", href: "contact" },
   ];
@@ -71,7 +71,7 @@ export function Navbar() {
             className="group inline-flex items-center gap-2 text-[11px] font-semibold tracking-[0.14em] uppercase text-foreground transition-colors"
           >
             <span className="w-4 h-px bg-accent transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:w-8" />
-            Book a Review
+            Start a Project
           </button>
         </nav>
 
@@ -107,7 +107,7 @@ export function Navbar() {
             onClick={() => scrollTo("contact")}
             className="mt-10 bg-primary text-primary-foreground w-full py-4 rounded-sm text-base font-semibold tracking-wide"
           >
-            Book a Website Review →
+            Start a Project →
           </button>
         </div>
       </div>

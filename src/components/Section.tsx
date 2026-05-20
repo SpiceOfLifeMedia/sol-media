@@ -9,10 +9,10 @@ interface SectionProps {
 }
 
 const SPACING = {
-  tight: "py-8 md:py-12",
-  compact: "py-14 md:py-20",
-  default: "py-20 md:py-28",
-  loose: "py-24 md:py-36",
+  tight: "py-10 md:py-14",
+  compact: "py-12 md:py-16",
+  default: "py-16 md:py-20",
+  loose: "py-20 md:py-28",
 } as const;
 
 export function Section({

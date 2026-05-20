@@ -15,9 +15,8 @@ export function Hero() {
   return (
     <section
       id="hero"
-      className="relative min-h-[88dvh] flex flex-col justify-start bg-background overflow-hidden pt-[100px] md:pt-[108px]"
+      className="relative min-h-[82dvh] flex flex-col justify-start bg-background overflow-hidden pt-[100px] md:pt-[108px]"
     >
-      {/* Subtle architectural vertical accent — far right */}
       <div
         aria-hidden="true"
         className="hidden md:block absolute right-6 md:right-12 top-24 bottom-0 w-px pointer-events-none"
@@ -28,64 +27,51 @@ export function Hero() {
         }}
       />
 
-      {/* Headline block — top-anchored just below navbar */}
-      <div className="container relative z-10 mx-auto px-6 md:px-12 pb-10 md:pb-14">
+      <div className="container relative z-10 mx-auto px-6 md:px-12 pb-8 md:pb-12">
         <Reveal>
-          <div className="flex items-center gap-4 mb-8 md:mb-10">
+          <div className="flex items-center gap-4 mb-7 md:mb-9">
             <span className="block w-10 h-px bg-accent" />
             <p className="text-[10px] font-medium tracking-[0.28em] uppercase text-foreground/60">
-              Adelaide · Premium Digital Studio
+              Adelaide · Premium Digital Media Studio
             </p>
           </div>
         </Reveal>
 
         <Reveal delay={0.05} overflow="visible">
-          <h1 className="font-serif font-medium text-foreground tracking-[-0.03em] leading-[1.02] text-[clamp(2.5rem,11vw,6.75rem)] max-w-[1100px] pb-3 md:pb-4">
-            Websites built<br />
-            <span className="italic text-primary/95">to look the part.</span>
+          <h1 className="font-serif font-medium text-foreground tracking-[-0.03em] leading-[1.02] text-[clamp(2.25rem,9.5vw,6.25rem)] max-w-[1100px] pb-3 md:pb-4">
+            Premium Digital Media{" "}
+            <span className="italic text-primary/95">
+              &amp; Creative Production.
+            </span>
           </h1>
         </Reveal>
       </div>
 
-      {/* Hairline separator */}
       <div className="border-t border-foreground/10" />
 
-      {/* Bottom info bar — 3-column: body text | pricing | CTA */}
-      <div className="container mx-auto px-6 md:px-12 py-8 md:py-10">
+      <div className="container mx-auto px-6 md:px-12 py-7 md:py-9">
         <Reveal delay={0.15}>
-          <div className="flex flex-col md:flex-row md:items-center gap-8 md:gap-12">
-            {/* LEFT — descriptive body text */}
-            <div className="flex-1 max-w-[480px]">
+          <div className="flex flex-col md:flex-row md:items-center gap-7 md:gap-12">
+            <div className="flex-1 max-w-[560px]">
               <p className="text-foreground/55 text-[15px] md:text-base leading-[1.7]">
-                A premium digital product and website studio for Australian
-                businesses that want agency-quality results without the bloated
-                agency price tag.
+                Websites, video, audio, content and brand assets for modern
+                businesses, creators and events. One studio, end-to-end —
+                produced in Adelaide.
               </p>
             </div>
 
-            {/* CENTRE — pricing lockup */}
-            <div className="flex-shrink-0 md:border-l md:border-r md:border-foreground/10 md:px-12">
-              <p className="text-[10px] tracking-[0.28em] uppercase text-foreground/40 mb-2">
-                5-Page Websites From
-              </p>
-              <p className="font-serif text-foreground text-[28px] md:text-[32px] leading-none">
-                $1,950
-              </p>
-            </div>
-
-            {/* RIGHT — primary CTA */}
             <div className="flex-shrink-0 flex flex-col sm:flex-row gap-3 md:ml-auto">
               <button
                 onClick={() => scrollTo("contact")}
                 className="group relative inline-flex items-center justify-center bg-primary text-primary-foreground px-9 py-[18px] text-[11px] font-semibold tracking-[0.18em] uppercase transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-accent hover:text-foreground"
               >
-                Book a Free Review
+                Start a Project
               </button>
               <button
-                onClick={() => scrollTo("packages")}
+                onClick={() => scrollTo("services")}
                 className="inline-flex items-center justify-center text-foreground/70 hover:text-foreground px-2 py-[18px] text-[11px] font-semibold tracking-[0.18em] uppercase transition-colors"
               >
-                View Packages
+                View Services
                 <span className="ml-2 inline-block">↓</span>
               </button>
             </div>
@@ -93,7 +79,6 @@ export function Hero() {
         </Reveal>
       </div>
 
-      {/* Scroll indicator — bottom-left */}
       <div
         aria-hidden="true"
         className="hidden md:flex absolute left-6 md:left-12 bottom-8 flex-col items-center gap-3 pointer-events-none"

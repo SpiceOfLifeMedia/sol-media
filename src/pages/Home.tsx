@@ -1,16 +1,11 @@
 import { Layout } from "@/components/layout/Layout";
 import { Hero } from "@/components/sections/Hero";
 import { TrustStrip } from "@/components/sections/TrustStrip";
-import { Problem } from "@/components/sections/Problem";
-import { MainOffer } from "@/components/sections/MainOffer";
-import { Packages } from "@/components/sections/Packages";
-import { Process } from "@/components/sections/Process";
-import { MediaSupport } from "@/components/sections/MediaSupport";
-import { WhyUs } from "@/components/sections/WhyUs";
+import { Services } from "@/components/sections/Services";
+import { Reviews } from "@/components/sections/Reviews";
 import { SelectedWork } from "@/components/sections/SelectedWork";
-import { Comparison } from "@/components/sections/Comparison";
+import { Process } from "@/components/sections/Process";
 import { FAQ } from "@/components/sections/FAQ";
-import { Urgency } from "@/components/sections/Urgency";
 import { Contact } from "@/components/sections/Contact";
 
 export default function Home() {
@@ -18,16 +13,11 @@ export default function Home() {
     <Layout>
       <Hero />
       <TrustStrip />
-      <Problem />
-      <MainOffer />
-      <Packages />
-      <Process />
-      <MediaSupport />
-      <WhyUs />
+      <Services />
+      <Reviews />
       <SelectedWork />
-      <Comparison />
+      <Process />
       <FAQ />
-      <Urgency />
       <Contact />
     </Layout>
   );
