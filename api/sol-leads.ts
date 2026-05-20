@@ -4,7 +4,7 @@ import { Resend } from "resend";
 
 const LeadSchema = z.object({
   email: z.string().trim().email().max(254),
-  message: z.string().trim().min(1).max(4000),
+  message: z.string().trim().min(10).max(4000),
   name: z.string().trim().max(120).optional().default(""),
   phone: z.string().trim().max(40).optional().default(""),
   projectType: z.string().trim().max(120).optional().default(""),
