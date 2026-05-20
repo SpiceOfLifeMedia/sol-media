@@ -13,8 +13,8 @@ export default function Home() {
     <Layout>
       <Hero />
       <TrustStrip />
-      <Services />
       <Reviews />
+      <Services />
       <SelectedWork />
       <Process />
       <FAQ />
