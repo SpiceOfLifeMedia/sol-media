@@ -12,17 +12,17 @@ const REVIEWS: Array<{ quote: string; author: string }> = [
   {
     quote:
       "Sam treated our project like it was his own. The finish was a level above what we expected.",
-    author: "Placeholder · Adelaide client",
+    author: "Placeholder · Client",
   },
   {
     quote:
       "Calm, clear and quick. We had something we were genuinely proud to put out into the world.",
-    author: "Placeholder · Adelaide client",
+    author: "Placeholder · Client",
   },
   {
     quote:
       "Took an idea we had in our heads and turned it into a piece of media that just worked.",
-    author: "Placeholder · Adelaide client",
+    author: "Placeholder · Client",
   },
 ];
 
@@ -53,8 +53,8 @@ export function Reviews() {
             </Reveal>
             <Reveal delay={0.05} overflow="visible">
               <h2 className="font-serif font-medium text-foreground tracking-[-0.02em] leading-[1.05] text-[clamp(2rem,4.5vw,4rem)] pb-2">
-                Trusted by clients{" "}
-                <span className="italic text-primary/90">across Adelaide.</span>
+                Trusted by clients from{" "}
+                <span className="italic text-primary/90">Adelaide to New York.</span>
               </h2>
             </Reveal>
           </div>
