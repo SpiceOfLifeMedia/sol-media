@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { Reveal } from "@/components/Reveal";
 import { Section } from "@/components/Section";
+import videoImg from "@/assets/work-video.png";
+import audioImg from "@/assets/work-audio.png";
+import brandImg from "@/assets/work-brand.png";
+import webImg from "@/assets/work-web.png";
 
 const CAPABILITIES = [
   {
@@ -8,24 +12,28 @@ const CAPABILITIES = [
     category: "Web Design",
     statement: "Websites built to convert on the first impression.",
     tags: ["Trade & Construction", "Finance", "Healthcare", "Hospitality", "Education", "Creatives"],
+    image: webImg,
   },
   {
     number: "02",
     category: "Video Production",
     statement: "Corporate to cinematic — every frame intentional.",
     tags: ["Weddings & Events", "Corporate Promos", "Sports Entrances", "Schools", "Social Content"],
+    image: videoImg,
   },
   {
     number: "03",
     category: "Audio Production",
     statement: "Sound that gives every project presence.",
     tags: ["Podcast", "Voiceover", "Event Audio", "Custom Audio Branding"],
+    image: audioImg,
   },
   {
     number: "04",
     category: "Brand & Content",
     statement: "Visual identity and content built from the ground up.",
     tags: ["Logo & Identity", "Social Templates", "Photography", "Content Strategy"],
+    image: brandImg,
   },
 ];
 
@@ -91,17 +99,13 @@ export function SelectedWork() {
               >
                 {/* Animated left accent rule */}
                 <div
-                  className="absolute left-0 top-0 bottom-0 w-[2px] bg-accent
-                    origin-top transition-transform duration-500
-                    ease-[cubic-bezier(0.16,1,0.3,1)]"
-                  style={{
-                    transform: hovered === i ? "scaleY(1)" : "scaleY(0)",
-                  }}
+                  className="absolute left-0 top-0 bottom-0 w-[2px] bg-accent origin-top transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                  style={{ transform: hovered === i ? "scaleY(1)" : "scaleY(0)" }}
                 />
 
-                <div className="pl-4 md:pl-8 py-8 md:py-10 grid md:grid-cols-12 gap-6 md:gap-8 items-start">
-                  {/* Number + category */}
-                  <div className="md:col-span-5">
+                <div className="pl-4 md:pl-8 grid md:grid-cols-12 items-stretch">
+                  {/* Number + category — 4 cols */}
+                  <div className="md:col-span-4 py-8 md:py-10 pr-4 md:pr-6">
                     <div className="flex items-center gap-3 mb-3">
                       <span className="text-[10px] tracking-[0.28em] uppercase text-foreground/30 font-medium tabular-nums">
                         {cap.number}
@@ -118,15 +122,11 @@ export function SelectedWork() {
                     </h3>
                   </div>
 
-                  {/* Statement */}
-                  <div className="md:col-span-4 md:pt-[0.6rem]">
-                    <p className="text-foreground/55 text-[14px] md:text-[15px] leading-[1.75]">
+                  {/* Statement + tags — 5 cols */}
+                  <div className="md:col-span-5 py-8 md:py-10 md:pt-[calc(2rem+0.6rem)] pr-6">
+                    <p className="text-foreground/55 text-[14px] md:text-[15px] leading-[1.75] mb-4">
                       {cap.statement}
                     </p>
-                  </div>
-
-                  {/* Industry tags */}
-                  <div className="md:col-span-3 md:pt-[0.4rem]">
                     <div className="flex flex-wrap gap-[6px]">
                       {cap.tags.map((tag, ti) => (
                         <span
@@ -141,6 +141,20 @@ export function SelectedWork() {
                       ))}
                     </div>
                   </div>
+
+                  {/* Image — 3 cols, full row height */}
+                  <div className="hidden md:block md:col-span-3 relative overflow-hidden">
+                    <img
+                      src={cap.image}
+                      alt={cap.category}
+                      className="absolute inset-0 w-full h-full object-cover
+                        opacity-40 group-hover:opacity-65
+                        scale-100 group-hover:scale-[1.03]
+                        transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                    />
+                    {/* Left-edge blend */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-background/70 via-transparent to-transparent pointer-events-none" />
+                  </div>
                 </div>
               </div>
             </Reveal>
@@ -150,7 +164,6 @@ export function SelectedWork() {
         {/* Stats bar + CTA */}
         <Reveal delay={0.35}>
           <div className="mt-10 md:mt-14 flex flex-col md:flex-row md:items-center justify-between gap-6">
-            {/* Stats */}
             <div className="flex flex-wrap gap-8">
               {STATS.map((s, i) => (
                 <div key={i} className="flex flex-col gap-1">
@@ -164,7 +177,6 @@ export function SelectedWork() {
               ))}
             </div>
 
-            {/* CTA */}
             <button
               onClick={scrollToContact}
               className="group inline-flex items-center gap-3 text-[11px] font-semibold
