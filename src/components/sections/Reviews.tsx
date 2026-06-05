@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { Reveal } from "@/components/Reveal";
 import { Section } from "@/components/Section";
 import { Star } from "lucide-react";
@@ -66,25 +67,36 @@ function ReviewCard({
     isLong && !expanded ? quote.slice(0, MAX_CHARS).trimEnd() + "…" : quote;
 
   return (
-    <Reveal delay={delay} className="h-full">
-      <figure className="bg-background h-full px-6 md:px-7 py-8 md:py-10 flex flex-col">
-        <GoldStars />
-        <blockquote className="mt-5 font-serif italic text-foreground text-[17px] md:text-lg leading-[1.55] flex-1">
-          "{displayText}"
-        </blockquote>
-        {isLong && (
-          <button
-            onClick={() => setExpanded(!expanded)}
-            className="mt-3 self-start text-[10px] tracking-[0.22em] uppercase text-accent hover:text-foreground transition-colors duration-200"
-          >
-            {expanded ? "Read less ↑" : "Read more ↓"}
-          </button>
-        )}
-        <figcaption className="mt-6 pt-5 border-t border-foreground/10 text-[10px] tracking-[0.28em] uppercase text-foreground/45">
-          {author}
-        </figcaption>
-      </figure>
-    </Reveal>
+    <motion.figure
+      className="bg-background px-6 md:px-7 py-8 md:py-10 flex flex-col"
+      variants={{
+        hidden: { opacity: 0, y: 20 },
+        visible: {
+          opacity: 1,
+          y: 0,
+          transition: { duration: 1.1, ease: [0.16, 1, 0.3, 1], delay },
+        },
+      }}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.05, margin: "0px 0px -10% 0px" }}
+    >
+      <GoldStars />
+      <blockquote className="mt-5 font-serif italic text-foreground text-[17px] md:text-lg leading-[1.55] flex-1">
+        "{displayText}"
+      </blockquote>
+      {isLong && (
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="mt-3 self-start text-[10px] tracking-[0.22em] uppercase text-accent hover:text-foreground transition-colors duration-200"
+        >
+          {expanded ? "Read less ↑" : "Read more ↓"}
+        </button>
+      )}
+      <figcaption className="mt-6 pt-5 border-t border-foreground/10 text-[10px] tracking-[0.28em] uppercase text-foreground/45">
+        {author}
+      </figcaption>
+    </motion.figure>
   );
 }
 
@@ -126,7 +138,7 @@ export function Reviews() {
           </div>
         </div>
 
-        {/* Cards — even 3×2 grid */}
+        {/* Cards — even 3×2 grid, motion.figure fills each cell directly */}
         <div className="grid md:grid-cols-3 gap-px bg-foreground/10 border border-foreground/10">
           {REVIEWS.map((r, i) => (
             <ReviewCard
