@@ -18,32 +18,21 @@ export function Hero() {
       id="hero"
       className="relative min-h-[82dvh] flex flex-col justify-start bg-background overflow-hidden pt-[100px] md:pt-[108px]"
     >
-      {/* Atmospheric hero image — right 48%, absolutely positioned so text stays full-width */}
-      <div className="absolute right-0 top-0 bottom-0 w-[48%] hidden lg:block pointer-events-none">
+      {/* Hero image — right 55%, absolutely positioned, no impact on text layout */}
+      <div className="absolute right-0 top-0 bottom-0 w-[55%] hidden lg:block pointer-events-none overflow-hidden">
         <img
           src={heroImg}
           alt=""
           aria-hidden="true"
-          className="w-full h-full object-cover object-center opacity-90"
+          className="absolute inset-0 w-full h-full object-cover object-center"
         />
-        {/* Strong left-edge blend into background */}
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-[#f5f0e8]/90 to-transparent" />
+        {/* Left blend: covers ~40% so text is never obscured */}
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/75 to-background/10 pointer-events-none" />
         {/* Bottom vignette */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/70" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent pointer-events-none" />
       </div>
 
-      {/* Subtle vertical accent line */}
-      <div
-        aria-hidden="true"
-        className="hidden md:block absolute right-6 md:right-12 top-24 bottom-0 w-px pointer-events-none"
-        style={{
-          background:
-            "linear-gradient(to bottom, transparent 0%, rgba(201,169,110,0.18) 50%, transparent 100%)",
-          animation: "fadeIn 1.2s ease-out 1.2s both",
-        }}
-      />
-
-      {/* Text content — full-width, z-10 so it layers above image */}
+      {/* Text content — full-width, z-10 */}
       <div className="container relative z-10 mx-auto px-6 md:px-12 pb-8 md:pb-12">
         <Reveal>
           <div className="flex items-center gap-4 mb-7 md:mb-9">
