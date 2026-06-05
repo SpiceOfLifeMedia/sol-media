@@ -18,18 +18,22 @@ export function Hero() {
       id="hero"
       className="relative min-h-[82dvh] flex flex-col justify-start bg-background overflow-hidden pt-[100px] md:pt-[108px]"
     >
-      {/* Hero image — full inset-0 so it always reaches every edge, object-right anchors detail */}
-      <div className="absolute inset-0 hidden lg:block pointer-events-none">
+      {/* Hero image — inset-0, all four edges vignette into page background */}
+      <div className="absolute inset-0 hidden lg:block pointer-events-none overflow-hidden">
         <img
           src={heroImg}
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover object-right"
+          className="absolute inset-0 w-full h-full object-cover object-[80%_center] scale-110"
         />
-        {/* Left gradient: opaque background for ~50% then fades out — text always clear */}
-        <div className="absolute inset-0 bg-gradient-to-r from-background from-[45%] via-background/70 via-[65%] to-background/10" />
-        {/* Bottom vignette */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-transparent" />
+        {/* Left — covers text column fully */}
+        <div className="absolute inset-0 bg-gradient-to-r from-background from-[48%] via-background/60 via-[68%] to-transparent" />
+        {/* Right — fades dark lens edge into background */}
+        <div className="absolute inset-y-0 right-0 w-[22%] bg-gradient-to-l from-background to-transparent" />
+        {/* Bottom — fades into next section */}
+        <div className="absolute inset-x-0 bottom-0 h-[45%] bg-gradient-to-t from-background to-transparent" />
+        {/* Top — subtle fade from top edge */}
+        <div className="absolute inset-x-0 top-0 h-[15%] bg-gradient-to-b from-background/40 to-transparent" />
       </div>
 
       {/* Text content — full-width, z-10 */}
