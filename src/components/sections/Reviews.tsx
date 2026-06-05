@@ -34,11 +34,6 @@ const REVIEWS: Array<{ quote: string; author: string }> = [
       "Sammy was so wonderful to work with. From the first email of enquiry to the final product he had great communication, so much passion for his work, very accommodating with time and ended up creating a simply beautiful video for our school. We would highly recommend Sammy to anyone wanting any work done. Thank you Sammy from Modbury School P-6",
     author: "Bianca Martyn",
   },
-  {
-    quote:
-      "Sam was fantastic to deal with. He was quick to respond and provided valuable insight during the whole process how to make the product better than we could of dreamed of",
-    author: "Matt Fisher",
-  },
 ];
 
 const MAX_CHARS = 200;
@@ -60,12 +55,10 @@ function ReviewCard({
   quote,
   author,
   delay,
-  colClass = "",
 }: {
   quote: string;
   author: string;
   delay: number;
-  colClass?: string;
 }) {
   const [expanded, setExpanded] = useState(false);
   const isLong = quote.length > MAX_CHARS;
@@ -73,7 +66,7 @@ function ReviewCard({
     isLong && !expanded ? quote.slice(0, MAX_CHARS).trimEnd() + "…" : quote;
 
   return (
-    <Reveal delay={delay} className={colClass}>
+    <Reveal delay={delay} className="h-full">
       <figure className="bg-background h-full px-6 md:px-7 py-8 md:py-10 flex flex-col">
         <GoldStars />
         <blockquote className="mt-5 font-serif italic text-foreground text-[17px] md:text-lg leading-[1.55] flex-1">
@@ -133,21 +126,16 @@ export function Reviews() {
           </div>
         </div>
 
-        {/* Cards — 3-column grid; last solo card centred in column 2 */}
+        {/* Cards — even 3×2 grid */}
         <div className="grid md:grid-cols-3 gap-px bg-foreground/10 border border-foreground/10">
-          {REVIEWS.map((r, i) => {
-            const isLastSolo =
-              REVIEWS.length % 3 !== 0 && i === REVIEWS.length - 1;
-            return (
-              <ReviewCard
-                key={i}
-                quote={r.quote}
-                author={r.author}
-                delay={0.08 + (i % 3) * 0.05}
-                colClass={isLastSolo ? "md:col-start-2" : ""}
-              />
-            );
-          })}
+          {REVIEWS.map((r, i) => (
+            <ReviewCard
+              key={i}
+              quote={r.quote}
+              author={r.author}
+              delay={0.08 + (i % 3) * 0.05}
+            />
+          ))}
         </div>
       </div>
     </Section>
