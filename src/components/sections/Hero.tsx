@@ -18,18 +18,18 @@ export function Hero() {
       id="hero"
       className="relative min-h-[82dvh] flex flex-col justify-start bg-background overflow-hidden pt-[100px] md:pt-[108px]"
     >
-      {/* Hero image — right 55%, absolutely positioned, no impact on text layout */}
-      <div className="absolute right-0 top-0 bottom-0 w-[55%] hidden lg:block pointer-events-none overflow-hidden">
+      {/* Hero image — full inset-0 so it always reaches every edge, object-right anchors detail */}
+      <div className="absolute inset-0 hidden lg:block pointer-events-none">
         <img
           src={heroImg}
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover object-center"
+          className="absolute inset-0 w-full h-full object-cover object-right"
         />
-        {/* Left blend: covers ~40% so text is never obscured */}
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/75 to-background/10 pointer-events-none" />
+        {/* Left gradient: opaque background for ~50% then fades out — text always clear */}
+        <div className="absolute inset-0 bg-gradient-to-r from-background from-[45%] via-background/70 via-[65%] to-background/10" />
         {/* Bottom vignette */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-transparent" />
       </div>
 
       {/* Text content — full-width, z-10 */}
