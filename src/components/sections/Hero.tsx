@@ -65,7 +65,7 @@ export function Hero() {
                 onClick={() => scrollTo("contact")}
                 className="group relative inline-flex items-center justify-center bg-primary text-primary-foreground px-9 py-[18px] text-[11px] font-semibold tracking-[0.18em] uppercase transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-accent hover:text-foreground"
               >
-                Start a Project
+                Get in Touch
               </button>
               <button
                 onClick={() => scrollTo("services")}
