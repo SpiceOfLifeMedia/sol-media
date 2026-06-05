@@ -1,30 +1,47 @@
+import { useState } from "react";
 import { Reveal } from "@/components/Reveal";
 import { Section } from "@/components/Section";
 import { Star } from "lucide-react";
 
-/**
- * NOTE: Review quotes below are PLACEHOLDERS written in the SOL Media tone
- * pending real verbatim Google review pulls. Replace `REVIEWS[].quote` and
- * `REVIEWS[].author` with the actual Google review text + reviewer first
- * name when ready. The 5.0 / 8-review stat remains accurate.
- */
 const REVIEWS: Array<{ quote: string; author: string }> = [
   {
     quote:
-      "Sam treated our project like it was his own. The finish was a level above what we expected.",
-    author: "Placeholder · Client",
+      "We found Sam with only about 1 week left before our wedding. He attended to our needs for an epic nba entrance recording right away. Sam was enthusiastic and professional, he delivered work that was of the highest quality and in a very prompt manner. We had so much fun working through the script and he patiently made the adjustments and requests we had. The result at our wedding was phenomenal, our guests absolutely loved the entrance! We highly recommend Sam and Spice of Life Media to any wedding couple / nba fans out there. Sam's rendition is hands down the best and most affordable out there, you really don't need to look any further!",
+    author: "Sherry Ku",
   },
   {
     quote:
-      "Calm, clear and quick. We had something we were genuinely proud to put out into the world.",
-    author: "Placeholder · Client",
+      "Super impressed with the videography Sam provided for our clinic. Such attention to detail and really captured what we wanted. He was very accommodating and made sure he went above and beyond to deliver us the best quality videos. Thanks Sam we will definitely be using your services again in the future.",
+    author: "Amy Minervini",
   },
   {
     quote:
-      "Took an idea we had in our heads and turned it into a piece of media that just worked.",
-    author: "Placeholder · Client",
+      "Always an incredible experience. Sammy is super friendly, professional and extremely efficient. This is the second time I've worked with Spice of Life Media, and it certainly won't be the last.",
+    author: "Iulita Staica",
+  },
+  {
+    quote:
+      "I have been nothing but absolutely thrilled with the service I've recieved..... nothing is ever too hard for Sam & he has really helped my creative concepts come to life. So patient with anything I ask and always comes up with great ideas himself. Always know he can get the job done. Thank you Sam 👏👏",
+    author: "Carmel Margaritis",
+  },
+  {
+    quote:
+      "Sam from Spice of Life was an absolute joy to work with in the creation of our bridal entrance theme! His professionalism, sense of urgency, openness to feedback, sense of humor, & creativeness was the perfect combination to an ultimate…",
+    author: "Stacey Plessinger",
+  },
+  {
+    quote:
+      "Sammy was so wonderful to work with. From the first email of enquiry to the final product he had great communication, so much passion for his work, very accommodating with time and ended up creating a simply beautiful video for our school. We would highly recommend Sammy to anyone wanting any work done. Thank you Sammy from Modbury School P-6",
+    author: "Bianca Martyn",
+  },
+  {
+    quote:
+      "Sam was fantastic to deal with. He was quick to respond and provided valuable insight during the whole process how to make the product better than we could of dreamed of",
+    author: "Matt Fisher",
   },
 ];
+
+const MAX_CHARS = 200;
 
 function GoldStars() {
   return (
@@ -36,6 +53,45 @@ function GoldStars() {
         <Star key={i} className="w-[13px] h-[13px] fill-current" strokeWidth={0} />
       ))}
     </span>
+  );
+}
+
+function ReviewCard({
+  quote,
+  author,
+  delay,
+  colClass = "",
+}: {
+  quote: string;
+  author: string;
+  delay: number;
+  colClass?: string;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const isLong = quote.length > MAX_CHARS;
+  const displayText =
+    isLong && !expanded ? quote.slice(0, MAX_CHARS).trimEnd() + "…" : quote;
+
+  return (
+    <Reveal delay={delay} className={colClass}>
+      <figure className="bg-background h-full px-6 md:px-7 py-8 md:py-10 flex flex-col">
+        <GoldStars />
+        <blockquote className="mt-5 font-serif italic text-foreground text-[17px] md:text-lg leading-[1.55] flex-1">
+          "{displayText}"
+        </blockquote>
+        {isLong && (
+          <button
+            onClick={() => setExpanded(!expanded)}
+            className="mt-3 self-start text-[10px] tracking-[0.22em] uppercase text-accent hover:text-foreground transition-colors duration-200"
+          >
+            {expanded ? "Read less ↑" : "Read more ↓"}
+          </button>
+        )}
+        <figcaption className="mt-6 pt-5 border-t border-foreground/10 text-[10px] tracking-[0.28em] uppercase text-foreground/45">
+          {author}
+        </figcaption>
+      </figure>
+    </Reveal>
   );
 }
 
@@ -77,21 +133,21 @@ export function Reviews() {
           </div>
         </div>
 
-        {/* Cards */}
+        {/* Cards — 3-column grid; last solo card centred in column 2 */}
         <div className="grid md:grid-cols-3 gap-px bg-foreground/10 border border-foreground/10">
-          {REVIEWS.map((r, i) => (
-            <Reveal key={i} delay={0.08 + i * 0.05}>
-              <figure className="bg-background h-full px-6 md:px-7 py-8 md:py-10 flex flex-col">
-                <GoldStars />
-                <blockquote className="mt-5 font-serif italic text-foreground text-[17px] md:text-lg leading-[1.55] flex-1">
-                  “{r.quote}”
-                </blockquote>
-                <figcaption className="mt-6 pt-5 border-t border-foreground/10 text-[10px] tracking-[0.28em] uppercase text-foreground/45">
-                  {r.author}
-                </figcaption>
-              </figure>
-            </Reveal>
-          ))}
+          {REVIEWS.map((r, i) => {
+            const isLastSolo =
+              REVIEWS.length % 3 !== 0 && i === REVIEWS.length - 1;
+            return (
+              <ReviewCard
+                key={i}
+                quote={r.quote}
+                author={r.author}
+                delay={0.08 + (i % 3) * 0.05}
+                colClass={isLastSolo ? "md:col-start-2" : ""}
+              />
+            );
+          })}
         </div>
       </div>
     </Section>
