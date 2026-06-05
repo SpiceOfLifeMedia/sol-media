@@ -35,8 +35,8 @@ export function Navbar() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] h-[84px] flex items-center ${
         isScrolled
-          ? "bg-background/75 backdrop-blur-xl backdrop-saturate-150"
-          : "bg-transparent"
+          ? "bg-background/80 backdrop-blur-xl backdrop-saturate-150 shadow-[0_1px_0_rgba(0,0,0,0.06)]"
+          : "bg-gradient-to-b from-background/80 via-background/40 to-transparent"
       }`}
     >
       <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
@@ -60,14 +60,14 @@ export function Navbar() {
             <button
               key={item.name}
               onClick={() => scrollTo(item.href)}
-              className="text-[11px] font-medium tracking-[0.14em] uppercase text-foreground/45 hover:text-foreground transition-colors duration-500"
+              className="text-[11px] font-medium tracking-[0.14em] uppercase text-foreground/55 hover:text-foreground transition-colors duration-500"
             >
               {item.name}
             </button>
           ))}
           <button
             onClick={() => scrollTo("contact")}
-            className="group inline-flex items-center gap-2 text-[11px] font-semibold tracking-[0.14em] uppercase text-foreground transition-colors"
+            className="group inline-flex items-center gap-2 text-[11px] font-semibold tracking-[0.14em] uppercase text-foreground hover:text-accent transition-colors duration-300"
           >
             <span className="w-4 h-px bg-accent transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:w-8" />
             Get in Touch
@@ -87,6 +87,7 @@ export function Navbar() {
         </button>
       </div>
 
+      {/* Mobile menu */}
       <div
         className={`fixed inset-0 top-[60px] bg-background z-40 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
           mobileMenuOpen ? "translate-x-0" : "translate-x-full"
