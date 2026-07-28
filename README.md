@@ -1,8 +1,10 @@
-# Spice Of Life Media
+# Spice of Life Media
 
-Premium website studio for Australian businesses — marketing site.
+Production website for Spice of Life Media: an Adelaide brand, web, content
+and growth agency working internationally.
 
-Adelaide-built. Vite + React + Tailwind v4 + Framer Motion. Static frontend with one Vercel serverless function for lead-form email delivery.
+Built with Vite, React, Tailwind v4 and Framer Motion. The static frontend uses
+one Vercel serverless function for enquiry email delivery.
 
 ## Local dev
 
@@ -23,10 +25,12 @@ Required environment variables (set in the Vercel project's **Settings → Envir
 
 - `RESEND_API_KEY` — Resend API key (Production + Preview).
 - `SOL_LEAD_TO_EMAIL` — where leads are delivered. Defaults to `info@spiceoflifemedia.com.au` if unset.
-- `SOL_LEAD_FROM_EMAIL` — verified sender. Defaults to `Spice Of Life Media <leads@spiceoflifemedia.com.au>` if unset. **Must be on a domain you have verified in Resend.**
+- `SOL_LEAD_FROM_EMAIL` — verified sender. Defaults to `Spice of Life Media <leads@spiceoflifemedia.com.au>` if unset. **Must be on a domain you have verified in Resend.**
 
-Until `RESEND_API_KEY` is set the function still returns success to the user, logs the lead to Vercel function logs, and skips the email send — so the form never appears broken to a visitor.
+If `RESEND_API_KEY` is missing, the function returns an honest configuration
+error and the form directs the visitor to the studio email address.
 
 ## Source of truth
 
-This repo is the standalone deploy mirror of `artifacts/sol-media/` in the private `SpiceOfLifeMedia/artifacts-monorepo` workspace. Edits happen in the monorepo first, then are mirrored here for deploy.
+This repository is the production source of truth. Merges to `main` trigger the
+Vercel production deployment.

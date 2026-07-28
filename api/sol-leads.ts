@@ -3,28 +3,22 @@ import { z } from "zod";
 import { Resend } from "resend";
 
 const LeadSchema = z.object({
+  services: z
+    .array(
+      z.enum(["Brand", "Web", "Content", "Growth", "Connected programme"]),
+    )
+    .min(1)
+    .max(5),
+  website: z.string().trim().max(240).optional().default(""),
+  projectGoal: z.string().trim().min(20).max(3000),
+  name: z.string().trim().min(2).max(120),
   email: z.string().trim().email().max(254),
-  message: z.string().trim().min(10).max(4000),
-  name: z.string().trim().max(120).optional().default(""),
   phone: z.string().trim().max(40).optional().default(""),
-  projectType: z.string().trim().max(120).optional().default(""),
+  timeline: z.string().trim().max(80).optional().default(""),
+  companyWebsite: z.string().max(0).optional().default(""),
 });
 
 type Lead = z.infer<typeof LeadSchema>;
-
-const RECENT_WINDOW_MS = 24 * 60 * 60 * 1000;
-const recentEmails = new Map<string, number>();
-
-function isDuplicate(email: string): boolean {
-  const now = Date.now();
-  for (const [key, ts] of recentEmails) {
-    if (now - ts > RECENT_WINDOW_MS) recentEmails.delete(key);
-  }
-  const last = recentEmails.get(email);
-  if (last && now - last < RECENT_WINDOW_MS) return true;
-  recentEmails.set(email, now);
-  return false;
-}
 
 function escapeHtml(s: string): string {
   return s
@@ -37,11 +31,13 @@ function escapeHtml(s: string): string {
 
 function buildHtml(lead: Lead): string {
   const rows: Array<[string, string]> = [
+    ["Capabilities", lead.services.join(", ")],
+    ["Current website", lead.website],
+    ["Project goal", lead.projectGoal],
     ["Email", lead.email],
     ["Name", lead.name],
     ["Phone", lead.phone],
-    ["Project type", lead.projectType],
-    ["Message", lead.message],
+    ["Timing", lead.timeline],
   ].filter(([, v]) => v && v.length > 0) as Array<[string, string]>;
 
   const body = rows
@@ -55,31 +51,36 @@ function buildHtml(lead: Lead): string {
     )
     .join("");
 
-  const headlineLeft = lead.projectType || "New Enquiry";
-  const headlineRight = lead.name || lead.email;
+  const headlineLeft = lead.services.join(" + ");
+  const headlineRight = lead.name;
 
-  return `<!doctype html><html><body style="font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;background:#f5f3ee;padding:24px;color:#111;">
+  return `<!doctype html><html><body style="font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;background:#F2EEE6;padding:24px;color:#16150F;">
   <table style="max-width:640px;margin:0 auto;background:#ffffff;border:1px solid #e6e6e6;border-radius:6px;overflow:hidden;border-collapse:collapse;width:100%;">
-    <tr><td style="padding:20px 24px;background:#1F2433;color:#F5F3EE;">
-      <div style="font-size:13px;letter-spacing:0.15em;text-transform:uppercase;color:#C8A96A;margin-bottom:6px;">New Studio Enquiry</div>
+    <tr><td style="padding:20px 24px;background:#16150F;color:#F2EEE6;">
+      <div style="font-size:13px;letter-spacing:0.15em;text-transform:uppercase;color:#C0442A;margin-bottom:6px;">New Studio Enquiry</div>
       <div style="font-size:20px;font-weight:600;">${escapeHtml(headlineLeft)} — ${escapeHtml(headlineRight)}</div>
     </td></tr>
     <tr><td style="padding:0;"><table style="width:100%;border-collapse:collapse;">${body}</table></td></tr>
-    <tr><td style="padding:14px 24px;background:#fafaf7;font-size:12px;color:#777;">Submitted from spiceoflifemedia.com.au</td></tr>
+    <tr><td style="padding:14px 24px;background:#fafaf7;font-size:12px;color:#777;">Submitted from www.spiceoflifemedia.com.au</td></tr>
   </table>
 </body></html>`;
 }
 
 function buildText(lead: Lead): string {
   const lines: string[] = [
-    `New Studio Enquiry`,
+    `New Spice of Life Media Enquiry`,
+    ``,
+    `Capabilities: ${lead.services.join(", ")}`,
+    `Current website: ${lead.website || "Not supplied"}`,
+    ``,
+    `What needs to change:`,
+    lead.projectGoal,
     ``,
     `Email: ${lead.email}`,
+    `Name: ${lead.name}`,
   ];
-  if (lead.name) lines.push(`Name: ${lead.name}`);
   if (lead.phone) lines.push(`Phone: ${lead.phone}`);
-  if (lead.projectType) lines.push(`Project type: ${lead.projectType}`);
-  lines.push(``, `Message:`, lead.message);
+  if (lead.timeline) lines.push(`Timing: ${lead.timeline}`);
   return lines.join("\n");
 }
 
@@ -98,28 +99,29 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
   const lead = parsed.data;
 
-  if (isDuplicate(lead.email.toLowerCase())) {
-    return res.status(200).json({ ok: true, deduped: true });
+  if (lead.companyWebsite) {
+    return res.status(200).json({ ok: true });
   }
 
   const apiKey = process.env.RESEND_API_KEY;
   const toEmail = process.env.SOL_LEAD_TO_EMAIL || "info@spiceoflifemedia.com.au";
-  const fromEmail = process.env.SOL_LEAD_FROM_EMAIL || "Spice Of Life Media <leads@spiceoflifemedia.com.au>";
+  const fromEmail =
+    process.env.SOL_LEAD_FROM_EMAIL ||
+    "Spice of Life Media <leads@spiceoflifemedia.com.au>";
 
   if (!apiKey) {
-    console.error("[sol-leads] RESEND_API_KEY not set — lead received but email not sent", {
+    console.error("[sol-leads] RESEND_API_KEY not set — refusing to report a false success", {
       email: lead.email,
-      projectType: lead.projectType,
+      services: lead.services,
     });
-    return res.status(202).json({
-      ok: true,
-      warning: "Lead received but email delivery is not configured yet.",
+    return res.status(503).json({
+      error: "Email delivery is not configured.",
     });
   }
 
   try {
     const resend = new Resend(apiKey);
-    const subjectPart = lead.projectType || lead.name || lead.email;
+    const subjectPart = `${lead.services.join(" + ")} — ${lead.name}`;
     const sent = await resend.emails.send({
       from: fromEmail,
       to: [toEmail],

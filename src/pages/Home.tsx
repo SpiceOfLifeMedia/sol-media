@@ -1,18 +1,32 @@
-import { Layout } from "@/components/layout/Layout";
-import { Hero } from "@/components/sections/Hero";
-import { Services } from "@/components/sections/Services";
-import { SelectedWork } from "@/components/sections/SelectedWork";
-import { Reviews } from "@/components/sections/Reviews";
-import { Contact } from "@/components/sections/Contact";
+import { SiteHeader } from "@/components/site/SiteHeader";
+import {
+  AgencyModelSection,
+  ApproachSection,
+  ConversionSection,
+  HeroSection,
+  PropositionSection,
+  ServicesSection,
+  SiteFooter,
+  StudiesSection,
+} from "@/components/site/HomeSections";
 
 export default function Home() {
   return (
-    <Layout>
-      <Hero />
-      <Services />
-      <SelectedWork />
-      <Reviews />
-      <Contact />
-    </Layout>
+    <>
+      <a className="skip-link" href="#main-content">
+        Skip to content
+      </a>
+      <SiteHeader />
+      <main id="main-content">
+        <HeroSection />
+        <PropositionSection />
+        <ServicesSection />
+        <StudiesSection />
+        <ApproachSection />
+        <AgencyModelSection />
+        <ConversionSection />
+      </main>
+      <SiteFooter />
+    </>
   );
 }
