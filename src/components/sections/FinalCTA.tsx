@@ -22,7 +22,7 @@ export function FinalCTA() {
         </Link>
         
         <div className="mt-10 caps-label text-[rgba(242,238,230,0.4)]">
-          REPLIES WITHIN ONE BUSINESS DAY.
+          WE'LL RESPOND AS SOON AS POSSIBLE.
         </div>
       </div>
     </section>

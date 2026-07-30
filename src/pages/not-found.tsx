@@ -4,7 +4,7 @@ import { Footer } from '@/components/layout/Footer';
 import { Link } from 'wouter';
 
 export default function NotFound() {
-  useSeo('Page Not Found', 'The page you are looking for does not exist.');
+  useSeo();
 
   return (
     <div className="min-h-[100dvh] flex flex-col w-full overflow-x-hidden bg-[var(--ink)] text-[var(--paper)]">

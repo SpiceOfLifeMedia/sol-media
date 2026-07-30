@@ -4,7 +4,7 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 
 export default function StartAProject() {
-  useSeo('Start a Project', 'Tell us what feels disconnected, outdated or underperforming. We\'ll recommend the clearest next step.');
+  useSeo();
 
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -101,7 +101,7 @@ export default function StartAProject() {
               <div className="bg-white p-12 border border-[rgba(22,21,15,0.1)] text-center flex flex-col items-center gap-6 shadow-sm">
                 <div className="w-16 h-16 rounded-full bg-[var(--paper)] flex items-center justify-center text-[var(--verm)] text-3xl">✓</div>
                 <h2 className="text-[28px] font-[800] tracking-[-0.02em]">Enquiry received.</h2>
-                <p className="text-[16px] text-[rgba(22,21,15,0.7)]">We've received your enquiry. You'll hear back within one business day.</p>
+                <p className="text-[16px] text-[rgba(22,21,15,0.7)]">We've received your enquiry. We'll be in touch as soon as possible.</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="flex flex-col gap-10">

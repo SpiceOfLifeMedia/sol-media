@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#F2EEE6"/>
+  <rect x="0" y="0" width="18" height="630" fill="#E8451C"/>
+  <g transform="translate(76 66) scale(.52)">
+    <path d="M58 33 C58 20 47 13 37 13 C25 13 14 20 14 32 C14 44 26 48 40 52 C54 56 63 61 63 72 C63 84 51 91 37 91 C26 91 12 85 12 71" fill="none" stroke="#16150F" stroke-width="19"/>
+    <path d="M80 39 Q80 13 118 13 Q156 13 156 39 L156 65 Q156 91 118 91 Q80 91 80 65 Z" fill="none" stroke="#16150F" stroke-width="17"/>
+    <path d="M172 13 h16 V75 H308 V91 H172 Z" fill="#16150F"/>
+  </g>
+  <text x="76" y="290" fill="#16150F" font-family="Arial, Helvetica, sans-serif" font-size="76" font-weight="800" letter-spacing="-2">Brand. Web.</text>
+  <text x="76" y="375" fill="#16150F" font-family="Arial, Helvetica, sans-serif" font-size="76" font-weight="800" letter-spacing="-2">Search. Content<tspan fill="#E8451C">.</tspan></text>
+  <line x1="76" y1="458" x2="1124" y2="458" stroke="#16150F" stroke-opacity=".18"/>
+  <text x="76" y="516" fill="#16150F" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="700" letter-spacing="4">SPICE OF LIFE MEDIA</text>
+  <text x="76" y="560" fill="#16150F" fill-opacity=".68" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="500">Adelaide, Australia</text>
+</svg>

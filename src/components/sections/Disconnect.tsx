@@ -18,7 +18,7 @@ export function Disconnect() {
             Your digital presence didn't<span className="text-[var(--verm)]">..</span>
           </h2>
           <p className="text-[16px] leading-[1.6] text-[rgba(22,21,15,0.72)] max-w-[430px]">
-            Established businesses outgrow the way they show up. It's rarely one problem — it's one disconnected system, and it quietly costs trust every day.
+            Established businesses outgrow the way they show up. It's rarely one problem — it is often a disconnected system that can make the business harder to understand and choose.
           </p>
         </div>
 

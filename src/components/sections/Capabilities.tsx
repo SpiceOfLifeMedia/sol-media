@@ -76,9 +76,9 @@ export function Capabilities() {
             const TextBlock = (
               <div className="flex flex-col gap-6 flex-1 min-w-[300px]">
                 <div className="text-[13px] font-[800] tracking-[0.12em] text-[var(--verm)]">{cap.num}</div>
-                <h3 className="text-[40px] md:text-[56px] leading-[1] font-[800] tracking-[-0.02em] text-[var(--ink)] whitespace-pre-line" style={{ fontStretch: '125%' }}>
+                <h2 className="text-[40px] md:text-[56px] leading-[1] font-[800] tracking-[-0.02em] text-[var(--ink)] whitespace-pre-line" style={{ fontStretch: '125%' }}>
                   {cap.title}
-                </h3>
+                </h2>
                 <div className="text-[20px] md:text-[24px] leading-[1.3] font-[650] text-[var(--ink)] max-w-[26ch] mt-2">
                   {cap.sub}
                 </div>
@@ -158,7 +158,7 @@ export function Capabilities() {
                     <div className="w-full flex flex-col gap-2">
                       <div className="text-[10px] tracking-wider text-[rgba(242,238,230,0.5)]">HOME &gt; SERVICES &gt; WEB DESIGN</div>
                       <div className="text-[20px] font-bold text-[#8AB4F8] hover:underline cursor-pointer">Adelaide Web Design Agency | Concept Study</div>
-                      <div className="text-[13px] text-[rgba(242,238,230,0.7)] mt-1 line-clamp-2">We audit, sharpen and rebuild the way your business shows up. Premium websites that communicate authority and get found.</div>
+                      <div className="text-[13px] text-[rgba(242,238,230,0.7)] mt-1 line-clamp-2">We audit, sharpen and rebuild the way your business shows up. Clear websites structured for people and search.</div>
                     </div>
                   </div>
                 )}

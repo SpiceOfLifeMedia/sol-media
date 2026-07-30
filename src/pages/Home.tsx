@@ -10,7 +10,7 @@ import { WorkingWith } from '@/components/sections/WorkingWith';
 import { FinalCTA } from '@/components/sections/FinalCTA';
 
 export default function Home() {
-  useSeo('', 'Spice of Life Media is a remote-first brand, web, SEO and content agency based in Adelaide, Australia. We make brands harder to ignore.');
+  useSeo();
 
   return (
     <div className="min-h-[100dvh] flex flex-col w-full overflow-x-hidden">

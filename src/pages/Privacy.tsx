@@ -3,7 +3,7 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 
 export default function Privacy() {
-  useSeo('Privacy Policy', 'Privacy policy for Spice of Life Media.');
+  useSeo();
 
   return (
     <div className="min-h-[100dvh] flex flex-col w-full overflow-x-hidden bg-[var(--paper)] text-[var(--ink)]">
