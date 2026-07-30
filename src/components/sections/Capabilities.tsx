@@ -10,6 +10,7 @@ export function Capabilities() {
       out: '→ A clear roadmap: what should change, why it matters, and what happens first.',
       inc: 'Website audit · SEO audit · Brand & messaging review · Competitor review · Content review · Customer journey · Conversion review · Prioritised recommendations',
       link: '/services/digital-presence-audit',
+      cta: 'Explore the audit',
       label: 'WHAT SHOULD CHANGE — AND WHAT HAPPENS FIRST',
       mediaType: 'audit'
     },
@@ -21,6 +22,7 @@ export function Capabilities() {
       out: '→ A coherent identity and message that operates consistently across every platform.',
       inc: 'Positioning · Audience · Messaging · Logo direction · Brand kits · Colour & typography · Digital guidelines · Social templates · Campaign direction',
       link: '/services/brand-systems',
+      cta: 'Explore brand systems',
       label: 'ONE IDENTITY — EVERY PLATFORM',
       mediaType: 'brand'
     },
@@ -32,6 +34,7 @@ export function Capabilities() {
       out: '→ A premium website that communicates authority, gets found and turns attention into action.',
       inc: 'Website strategy · Information architecture · UX & UI · Website copy · Responsive design · New builds · Complete rebuilds · Landing pages · Conversion pathways · Analytics · Technical launch',
       link: '/services/websites-rebuilds',
+      cta: 'Explore website design',
       label: 'ONE DESIGN — EVERY DEVICE',
       mediaType: 'web'
     },
@@ -43,6 +46,7 @@ export function Capabilities() {
       out: '→ Sustained organic visibility that compounds over time and converts at the right stage.',
       inc: 'Technical SEO · On-page optimisation · Keyword strategy · Content architecture · Local SEO · Link building · Core Web Vitals · Search analytics · Long-term growth planning',
       link: '/services/seo-search-growth',
+      cta: 'Explore SEO services',
       label: 'VISIBLE WHERE INTENT IS HIGHEST',
       mediaType: 'seo'
     },
@@ -54,6 +58,7 @@ export function Capabilities() {
       out: '→ A structured content system that reinforces the brand, builds authority and compounds over time.',
       inc: 'Content strategy · Platform selection · Content calendar · Template design · Campaign frameworks · Short-form video · Captions & copy · Scheduling systems · Performance review',
       link: '/services/social-content-systems',
+      cta: 'Explore content systems',
       label: 'CONTENT WITH DIRECTION — NOT JUST POSTS',
       mediaType: 'content'
     }
@@ -92,7 +97,7 @@ export function Capabilities() {
                   {cap.inc}
                 </div>
                 <Link href={cap.link} className="group mt-4 text-[13.5px] font-[750] text-[var(--verm)] flex items-center gap-2 w-max">
-                  Explore {cap.title.split('\n')[0].toLowerCase()}
+                  {cap.cta}
                   <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
                 </Link>
               </div>
