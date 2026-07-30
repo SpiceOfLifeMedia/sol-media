@@ -19,15 +19,68 @@ export const config = { runtime: 'edge' };
 const TO_EMAIL = 'info@spiceoflifemedia.com.au';
 const FROM_EMAIL = 'Spice of Life Media <website@spiceoflifemedia.com.au>';
 
+function escapeHtml(value: string): string {
+  return value.replace(
+    /[&<>"']/g,
+    (character) =>
+      ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;',
+      })[character] ?? character,
+  );
+}
+
 function field(label: string, value: string | undefined): string {
   if (!value?.trim()) return '';
   return `
     <tr>
       <td style="padding:8px 0;border-bottom:1px solid #e8e4dc;vertical-align:top;">
-        <span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#7a7567;">${label}</span>
+        <span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#7a7567;">${escapeHtml(label)}</span>
       </td>
-      <td style="padding:8px 0 8px 20px;border-bottom:1px solid #e8e4dc;font-size:15px;color:#16150f;">${value.replace(/\n/g, '<br>')}</td>
+      <td style="padding:8px 0 8px 20px;border-bottom:1px solid #e8e4dc;font-size:15px;color:#16150f;">${escapeHtml(value).replace(/\n/g, '<br>')}</td>
     </tr>`;
+}
+
+const ATTRIBUTION_FIELDS = [
+  ['Campaign source', 'attribution_utm_source'],
+  ['Campaign medium', 'attribution_utm_medium'],
+  ['Campaign name', 'attribution_utm_campaign'],
+  ['Campaign ID', 'attribution_utm_id'],
+  ['Campaign term', 'attribution_utm_term'],
+  ['Campaign content', 'attribution_utm_content'],
+  ['Source platform', 'attribution_utm_source_platform'],
+  ['Creative format', 'attribution_utm_creative_format'],
+  ['Marketing tactic', 'attribution_utm_marketing_tactic'],
+  ['Google Click ID', 'attribution_gclid'],
+  ['Google braid ID', 'attribution_gbraid'],
+  ['Google web-to-app braid ID', 'attribution_wbraid'],
+  ['Landing page', 'attribution_landing_path'],
+] as const;
+
+function attributionRows(d: Record<string, string>): string {
+  if (d['analytics_attribution_consent'] !== 'granted') return '';
+
+  return ATTRIBUTION_FIELDS.map(([label, key]) =>
+    field(label, d[key]?.slice(0, 500)),
+  ).join('');
+}
+
+function attributionText(d: Record<string, string>): string[] {
+  if (d['analytics_attribution_consent'] !== 'granted') return [];
+
+  const rows = ATTRIBUTION_FIELDS.flatMap(([label, key]) => {
+    const value = d[key]
+      ?.replace(/[\u0000-\u001F\u007F]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, 500);
+    return value ? [`${label}: ${value}`] : [];
+  });
+
+  return rows.length > 0 ? ['', 'CONSENT-APPROVED ATTRIBUTION', ...rows] : [];
 }
 
 function buildHtml(d: Record<string, string>): string {
@@ -59,6 +112,7 @@ function buildHtml(d: Record<string, string>): string {
               ${field('Timing', d['timing'])}
               ${field('What feels disconnected?', d['problem'])}
               ${field('How they heard about us', d['source'])}
+              ${attributionRows(d)}
             </table>
           </td>
         </tr>
@@ -66,7 +120,7 @@ function buildHtml(d: Record<string, string>): string {
         <tr>
           <td style="background:#f2eee6;padding:24px 40px;border-top:1px solid #e0dbd0;">
             <p style="margin:0;font-size:12px;color:#9e9a91;">
-              Submitted via spiceoflifemedia.com.au · Reply directly to this email to respond to ${d['name'] ?? 'the enquirer'}.
+              Submitted via spiceoflifemedia.com.au · Reply directly to this email to respond to ${escapeHtml(d['name'] ?? 'the enquirer')}.
             </p>
           </td>
         </tr>
@@ -93,6 +147,7 @@ function buildText(d: Record<string, string>): string {
     d['problem'] ?? '—',
     '',
     `How they heard about us: ${d['source'] ?? '—'}`,
+    ...attributionText(d),
   ].join('\n');
 }
 
