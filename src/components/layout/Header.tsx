@@ -60,7 +60,7 @@ export function Header() {
                 usesLightHeader ? 'text-[var(--ink)] hover:text-[var(--verm)]' : 'text-[rgba(242,238,230,0.82)] hover:text-white'
               } ${location === '/capabilities' ? 'border-b-2 border-[var(--verm)] pb-1' : ''}`}
             >
-              Capabilities
+              CAPABILITIES
             </Link>
             <Link
               href="/approach"
@@ -68,7 +68,7 @@ export function Header() {
                 usesLightHeader ? 'text-[var(--ink)] hover:text-[var(--verm)]' : 'text-[rgba(242,238,230,0.82)] hover:text-white'
               } ${location === '/approach' ? 'border-b-2 border-[var(--verm)] pb-1' : ''}`}
             >
-              Approach
+              APPROACH
             </Link>
             <Link
               href="/agency"
@@ -76,7 +76,7 @@ export function Header() {
                 usesLightHeader ? 'text-[var(--ink)] hover:text-[var(--verm)]' : 'text-[rgba(242,238,230,0.82)] hover:text-white'
               } ${location === '/agency' ? 'border-b-2 border-[var(--verm)] pb-1' : ''}`}
             >
-              Agency
+              AGENCY
             </Link>
             {usesLightHeader && (
               <Link
@@ -132,13 +132,13 @@ export function Header() {
             
             <nav className="flex flex-col px-5">
               <Link href="/capabilities" className="text-[26px] font-bold text-[var(--paper)] leading-[56px]">
-                Capabilities
+                CAPABILITIES
               </Link>
               <Link href="/approach" className="text-[26px] font-bold text-[var(--paper)] leading-[56px]">
-                Approach
+                APPROACH
               </Link>
               <Link href="/agency" className="text-[26px] font-bold text-[var(--paper)] leading-[56px]">
-                Agency
+                AGENCY
               </Link>
             </nav>
             
