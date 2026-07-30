@@ -16,9 +16,14 @@ export default function Agency() {
             <h1 className="text-[48px] md:text-[80px] leading-[1.02] font-[800] tracking-[-0.025em] mb-8" style={{ fontStretch: '125%' }}>
               The Agency<span className="text-[var(--verm)]">.</span>
             </h1>
-            <p className="text-[18px] md:text-[20px] leading-[1.6] text-[rgba(22,21,15,0.7)] max-w-[680px] pb-16">
-              Spice of Life Media is a remote-first agency based in Adelaide, structured to work with clients anywhere. We assemble and manage the expertise each project requires.
-            </p>
+            <div className="max-w-[760px] pb-16 space-y-5">
+              <p className="text-[20px] md:text-[24px] leading-[1.45] font-[650] text-[var(--ink)]">
+                We connect brand, website, search and content under one accountable lead — for established Australian businesses whose digital presence no longer matches the quality of their work.
+              </p>
+              <p className="text-[16px] md:text-[18px] leading-[1.65] text-[rgba(22,21,15,0.7)] max-w-[680px]">
+                Adelaide-based and remote-first, Spice of Life Media assembles and manages the right expertise for each project, working with businesses across Australia and beyond.
+              </p>
+            </div>
           </div>
         </section>
 
