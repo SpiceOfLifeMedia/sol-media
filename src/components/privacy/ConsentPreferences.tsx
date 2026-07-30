@@ -44,9 +44,10 @@ export function ConsentPreferences() {
   }, []);
 
   const applyChoice = (nextChoice: ConsentChoice) => {
-    setConsentChoice(nextChoice);
-    setChoice(nextChoice);
+    const result = setConsentChoice(nextChoice);
+    setChoice(result.choice);
     setPreferencesOpen(false);
+    if (result.reloadRequired) window.location.reload();
   };
 
   const showFirstVisitBanner = isReady && choice === null && !preferencesOpen;
@@ -67,9 +68,9 @@ export function ConsentPreferences() {
               Your privacy choices
             </h2>
             <p className="mt-2 text-[13px] leading-[1.55] text-[rgba(242,238,230,0.72)]">
-              We use essential browser storage to remember this choice.
-              Analytics consent is optional and denied by default. Advertising
-              consent stays denied either way.{' '}
+              We use essential browser storage to remember this choice. Google
+              Analytics is optional, stays off by default and only loads after
+              you allow it. Advertising consent stays denied either way.{' '}
               <Link
                 className="text-[var(--paper)] underline decoration-[rgba(242,238,230,0.45)] underline-offset-4 hover:decoration-[var(--paper)]"
                 href="/privacy"
@@ -105,10 +106,9 @@ export function ConsentPreferences() {
               Privacy choices<span className="text-[var(--verm)]">.</span>
             </DialogTitle>
             <DialogDescription className="pt-2 text-[14px] leading-[1.6] text-[rgba(22,21,15,0.7)]">
-              Essential storage remembers your selection. Google Analytics is
-              planned but is not currently loaded; if it is added, it will use
-              this consent choice. Advertising consent remains denied for both
-              choices.
+              Essential storage remembers your selection. Google Analytics,
+              delivered through Google Tag Manager, only loads when you allow
+              analytics. Advertising consent remains denied for both choices.
             </DialogDescription>
           </DialogHeader>
 
@@ -153,8 +153,8 @@ export function ConsentPreferences() {
                 className="mt-1 block text-[13px] leading-[1.5] text-[rgba(22,21,15,0.68)]"
                 id="analytics-consent-description"
               >
-                Allow consent-based analytics; keep all advertising consent
-                denied.
+                Load consent-based Google Analytics to measure site usage; keep
+                all advertising consent denied.
               </span>
             </button>
           </div>

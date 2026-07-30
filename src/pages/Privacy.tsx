@@ -53,10 +53,19 @@ export default function Privacy() {
                 (if supplied).
               </p>
               <p className="mt-4">
-                We also save one minimal, versioned choice in your browser’s
-                local storage so the site can remember whether you selected
-                essential storage only or allowed analytics. That preference
-                does not contain your contact details.
+                We also save one minimal, versioned choice in essential browser
+                storage so the site can remember whether you selected essential
+                storage only or allowed analytics. This normally uses local
+                storage, with a first-party cookie as a fail-closed fallback.
+                That preference does not contain your contact details.
+              </p>
+              <p className="mt-4">
+                If you allow analytics, we may also keep campaign parameters
+                from the address you arrived on (such as UTM parameters, GCLID,
+                GBRAID or WBRAID) and the landing-page path in this tab’s session
+                storage. We use these details to understand which campaign led
+                to an enquiry. They do not include the information typed into
+                the enquiry form.
               </p>
             </section>
 
@@ -73,14 +82,27 @@ export default function Privacy() {
                 that follows.
               </p>
               <p className="mt-4">
-                We plan to use Google Analytics through Google Tag Manager on a
-                consent basis to understand how people use the website and
-                improve it. Google Analytics is not currently loaded. The site
-                records your preference for the planned setup: analytics consent
-                is denied by default and only changes to granted after you choose
-                “Allow analytics”. Choosing analytics does not grant consent for
-                advertising storage, advertising user data or advertising
-                personalisation; those settings remain denied.
+                We use Google Analytics 4 through Google Tag Manager on a
+                consent basis to understand how people find and use the website
+                and to improve it. Neither service loads until you choose “Allow
+                analytics”. If allowed, we measure page views and non-personal
+                interactions such as starting or successfully submitting the
+                project form and selecting project or email links. We do not
+                send the name, email, business name, website address or message
+                entered into the enquiry form to Google Analytics.
+              </p>
+              <p className="mt-4">
+                Analytics consent is denied by default. Choosing analytics does
+                not grant consent for advertising storage, advertising user
+                data or advertising personalisation; those settings remain
+                denied.
+              </p>
+              <p className="mt-4">
+                If analytics is allowed and you submit the project form, the
+                saved campaign parameters and landing-page path are included in
+                the enquiry email Spice of Life Media receives. This helps us
+                attribute the enquiry without adding your form answers to
+                Google Analytics.
               </p>
             </section>
 
@@ -96,8 +118,9 @@ export default function Privacy() {
                 delivers project enquiries by email to Spice of Life Media. The
                 site also loads its Archivo typeface from Google Fonts, so your
                 browser connects to Google’s font service when rendering the
-                site. If consent-based Google Analytics is enabled, Google will
-                also process the related analytics information.
+                site. When you allow analytics, Google processes related usage,
+                device and campaign information through Google Tag Manager and
+                Google Analytics.
               </p>
               <p className="mt-4">
                 These providers may process or store information outside
@@ -129,6 +152,9 @@ export default function Privacy() {
               <p className="mt-4">
                 The site uses this preference until you change it, clear your
                 browser storage or a later version asks you to choose again.
+                Campaign attribution saved in session storage normally lasts
+                only for the current browser-tab session and is also removed if
+                you return to essential storage only.
               </p>
             </section>
 
@@ -141,8 +167,10 @@ export default function Privacy() {
               </h2>
               <p>
                 You can reopen “Privacy choices” in the footer at any time to
-                allow analytics or return to essential storage only. A changed
-                choice applies to future analytics activity.
+                allow analytics or return to essential storage only. Returning
+                to essential storage stops future analytics loading and reloads
+                the page when needed to stop an already loaded analytics
+                session.
               </p>
               <p className="mt-4">
                 You can also ask to access, correct or delete personal
