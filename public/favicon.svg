@@ -1,3 +1,8 @@
-<svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="180" height="180" rx="36" fill="#FF3C00"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Spice of Life Media">
+  <rect width="512" height="512" fill="#16150F"/>
+  <g transform="translate(96 202)">
+    <path d="M58 33 C58 20 47 13 37 13 C25 13 14 20 14 32 C14 44 26 48 40 52 C54 56 63 61 63 72 C63 84 51 91 37 91 C26 91 12 85 12 71" fill="none" stroke="#F2EEE6" stroke-width="19" stroke-linecap="butt"/>
+    <path d="M80 39 Q80 13 118 13 Q156 13 156 39 L156 65 Q156 91 118 91 Q80 91 80 65 Z" fill="none" stroke="#F2EEE6" stroke-width="17"/>
+    <path d="M172 13 h16 V75 H308 V91 H172 Z" fill="#F2EEE6"/>
+  </g>
 </svg>
