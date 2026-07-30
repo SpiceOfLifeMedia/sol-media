@@ -39,9 +39,9 @@ export const SEO_ROUTES: Record<string, SeoConfig> = {
     lastModified: '2026-07-31',
   },
   '/agency': {
-    title: 'About Spice of Life Media | Adelaide Digital Agency',
+    title: 'Australian Brand, Web & SEO Agency | Spice of Life Media',
     description:
-      'Learn how Spice of Life Media runs remote-first brand, web, SEO and content projects from Adelaide, with one accountable project lead.',
+      'Meet the Adelaide-based agency connecting brand, websites, search and content under one accountable lead for established businesses across Australia.',
     index: true,
     pageType: 'AboutPage',
     lastModified: '2026-07-31',
