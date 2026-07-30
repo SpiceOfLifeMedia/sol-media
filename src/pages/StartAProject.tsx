@@ -1,14 +1,34 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Link } from 'wouter';
 import { useSeo } from '@/hooks/useSeo';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
+import { trackAnalyticsEvent } from '@/lib/analytics';
+import { appendConsentApprovedAttribution } from '@/lib/analyticsAttribution';
+import { hasAnalyticsConsent } from '@/lib/privacyConsent';
 
 export default function StartAProject() {
   useSeo();
 
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const formStarted = useRef(false);
+  const leadTracked = useRef(false);
+
+  const handleFormStart = (event: React.SyntheticEvent<HTMLFormElement>) => {
+    if (
+      formStarted.current ||
+      !(event.target instanceof HTMLElement) ||
+      event.target.matches('[name="website_confirm"]') ||
+      !event.target.matches('input:not([type="hidden"]), select, textarea')
+    ) {
+      return;
+    }
+
+    formStarted.current = trackAnalyticsEvent('form_start', {
+      form_name: 'start_a_project',
+    });
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -36,6 +56,7 @@ export default function StartAProject() {
 
     setErrors({});
     setStatus('submitting');
+    appendConsentApprovedAttribution(formData, hasAnalyticsConsent());
 
     try {
       const response = await fetch('/api/contact', {
@@ -44,6 +65,12 @@ export default function StartAProject() {
       });
       
       if (response.ok) {
+        if (!leadTracked.current) {
+          leadTracked.current = true;
+          trackAnalyticsEvent('generate_lead', {
+            form_name: 'start_a_project',
+          });
+        }
         setStatus('success');
       } else {
         setStatus('error');
@@ -105,7 +132,12 @@ export default function StartAProject() {
                 <p className="text-[16px] text-[rgba(22,21,15,0.7)]">We've received your enquiry. We'll be in touch as soon as possible.</p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="flex flex-col gap-10">
+              <form
+                onFocusCapture={handleFormStart}
+                onInput={handleFormStart}
+                onSubmit={handleSubmit}
+                className="flex flex-col gap-10"
+              >
                 {status === 'error' && (
                   <div className="bg-[var(--ink)] text-[var(--paper)] p-6 flex flex-col gap-3">
                     <div className="font-[800] tracking-tight text-[var(--verm)]">Submission Failed</div>
