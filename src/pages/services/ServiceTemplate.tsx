@@ -21,7 +21,7 @@ export function ServiceTemplate({ title, tagline, problem, whoFor, inclusions, p
           <nav aria-label="Breadcrumb" className="mb-10 flex flex-wrap items-center gap-2 text-[11px] font-[700] tracking-[0.08em] uppercase text-[rgba(242,238,230,0.55)]">
             <Link href="/" className="hover:text-[var(--paper)] transition-colors">Home</Link>
             <span aria-hidden="true">/</span>
-            <Link href="/capabilities" className="hover:text-[var(--paper)] transition-colors">Capabilities</Link>
+            <Link href="/capabilities" className="hover:text-[var(--paper)] transition-colors">CAPABILITIES</Link>
             <span aria-hidden="true">/</span>
             <span aria-current="page" className="text-[rgba(242,238,230,0.8)]">
               {title.replace('\n', ' ')}
