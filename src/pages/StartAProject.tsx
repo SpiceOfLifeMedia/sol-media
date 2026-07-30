@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'wouter';
 import { useSeo } from '@/hooks/useSeo';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
@@ -199,6 +200,16 @@ export default function StartAProject() {
                 >
                   {status === 'submitting' ? 'Submitting...' : 'Submit Enquiry'}
                 </button>
+                <p className="-mt-5 text-center text-[12px] leading-[1.5] text-[rgba(22,21,15,0.58)]">
+                  We’ll use your details to respond to your enquiry. Read our{' '}
+                  <Link
+                    className="font-[700] text-[var(--ink)] underline decoration-[rgba(22,21,15,0.35)] underline-offset-4 hover:decoration-[var(--ink)]"
+                    href="/privacy"
+                  >
+                    Privacy Policy
+                  </Link>
+                  .
+                </p>
               </form>
             )}
           </div>

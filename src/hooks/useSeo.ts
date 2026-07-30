@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useLocation } from 'wouter';
 
 import {
+  BRAND_IMAGE_ALT,
   DEFAULT_OG_IMAGE,
   SEO_ROUTES,
   SITE_NAME,
@@ -61,7 +62,7 @@ export function useSeo() {
     upsertMeta(
       'property',
       'og:image:alt',
-      'Spice of Life Media — brand, web, search and content',
+      BRAND_IMAGE_ALT,
     );
 
     upsertMeta('name', 'twitter:card', 'summary_large_image');
@@ -71,7 +72,7 @@ export function useSeo() {
     upsertMeta(
       'name',
       'twitter:image:alt',
-      'Spice of Life Media — brand, web, search and content',
+      BRAND_IMAGE_ALT,
     );
 
     const scriptId = 'sol-structured-data';

@@ -14,6 +14,7 @@ if (!template.includes('<!--app-head-->') || !template.includes('<div id="root">
 
 const server = await import(pathToFileURL(serverEntryPath).href);
 const {
+  BRAND_IMAGE_ALT,
   DEFAULT_OG_IMAGE,
   SEO_ROUTES,
   SITE_NAME,
@@ -59,12 +60,12 @@ function headForPath(pathname, includeCanonical = true) {
     '    <meta property="og:image:width" content="1200" />',
     '    <meta property="og:image:height" content="630" />',
     '    <meta property="og:image:type" content="image/png" />',
-    '    <meta property="og:image:alt" content="Spice of Life Media — brand, web, search and content" />',
+    `    <meta property="og:image:alt" content="${escapeAttribute(BRAND_IMAGE_ALT)}" />`,
     '    <meta name="twitter:card" content="summary_large_image" />',
     `    <meta name="twitter:title" content="${escapeAttribute(seo.title)}" />`,
     `    <meta name="twitter:description" content="${escapeAttribute(seo.description)}" />`,
     `    <meta name="twitter:image" content="${DEFAULT_OG_IMAGE}" />`,
-    '    <meta name="twitter:image:alt" content="Spice of Life Media — brand, web, search and content" />',
+    `    <meta name="twitter:image:alt" content="${escapeAttribute(BRAND_IMAGE_ALT)}" />`,
   );
 
   if (structuredData) {

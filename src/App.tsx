@@ -1,4 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ConsentPreferences } from '@/components/privacy/ConsentPreferences';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
@@ -53,6 +54,7 @@ function App({ ssrPath }: AppProps) {
           ssrPath={ssrPath}
         >
           <Router />
+          <ConsentPreferences />
         </WouterRouter>
         <Toaster />
       </TooltipProvider>

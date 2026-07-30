@@ -1,6 +1,8 @@
 export const SITE_NAME = 'Spice of Life Media';
 export const SITE_URL = 'https://www.spiceoflifemedia.com.au';
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/assets/og/spice-of-life-media.png`;
+export const BRAND_AVATAR = `${SITE_URL}/assets/sol-avatar-1000-vermilion.png`;
+export const BRAND_IMAGE_ALT = 'Spice of Life Media — built for the business you’ve become';
 
 export type SeoConfig = {
   title: string;
@@ -165,12 +167,13 @@ export function structuredDataForPath(pathname: string) {
       '@type': 'Organization',
       '@id': organizationId,
       name: SITE_NAME,
+      alternateName: 'SOL Media',
       url: `${SITE_URL}/`,
       logo: {
         '@type': 'ImageObject',
-        url: `${SITE_URL}/assets/sol-logo-square.svg`,
-        width: 512,
-        height: 512,
+        url: BRAND_AVATAR,
+        width: 1000,
+        height: 1000,
       },
       email: 'info@spiceoflifemedia.com.au',
       areaServed: [

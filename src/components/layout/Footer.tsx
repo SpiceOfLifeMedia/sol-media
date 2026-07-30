@@ -1,5 +1,7 @@
 import { Link } from 'wouter';
 
+import { openConsentPreferences } from '@/lib/privacyConsent';
+
 const ASSET_PATH = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 export function Footer() {
@@ -30,6 +32,13 @@ export function Footer() {
           <Link href="/privacy" className="text-[14px] font-medium text-[rgba(242,238,230,0.7)] hover:text-white transition-colors">
             Privacy
           </Link>
+          <button
+            className="w-max text-left text-[14px] font-medium text-[rgba(242,238,230,0.7)] transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--paper)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--ink)]"
+            onClick={openConsentPreferences}
+            type="button"
+          >
+            Privacy choices
+          </button>
         </nav>
 
         {/* Right */}
