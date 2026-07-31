@@ -71,7 +71,7 @@ export function Capabilities() {
         {/* Capabilities header bar */}
         <div className="flex items-center justify-between py-10 mb-8 border-b border-[rgba(22,21,15,0.18)]">
           <div className="caps-label text-[var(--ink)]">CAPABILITIES</div>
-          <div className="caps-label text-[rgba(22,21,15,0.5)]">01–05 · CONNECTED DISCIPLINES</div>
+          <div className="caps-label text-[rgba(22,21,15,0.65)]">01–05 · CONNECTED DISCIPLINES</div>
         </div>
 
         {/* Capability Rows */}
@@ -80,7 +80,7 @@ export function Capabilities() {
             const isEven = i % 2 !== 0; // 0-indexed, so 1 (02) is even
             const TextBlock = (
               <div className="flex flex-col gap-6 flex-1 min-w-[300px]">
-                <div className="text-[13px] font-[800] tracking-[0.12em] text-[var(--verm)]">{cap.num}</div>
+                <div className="text-[13px] font-[800] tracking-[0.12em] text-[var(--verm-text-light)]">{cap.num}</div>
                 <h2 className="text-[40px] md:text-[56px] leading-[1] font-[800] tracking-[-0.02em] text-[var(--ink)] whitespace-pre-line" style={{ fontStretch: '125%' }}>
                   {cap.title}
                 </h2>
@@ -93,10 +93,10 @@ export function Capabilities() {
                 <p className="text-[15.5px] font-[650] text-[var(--ink)] max-w-[46ch]">
                   {cap.out}
                 </p>
-                <div className="text-[12px] tracking-[0.06em] uppercase leading-[1.9] text-[rgba(22,21,15,0.55)] mt-4">
+                <div className="text-[12px] tracking-[0.06em] uppercase leading-[1.9] text-[rgba(22,21,15,0.65)] mt-4">
                   {cap.inc}
                 </div>
-                <Link href={cap.link} className="group mt-4 text-[13.5px] font-[750] text-[var(--verm)] flex items-center gap-2 w-max">
+                <Link href={cap.link} className="group mt-4 text-[13.5px] font-[750] text-[var(--verm-text-light)] flex items-center gap-2 w-max">
                   {cap.cta}
                   <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
                 </Link>
@@ -109,9 +109,9 @@ export function Capabilities() {
                 {cap.mediaType === 'audit' && (
                   <div className="relative w-full h-full flex items-center justify-center">
                     <div className="w-[280px] h-[320px] border-[1.5px] border-[rgba(242,238,230,0.2)] rounded-md opacity-40"></div>
-                    <div className="absolute top-[80px] left-[50px] bg-[var(--verm)] text-[var(--ink)] p-3 text-[10px] font-bold tracking-wider shadow-lg">PRIORITY 01<br/><span className="font-normal opacity-80">Message clarity</span></div>
-                    <div className="absolute top-[160px] right-[40px] bg-[var(--verm)] text-[var(--ink)] p-3 text-[10px] font-bold tracking-wider shadow-lg">PRIORITY 02<br/><span className="font-normal opacity-80">Page architecture</span></div>
-                    <div className="absolute bottom-[80px] left-[80px] bg-[var(--verm)] text-[var(--ink)] p-3 text-[10px] font-bold tracking-wider shadow-lg">PRIORITY 03<br/><span className="font-normal opacity-80">Search structure</span></div>
+                    <div className="absolute top-[80px] left-[50px] bg-[var(--verm)] text-[var(--ink)] p-3 text-[10px] font-bold tracking-wider shadow-lg">PRIORITY 01<br/><span className="font-normal">Message clarity</span></div>
+                    <div className="absolute top-[160px] right-[40px] bg-[var(--verm)] text-[var(--ink)] p-3 text-[10px] font-bold tracking-wider shadow-lg">PRIORITY 02<br/><span className="font-normal">Page architecture</span></div>
+                    <div className="absolute bottom-[80px] left-[80px] bg-[var(--verm)] text-[var(--ink)] p-3 text-[10px] font-bold tracking-wider shadow-lg">PRIORITY 03<br/><span className="font-normal">Search structure</span></div>
                   </div>
                 )}
                 

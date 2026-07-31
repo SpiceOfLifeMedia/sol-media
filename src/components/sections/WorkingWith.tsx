@@ -21,7 +21,7 @@ export function WorkingWith() {
   return (
     <section className="bg-[var(--paper)] py-[96px] px-5 md:px-12 text-[var(--ink)]">
       <div className="max-w-[1440px] mx-auto">
-        <div className="caps-label text-[rgba(22,21,15,0.5)] mb-8">HIGH STANDARDS. CLEAR COMMUNICATION.</div>
+        <div className="caps-label text-[rgba(22,21,15,0.65)] mb-8">HIGH STANDARDS. CLEAR COMMUNICATION.</div>
         
         <h2 className="text-[36px] md:text-[54px] font-[800] leading-[1.05] tracking-[-0.02em] max-w-[20ch] mb-16 md:mb-24" style={{ fontStretch: '125%' }}>
           Built to deliver —<br/>not just to present.

@@ -1,7 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap');
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @plugin "@tailwindcss/typography";
+
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+  src: url('/fonts/archivo-latin-variable.woff2') format('woff2');
+}
 
 @custom-variant dark (&:is(.dark *));
 
@@ -24,6 +32,7 @@
   --ink-stage: #0B0A07;
   --paper: #F2EEE6;
   --verm: #E8451C;
+  --verm-text-light: #B93813;
   --verm-pressed: #B93813;
   --white: #FFFFFF;
 

@@ -21,7 +21,7 @@ export function FinalCTA() {
           Start a project
         </Link>
         
-        <div className="mt-10 caps-label text-[rgba(242,238,230,0.4)]">
+        <div className="mt-10 caps-label text-[rgba(242,238,230,0.6)]">
           WE'LL RESPOND AS SOON AS POSSIBLE.
         </div>
       </div>

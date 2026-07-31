@@ -13,7 +13,8 @@ export function Footer() {
           <Link href="/" className="flex items-center gap-3">
             <img
               src={`${ASSET_PATH}/assets/sol-mark-white.svg`}
-              alt="Spice of Life Media"
+              alt=""
+              aria-hidden="true"
               width="320"
               height="108"
               className="h-[20px] w-auto"
@@ -56,7 +57,7 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="max-w-[1440px] mx-auto mt-16 md:mt-24 text-[12px] text-[rgba(242,238,230,0.4)]">
+      <div className="max-w-[1440px] mx-auto mt-16 md:mt-24 text-[12px] text-[rgba(242,238,230,0.6)]">
         © 2026 Spice of Life Media
       </div>
     </footer>

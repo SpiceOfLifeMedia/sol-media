@@ -149,6 +149,12 @@ export function ReelStage() {
             <source src={`${ASSET_PATH}/media/sol-transformation-hero.mp4`} type="video/mp4" />
           </>
         )}
+        <track
+          kind="captions"
+          src={`${ASSET_PATH}/media/sol-transformation-hero.en.vtt`}
+          srcLang="en"
+          label="English"
+        />
       </video>
 
       {/* Stage overlays — sit above video */}

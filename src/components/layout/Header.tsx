@@ -45,7 +45,8 @@ export function Header() {
           <Link href="/" className="flex items-center gap-3 no-default-hover-elevate">
             <img
               src={`${ASSET_PATH}/assets/sol-mark-${usesLightHeader ? 'ink' : 'white'}.svg`}
-              alt="Spice of Life Media"
+              alt=""
+              aria-hidden="true"
               width="320"
               height="108"
               className="h-[20px] w-auto"
@@ -94,10 +95,11 @@ export function Header() {
 
       {/* Mobile Header */}
       <header className="fixed top-0 left-0 w-full z-50 h-[60px] bg-[var(--ink)] border-b border-[rgba(242,238,230,0.12)] md:hidden flex items-center justify-between px-5">
-        <Link href="/" className="flex items-center">
+        <Link href="/" className="flex items-center" aria-label="Spice of Life Media">
           <img
             src={`${ASSET_PATH}/assets/sol-mark-white.svg`}
-            alt="Spice of Life Media"
+            alt=""
+            aria-hidden="true"
             width="320"
             height="108"
             className="h-[17px] w-auto"
@@ -117,10 +119,11 @@ export function Header() {
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-[60] bg-[var(--ink)] flex flex-col md:hidden animate-in fade-in slide-in-from-top-4 duration-300">
           <div className="h-[60px] flex items-center justify-between px-5 border-b border-[rgba(242,238,230,0.12)]">
-            <Link href="/" className="flex items-center">
+            <Link href="/" className="flex items-center" aria-label="Spice of Life Media">
               <img
                 src={`${ASSET_PATH}/assets/sol-mark-white.svg`}
-                alt="Spice of Life Media"
+                alt=""
+                aria-hidden="true"
                 width="320"
                 height="108"
                 className="h-[17px] w-auto"

@@ -45,7 +45,7 @@ export function Process() {
           ))}
         </div>
 
-        <div className="mt-16 md:mt-24 text-[13px] text-[rgba(242,238,230,0.4)] border-t border-[rgba(242,238,230,0.1)] pt-6 inline-block">
+        <div className="mt-16 md:mt-24 text-[13px] text-[rgba(242,238,230,0.6)] border-t border-[rgba(242,238,230,0.1)] pt-6 inline-block">
           Clients can engage one discipline or the full transformation — the process scales to the need.
         </div>
       </div>
