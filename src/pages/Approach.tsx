@@ -5,7 +5,7 @@ import { Process } from '@/components/sections/Process';
 import { FinalCTA } from '@/components/sections/FinalCTA';
 
 export default function Approach() {
-  useSeo('Approach', 'Five disciplines. One clear path. Identify the gaps, clarify the message, build the foundation, implement with precision, and measure the growth.');
+  useSeo();
 
   return (
     <div className="min-h-[100dvh] flex flex-col w-full overflow-x-hidden bg-[var(--ink)] text-[var(--paper)]">
@@ -17,7 +17,7 @@ export default function Approach() {
               Our Approach<span className="text-[var(--verm)]">.</span>
             </h1>
             <p className="text-[18px] md:text-[20px] leading-[1.6] text-[rgba(242,238,230,0.7)] max-w-[600px]">
-              A proven framework for transforming disconnected digital presence into a coherent, high-performing system.
+              A practical framework for turning a disconnected digital presence into a clear, connected system.
             </p>
           </div>
         </section>

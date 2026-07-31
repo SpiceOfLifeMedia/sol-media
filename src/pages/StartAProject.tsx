@@ -1,13 +1,34 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { Link } from 'wouter';
 import { useSeo } from '@/hooks/useSeo';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
+import { trackAnalyticsEvent } from '@/lib/analytics';
+import { appendConsentApprovedAttribution } from '@/lib/analyticsAttribution';
+import { hasAnalyticsConsent } from '@/lib/privacyConsent';
 
 export default function StartAProject() {
-  useSeo('Start a Project', 'Tell us what feels disconnected, outdated or underperforming. We\'ll recommend the clearest next step.');
+  useSeo();
 
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const formStarted = useRef(false);
+  const leadTracked = useRef(false);
+
+  const handleFormStart = (event: React.SyntheticEvent<HTMLFormElement>) => {
+    if (
+      formStarted.current ||
+      !(event.target instanceof HTMLElement) ||
+      event.target.matches('[name="website_confirm"]') ||
+      !event.target.matches('input:not([type="hidden"]), select, textarea')
+    ) {
+      return;
+    }
+
+    formStarted.current = trackAnalyticsEvent('form_start', {
+      form_name: 'start_a_project',
+    });
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -35,6 +56,7 @@ export default function StartAProject() {
 
     setErrors({});
     setStatus('submitting');
+    appendConsentApprovedAttribution(formData, hasAnalyticsConsent());
 
     try {
       const response = await fetch('/api/contact', {
@@ -43,6 +65,12 @@ export default function StartAProject() {
       });
       
       if (response.ok) {
+        if (!leadTracked.current) {
+          leadTracked.current = true;
+          trackAnalyticsEvent('generate_lead', {
+            form_name: 'start_a_project',
+          });
+        }
         setStatus('success');
       } else {
         setStatus('error');
@@ -101,10 +129,15 @@ export default function StartAProject() {
               <div className="bg-white p-12 border border-[rgba(22,21,15,0.1)] text-center flex flex-col items-center gap-6 shadow-sm">
                 <div className="w-16 h-16 rounded-full bg-[var(--paper)] flex items-center justify-center text-[var(--verm)] text-3xl">✓</div>
                 <h2 className="text-[28px] font-[800] tracking-[-0.02em]">Enquiry received.</h2>
-                <p className="text-[16px] text-[rgba(22,21,15,0.7)]">We've received your enquiry. You'll hear back within one business day.</p>
+                <p className="text-[16px] text-[rgba(22,21,15,0.7)]">We've received your enquiry. We'll be in touch as soon as possible.</p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="flex flex-col gap-10">
+              <form
+                onFocusCapture={handleFormStart}
+                onInput={handleFormStart}
+                onSubmit={handleSubmit}
+                className="flex flex-col gap-10"
+              >
                 {status === 'error' && (
                   <div className="bg-[var(--ink)] text-[var(--paper)] p-6 flex flex-col gap-3">
                     <div className="font-[800] tracking-tight text-[var(--verm)]">Submission Failed</div>
@@ -199,6 +232,16 @@ export default function StartAProject() {
                 >
                   {status === 'submitting' ? 'Submitting...' : 'Submit Enquiry'}
                 </button>
+                <p className="-mt-5 text-center text-[12px] leading-[1.5] text-[rgba(22,21,15,0.58)]">
+                  We’ll use your details to respond to your enquiry. Read our{' '}
+                  <Link
+                    className="font-[700] text-[var(--ink)] underline decoration-[rgba(22,21,15,0.35)] underline-offset-4 hover:decoration-[var(--ink)]"
+                    href="/privacy"
+                  >
+                    Privacy Policy
+                  </Link>
+                  .
+                </p>
               </form>
             )}
           </div>

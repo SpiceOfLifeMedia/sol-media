@@ -1,41 +1,94 @@
 import { useEffect } from 'react';
+import { useLocation } from 'wouter';
 
-export function useSeo(title: string, description: string) {
+import {
+  BRAND_IMAGE_ALT,
+  DEFAULT_OG_IMAGE,
+  SEO_ROUTES,
+  SITE_NAME,
+  canonicalUrl,
+  getSeo,
+  normalizePath,
+  structuredDataForPath,
+} from '@/lib/seo';
+
+function upsertMeta(attribute: 'name' | 'property', key: string, content: string) {
+  let element = document.querySelector<HTMLMetaElement>(`meta[${attribute}="${key}"]`);
+  if (!element) {
+    element = document.createElement('meta');
+    element.setAttribute(attribute, key);
+    document.head.appendChild(element);
+  }
+  element.content = content;
+}
+
+export function useSeo() {
+  const [location] = useLocation();
+
   useEffect(() => {
-    document.title = title ? `${title} | Spice of Life Media` : 'Spice of Life Media';
+    const seo = getSeo(location);
+    const knownRoute = normalizePath(location) in SEO_ROUTES;
+    const canonical = canonicalUrl(location);
+    const robots = seo.index ? 'index, follow' : 'noindex, follow';
 
-    let metaDesc = document.querySelector<HTMLMetaElement>('meta[name="description"]');
-    if (!metaDesc) {
-      metaDesc = document.createElement('meta');
-      metaDesc.name = 'description';
-      document.head.appendChild(metaDesc);
-    }
-    metaDesc.content = description;
+    document.documentElement.lang = 'en-AU';
+    document.title = seo.title;
 
-    // Canonical
-    let canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
-    if (!canonical) {
-      canonical = document.createElement('link');
-      canonical.rel = 'canonical';
-      document.head.appendChild(canonical);
-    }
-    canonical.href = `https://spiceoflifemedia.com.au${window.location.pathname}`;
+    upsertMeta('name', 'description', seo.description);
+    upsertMeta('name', 'robots', robots);
 
-    // OG tags
-    const setMeta = (property: string, content: string) => {
-      let el = document.querySelector<HTMLMetaElement>(`meta[property="${property}"]`);
-      if (!el) {
-        el = document.createElement('meta');
-        el.setAttribute('property', property);
-        document.head.appendChild(el);
+    let canonicalElement = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    if (knownRoute) {
+      if (!canonicalElement) {
+        canonicalElement = document.createElement('link');
+        canonicalElement.rel = 'canonical';
+        document.head.appendChild(canonicalElement);
       }
-      el.content = content;
-    };
+      canonicalElement.href = canonical;
+    } else {
+      canonicalElement?.remove();
+    }
 
-    const fullTitle = title ? `${title} | Spice of Life Media` : 'Spice of Life Media';
-    setMeta('og:title', fullTitle);
-    setMeta('og:description', description);
-    setMeta('og:url', `https://spiceoflifemedia.com.au${window.location.pathname}`);
-    setMeta('og:type', 'website');
-  }, [title, description]);
+    upsertMeta('property', 'og:site_name', SITE_NAME);
+    upsertMeta('property', 'og:locale', 'en_AU');
+    upsertMeta('property', 'og:type', 'website');
+    upsertMeta('property', 'og:title', seo.title);
+    upsertMeta('property', 'og:description', seo.description);
+    upsertMeta('property', 'og:url', canonical);
+    upsertMeta('property', 'og:image', DEFAULT_OG_IMAGE);
+    upsertMeta('property', 'og:image:width', '1200');
+    upsertMeta('property', 'og:image:height', '630');
+    upsertMeta('property', 'og:image:type', 'image/png');
+    upsertMeta(
+      'property',
+      'og:image:alt',
+      BRAND_IMAGE_ALT,
+    );
+
+    upsertMeta('name', 'twitter:card', 'summary_large_image');
+    upsertMeta('name', 'twitter:title', seo.title);
+    upsertMeta('name', 'twitter:description', seo.description);
+    upsertMeta('name', 'twitter:image', DEFAULT_OG_IMAGE);
+    upsertMeta(
+      'name',
+      'twitter:image:alt',
+      BRAND_IMAGE_ALT,
+    );
+
+    const scriptId = 'sol-structured-data';
+    const structuredData = structuredDataForPath(location);
+    let script = document.getElementById(scriptId) as HTMLScriptElement | null;
+
+    if (structuredData) {
+      if (!script) {
+        script = document.createElement('script');
+        script.id = scriptId;
+        script.type = 'application/ld+json';
+        document.head.appendChild(script);
+      }
+      script.textContent = JSON.stringify(structuredData);
+    } else {
+      script?.remove();
+    }
+  }, [location]);
 }

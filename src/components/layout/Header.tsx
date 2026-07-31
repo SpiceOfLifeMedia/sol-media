@@ -8,6 +8,8 @@ export function Header() {
   const isScrolled = useScrollHeader(600);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [location] = useLocation();
+  const usesLightHeader =
+    isScrolled || ['/capabilities', '/agency', '/privacy'].includes(location);
 
   // Close mobile menu on route change
   useEffect(() => {
@@ -34,7 +36,7 @@ export function Header() {
     <>
       <header
         className={`fixed top-0 left-0 w-full z-50 transition-all duration-180 ease-out border-b ${
-          isScrolled
+          usesLightHeader
             ? 'h-[64px] bg-[var(--paper)] border-transparent text-[var(--ink)] shadow-sm'
             : 'h-[76px] bg-transparent border-[rgba(242,238,230,0.12)] text-[var(--paper)]'
         } hidden md:flex items-center px-12`}
@@ -42,7 +44,7 @@ export function Header() {
         <div className="max-w-[1440px] mx-auto w-full flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 no-default-hover-elevate">
             <img
-              src={`${ASSET_PATH}/assets/sol-mark-${isScrolled ? 'ink' : 'white'}.svg`}
+              src={`${ASSET_PATH}/assets/sol-mark-${usesLightHeader ? 'ink' : 'white'}.svg`}
               alt="Spice of Life Media"
               className="h-[20px] w-auto"
             />
@@ -55,28 +57,28 @@ export function Header() {
             <Link
               href="/capabilities"
               className={`text-[14px] font-medium transition-colors ${
-                isScrolled ? 'text-[var(--ink)] hover:text-[var(--verm)]' : 'text-[rgba(242,238,230,0.82)] hover:text-white'
+                usesLightHeader ? 'text-[var(--ink)] hover:text-[var(--verm)]' : 'text-[rgba(242,238,230,0.82)] hover:text-white'
               } ${location === '/capabilities' ? 'border-b-2 border-[var(--verm)] pb-1' : ''}`}
             >
-              Capabilities
+              CAPABILITIES
             </Link>
             <Link
               href="/approach"
               className={`text-[14px] font-medium transition-colors ${
-                isScrolled ? 'text-[var(--ink)] hover:text-[var(--verm)]' : 'text-[rgba(242,238,230,0.82)] hover:text-white'
+                usesLightHeader ? 'text-[var(--ink)] hover:text-[var(--verm)]' : 'text-[rgba(242,238,230,0.82)] hover:text-white'
               } ${location === '/approach' ? 'border-b-2 border-[var(--verm)] pb-1' : ''}`}
             >
-              Approach
+              APPROACH
             </Link>
             <Link
               href="/agency"
               className={`text-[14px] font-medium transition-colors ${
-                isScrolled ? 'text-[var(--ink)] hover:text-[var(--verm)]' : 'text-[rgba(242,238,230,0.82)] hover:text-white'
+                usesLightHeader ? 'text-[var(--ink)] hover:text-[var(--verm)]' : 'text-[rgba(242,238,230,0.82)] hover:text-white'
               } ${location === '/agency' ? 'border-b-2 border-[var(--verm)] pb-1' : ''}`}
             >
-              Agency
+              AGENCY
             </Link>
-            {isScrolled && (
+            {usesLightHeader && (
               <Link
                 href="/start-a-project"
                 className="bg-[var(--verm)] text-[var(--ink)] text-[14px] font-bold px-6 py-2.5 ml-4 hover:bg-[var(--verm-pressed)] transition-colors"
@@ -130,13 +132,13 @@ export function Header() {
             
             <nav className="flex flex-col px-5">
               <Link href="/capabilities" className="text-[26px] font-bold text-[var(--paper)] leading-[56px]">
-                Capabilities
+                CAPABILITIES
               </Link>
               <Link href="/approach" className="text-[26px] font-bold text-[var(--paper)] leading-[56px]">
-                Approach
+                APPROACH
               </Link>
               <Link href="/agency" className="text-[26px] font-bold text-[var(--paper)] leading-[56px]">
-                Agency
+                AGENCY
               </Link>
             </nav>
             

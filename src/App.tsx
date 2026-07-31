@@ -1,4 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { AnalyticsTracker } from '@/components/analytics/AnalyticsTracker';
+import { ConsentPreferences } from '@/components/privacy/ConsentPreferences';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
@@ -40,12 +42,21 @@ function Router() {
   );
 }
 
-function App() {
+type AppProps = {
+  ssrPath?: string;
+};
+
+function App({ ssrPath }: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
+        <WouterRouter
+          base={import.meta.env.BASE_URL.replace(/\/$/, '')}
+          ssrPath={ssrPath}
+        >
           <Router />
+          <AnalyticsTracker />
+          <ConsentPreferences />
         </WouterRouter>
         <Toaster />
       </TooltipProvider>

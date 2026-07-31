@@ -38,7 +38,7 @@ export function WorkingWith() {
 
         <div className="mt-16 md:mt-24 pt-10 border-t border-[rgba(22,21,15,0.15)]">
           <p className="text-[16px] leading-[1.6] text-[rgba(22,21,15,0.8)] max-w-[700px]">
-            Spice of Life Media is a remote-first agency that assembles and manages the expertise each project requires. No inflated headcount. No overpriced overhead. Just the right people on your project.
+            Every project is scoped around the expertise it needs, with one lead responsible for keeping strategy, delivery and communication connected.
           </p>
         </div>
       </div>

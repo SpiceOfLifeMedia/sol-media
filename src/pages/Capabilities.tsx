@@ -5,7 +5,7 @@ import { Capabilities as CapabilitiesSection } from '@/components/sections/Capab
 import { FinalCTA } from '@/components/sections/FinalCTA';
 
 export default function Capabilities() {
-  useSeo('Capabilities', 'Explore our five core disciplines: Digital Presence Audit, Brand Systems, Websites & Rebuilds, SEO & Search Growth, and Social & Content Systems.');
+  useSeo();
 
   return (
     <div className="min-h-[100dvh] flex flex-col w-full overflow-x-hidden bg-[var(--paper)] text-[var(--ink)]">

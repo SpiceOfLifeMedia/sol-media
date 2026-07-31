@@ -16,8 +16,18 @@ export function ServiceTemplate({ title, tagline, problem, whoFor, inclusions, p
   return (
     <>
       {/* Hero */}
-      <section className="bg-[var(--ink)] pt-[160px] pb-[96px] px-5 md:px-12 text-[var(--paper)]">
-        <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row md:items-end justify-between gap-12">
+      <section className="bg-[var(--ink)] pt-[104px] md:pt-[160px] pb-[80px] md:pb-[96px] px-5 md:px-12 text-[var(--paper)]">
+        <div className="max-w-[1440px] mx-auto">
+          <nav aria-label="Breadcrumb" className="mb-10 flex flex-wrap items-center gap-2 text-[11px] font-[700] tracking-[0.08em] uppercase text-[rgba(242,238,230,0.55)]">
+            <Link href="/" className="hover:text-[var(--paper)] transition-colors">Home</Link>
+            <span aria-hidden="true">/</span>
+            <Link href="/capabilities" className="hover:text-[var(--paper)] transition-colors">CAPABILITIES</Link>
+            <span aria-hidden="true">/</span>
+            <span aria-current="page" className="text-[rgba(242,238,230,0.8)]">
+              {title.replace('\n', ' ')}
+            </span>
+          </nav>
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-12">
           <div className="max-w-[800px]">
             <h1 className="text-[48px] md:text-[80px] leading-[1] font-[800] tracking-[-0.025em] mb-6 whitespace-pre-line" style={{ fontStretch: '125%' }}>
               {title}<span className="text-[var(--verm)]">.</span>
@@ -32,6 +42,7 @@ export function ServiceTemplate({ title, tagline, problem, whoFor, inclusions, p
           >
             Start a project
           </Link>
+          </div>
         </div>
       </section>
 
