@@ -46,6 +46,8 @@ export function Header() {
             <img
               src={`${ASSET_PATH}/assets/sol-mark-${usesLightHeader ? 'ink' : 'white'}.svg`}
               alt="Spice of Life Media"
+              width="320"
+              height="108"
               className="h-[20px] w-auto"
             />
             <span className="caps-label font-semibold text-[11.5px] tracking-[0.24em] mt-[2px]">
@@ -93,7 +95,13 @@ export function Header() {
       {/* Mobile Header */}
       <header className="fixed top-0 left-0 w-full z-50 h-[60px] bg-[var(--ink)] border-b border-[rgba(242,238,230,0.12)] md:hidden flex items-center justify-between px-5">
         <Link href="/" className="flex items-center">
-          <img src={`${ASSET_PATH}/assets/sol-mark-white.svg`} alt="Spice of Life Media" className="h-[17px] w-auto" />
+          <img
+            src={`${ASSET_PATH}/assets/sol-mark-white.svg`}
+            alt="Spice of Life Media"
+            width="320"
+            height="108"
+            className="h-[17px] w-auto"
+          />
         </Link>
         <button
           className="w-[44px] h-[44px] flex flex-col items-end justify-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-[var(--paper)] focus:ring-offset-2 focus:ring-offset-[var(--ink)]"
@@ -110,7 +118,13 @@ export function Header() {
         <div className="fixed inset-0 z-[60] bg-[var(--ink)] flex flex-col md:hidden animate-in fade-in slide-in-from-top-4 duration-300">
           <div className="h-[60px] flex items-center justify-between px-5 border-b border-[rgba(242,238,230,0.12)]">
             <Link href="/" className="flex items-center">
-              <img src={`${ASSET_PATH}/assets/sol-mark-white.svg`} alt="Spice of Life Media" className="h-[17px] w-auto" />
+              <img
+                src={`${ASSET_PATH}/assets/sol-mark-white.svg`}
+                alt="Spice of Life Media"
+                width="320"
+                height="108"
+                className="h-[17px] w-auto"
+              />
             </Link>
             <button
               className="w-[44px] h-[44px] flex flex-col items-end justify-center focus:outline-none focus:ring-2 focus:ring-[var(--paper)] focus:ring-offset-2 focus:ring-offset-[var(--ink)] relative"

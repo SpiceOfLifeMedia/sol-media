@@ -11,7 +11,13 @@ export function Footer() {
         {/* Left */}
         <div className="flex flex-col items-start gap-4">
           <Link href="/" className="flex items-center gap-3">
-            <img src={`${ASSET_PATH}/assets/sol-mark-white.svg`} alt="Spice of Life Media" className="h-[20px] w-auto" />
+            <img
+              src={`${ASSET_PATH}/assets/sol-mark-white.svg`}
+              alt="Spice of Life Media"
+              width="320"
+              height="108"
+              className="h-[20px] w-auto"
+            />
             <span className="caps-label font-semibold text-[11.5px] tracking-[0.24em] mt-[2px]">
               SPICE OF LIFE MEDIA
             </span>

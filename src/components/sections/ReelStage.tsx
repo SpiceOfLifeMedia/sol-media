@@ -8,8 +8,9 @@ export function ReelStage() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [hasPlayed, setHasPlayed] = useState(false);
 
-  // Keep the video out of the initial page load, and respect reduced motion
-  // and data-saving preferences. Visitors can still start it manually.
+  // Keep the video from competing with the critical page load. Once the reel
+  // is nearby, wait for the page load event and an idle window before autoplay.
+  // Reduced-motion/data-saving visitors can still start it manually.
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -21,22 +22,80 @@ export function ReelStage() {
 
     if (reducedMotion || connection?.saveData) return;
 
+    type IdleCapableWindow = Window & {
+      requestIdleCallback?: (
+        callback: () => void,
+        options?: { timeout: number },
+      ) => number;
+      cancelIdleCallback?: (handle: number) => void;
+    };
+
+    const idleWindow = window as IdleCapableWindow;
+    let idleHandle: number | undefined;
+    let timeoutHandle: number | undefined;
+    let waitingForPageLoad = false;
+
+    const loadVideo = () => setShouldLoadVideo(true);
+    const scheduleVideoLoad = () => {
+      waitingForPageLoad = false;
+
+      if (idleWindow.requestIdleCallback) {
+        idleHandle = idleWindow.requestIdleCallback(loadVideo, { timeout: 1500 });
+        return;
+      }
+
+      timeoutHandle = window.setTimeout(loadVideo, 400);
+    };
+
+    const loadWhenPageSettles = () => {
+      if (document.readyState === 'complete') {
+        scheduleVideoLoad();
+        return;
+      }
+
+      waitingForPageLoad = true;
+      window.addEventListener('load', scheduleVideoLoad, { once: true });
+    };
+
     if (!('IntersectionObserver' in window)) {
-      setShouldLoadVideo(true);
-      return;
+      loadWhenPageSettles();
+    } else {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (!entry.isIntersecting) return;
+          observer.disconnect();
+          loadWhenPageSettles();
+        },
+        { rootMargin: '120px 0px', threshold: 0.25 },
+      );
+
+      observer.observe(video);
+
+      return () => {
+        observer.disconnect();
+        if (waitingForPageLoad) {
+          window.removeEventListener('load', scheduleVideoLoad);
+        }
+        if (idleHandle !== undefined) {
+          idleWindow.cancelIdleCallback?.(idleHandle);
+        }
+        if (timeoutHandle !== undefined) {
+          window.clearTimeout(timeoutHandle);
+        }
+      };
     }
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-        setShouldLoadVideo(true);
-        observer.disconnect();
-      },
-      { rootMargin: '120px 0px', threshold: 0.25 },
-    );
-
-    observer.observe(video);
-    return () => observer.disconnect();
+    return () => {
+      if (waitingForPageLoad) {
+        window.removeEventListener('load', scheduleVideoLoad);
+      }
+      if (idleHandle !== undefined) {
+        idleWindow.cancelIdleCallback?.(idleHandle);
+      }
+      if (timeoutHandle !== undefined) {
+        window.clearTimeout(timeoutHandle);
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -106,6 +165,8 @@ export function ReelStage() {
           src={`${ASSET_PATH}/assets/sol-mark-white.svg`}
           alt=""
           aria-hidden="true"
+          width="320"
+          height="108"
           className="h-[14px] opacity-90"
         />
       </div>
