@@ -53,7 +53,7 @@ export function Footer() {
           <a href="mailto:info@spiceoflifemedia.com.au" className="hover:text-white transition-colors">
             info@spiceoflifemedia.com.au
           </a>
-          <p>Adelaide, Australia — working internationally</p>
+          <p>Adelaide-based — working across Australia</p>
         </div>
       </div>
 
