@@ -13,8 +13,8 @@ export function WorkingWith() {
       desc: "Every recommendation connects to a business outcome, not just an aesthetic preference."
     },
     {
-      title: "Remote-first, internationally capable.",
-      desc: "Based in Adelaide. Structured to work with clients anywhere without it showing."
+      title: "Australia-wide, remote-first.",
+      desc: "Based in Adelaide and structured to work seamlessly with clients across Australia."
     }
   ];
 
