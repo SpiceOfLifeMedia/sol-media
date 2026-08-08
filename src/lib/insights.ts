@@ -7,6 +7,7 @@ export type InsightSection = {
 
 export type Insight = {
   slug: string;
+  isPublished: boolean;
   category: string;
   title: string;
   excerpt: string;
@@ -24,6 +25,7 @@ export type Insight = {
 export const INSIGHTS: Insight[] = [
   {
     slug: 'when-should-an-established-business-rebrand',
+    isPublished: true,
     category: 'Brand strategy',
     title: 'When should an established business rebrand?',
     excerpt:
@@ -92,6 +94,7 @@ export const INSIGHTS: Insight[] = [
   },
   {
     slug: 'website-rebuild-cost-australia',
+    isPublished: false,
     category: 'Websites',
     title: 'What does a professional website rebuild cost in Australia?',
     excerpt:
@@ -166,6 +169,7 @@ export const INSIGHTS: Insight[] = [
   },
   {
     slug: 'seo-vs-google-ads',
+    isPublished: false,
     category: 'Growth',
     title: 'SEO vs Google Ads: where should an Australian business invest first?',
     excerpt:
@@ -239,6 +243,8 @@ export const INSIGHTS: Insight[] = [
     },
   },
 ];
+
+export const PUBLISHED_INSIGHTS = INSIGHTS.filter((insight) => insight.isPublished);
 
 export function getInsight(slug: string) {
   return INSIGHTS.find((insight) => insight.slug === slug);

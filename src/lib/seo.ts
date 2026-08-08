@@ -133,32 +133,6 @@ export const SEO_ROUTES: Record<string, SeoConfig> = {
     },
     lastModified: '2026-08-09',
   },
-  '/insights/website-rebuild-cost-australia': {
-    title: 'Website Rebuild Cost Australia: A Practical Guide | SOL Media',
-    description:
-      'Understand the typical investment levels, disciplines and hidden work that shape the cost of a professional website rebuild in Australia.',
-    index: true,
-    pageType: 'WebPage',
-    article: {
-      headline: 'What does a professional website rebuild cost in Australia?',
-      datePublished: '2026-08-09',
-      dateModified: '2026-08-09',
-    },
-    lastModified: '2026-08-09',
-  },
-  '/insights/seo-vs-google-ads': {
-    title: 'SEO vs Google Ads: Where Should You Invest First? | SOL Media',
-    description:
-      'Compare SEO and Google Ads for an Australian business, including when each channel should lead and how they can work together.',
-    index: true,
-    pageType: 'WebPage',
-    article: {
-      headline: 'SEO vs Google Ads: where should an Australian business invest first?',
-      datePublished: '2026-08-09',
-      dateModified: '2026-08-09',
-    },
-    lastModified: '2026-08-09',
-  },
 };
 
 export const NOT_FOUND_SEO: SeoConfig = {

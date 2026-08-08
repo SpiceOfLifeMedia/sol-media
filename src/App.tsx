@@ -36,12 +36,6 @@ function Router() {
       <Route path="/insights/when-should-an-established-business-rebrand">
         <InsightArticle slug="when-should-an-established-business-rebrand" />
       </Route>
-      <Route path="/insights/website-rebuild-cost-australia">
-        <InsightArticle slug="website-rebuild-cost-australia" />
-      </Route>
-      <Route path="/insights/seo-vs-google-ads">
-        <InsightArticle slug="seo-vs-google-ads" />
-      </Route>
       
       <Route path="/services/digital-presence-audit" component={DigitalPresenceAudit} />
       <Route path="/services/brand-systems" component={BrandSystems} />

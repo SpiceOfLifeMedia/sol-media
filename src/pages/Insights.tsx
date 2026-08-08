@@ -4,7 +4,7 @@ import { Footer } from '@/components/layout/Footer';
 import { Header } from '@/components/layout/Header';
 import { FinalCTA } from '@/components/sections/FinalCTA';
 import { useSeo } from '@/hooks/useSeo';
-import { INSIGHTS } from '@/lib/insights';
+import { PUBLISHED_INSIGHTS } from '@/lib/insights';
 
 export default function Insights() {
   useSeo();
@@ -32,7 +32,7 @@ export default function Insights() {
 
         <section className="px-5 pb-24 md:px-12 md:pb-32">
           <div className="mx-auto grid max-w-[1440px] gap-6 lg:grid-cols-3">
-            {INSIGHTS.map((insight, index) => (
+            {PUBLISHED_INSIGHTS.map((insight, index) => (
               <article
                 key={insight.slug}
                 className={`group flex min-h-[460px] flex-col border border-[rgba(22,21,15,0.16)] p-7 transition-colors hover:border-[var(--verm)] md:p-9 ${
