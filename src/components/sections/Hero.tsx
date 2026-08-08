@@ -18,7 +18,7 @@ export function Hero() {
         {/* Right column */}
         <div className="flex flex-col md:w-[340px] gap-6 text-center md:text-left items-center md:items-start">
           <p className="text-[14px] md:text-[16px] leading-[1.58] text-[rgba(242,238,230,0.78)]">
-            We audit, sharpen and rebuild the way your business shows up — from brand identity and premium websites to SEO and social content systems. Based in Adelaide. Working worldwide.
+            We audit, sharpen and rebuild the way your business shows up — from brand identity and premium websites to SEO and social content systems. Based in Adelaide, working with ambitious businesses across Australia.
           </p>
           <div className="flex flex-col w-full gap-4 items-center md:items-start mt-2">
             <Link 
