@@ -26,6 +26,11 @@
       "source": "/our-services",
       "destination": "/capabilities",
       "permanent": true
+    },
+    {
+      "source": "/content",
+      "destination": "/services/social-content-systems",
+      "permanent": true
     }
   ],
   "headers": [
