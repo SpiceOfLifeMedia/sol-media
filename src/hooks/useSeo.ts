@@ -51,7 +51,7 @@ export function useSeo() {
 
     upsertMeta('property', 'og:site_name', SITE_NAME);
     upsertMeta('property', 'og:locale', 'en_AU');
-    upsertMeta('property', 'og:type', 'website');
+    upsertMeta('property', 'og:type', seo.article ? 'article' : 'website');
     upsertMeta('property', 'og:title', seo.title);
     upsertMeta('property', 'og:description', seo.description);
     upsertMeta('property', 'og:url', canonical);

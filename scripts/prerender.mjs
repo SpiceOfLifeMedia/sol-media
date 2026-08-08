@@ -52,7 +52,7 @@ function headForPath(pathname, includeCanonical = true) {
   tags.push(
     `    <meta property="og:site_name" content="${SITE_NAME}" />`,
     '    <meta property="og:locale" content="en_AU" />',
-    '    <meta property="og:type" content="website" />',
+    `    <meta property="og:type" content="${seo.article ? 'article' : 'website'}" />`,
     `    <meta property="og:title" content="${escapeAttribute(seo.title)}" />`,
     `    <meta property="og:description" content="${escapeAttribute(seo.description)}" />`,
     `    <meta property="og:url" content="${escapeAttribute(canonical)}" />`,

@@ -36,6 +36,9 @@ export function Footer() {
           <Link href="/agency" className="text-[14px] font-medium text-[rgba(242,238,230,0.7)] hover:text-white transition-colors">
             AGENCY
           </Link>
+          <Link href="/insights" className="text-[14px] font-medium text-[rgba(242,238,230,0.7)] hover:text-white transition-colors">
+            INSIGHTS
+          </Link>
           <Link href="/privacy" className="text-[14px] font-medium text-[rgba(242,238,230,0.7)] hover:text-white transition-colors">
             Privacy
           </Link>
