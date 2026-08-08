@@ -10,6 +10,11 @@ export type SeoConfig = {
   index: boolean;
   pageType: 'WebPage' | 'AboutPage' | 'ContactPage' | 'CollectionPage';
   serviceName?: string;
+  article?: {
+    headline: string;
+    datePublished: string;
+    dateModified: string;
+  };
   lastModified: string;
 };
 
@@ -107,6 +112,53 @@ export const SEO_ROUTES: Record<string, SeoConfig> = {
     serviceName: 'Social & Content Systems',
     lastModified: '2026-08-09',
   },
+  '/insights': {
+    title: 'Brand, Website & SEO Insights | Spice of Life Media',
+    description:
+      'Practical perspectives on brand strategy, website rebuilds, SEO and digital growth for established Australian businesses.',
+    index: true,
+    pageType: 'CollectionPage',
+    lastModified: '2026-08-09',
+  },
+  '/insights/when-should-an-established-business-rebrand': {
+    title: 'When Should an Established Business Rebrand? | SOL Media',
+    description:
+      'Learn the signs that your brand has fallen behind your business, and how to decide between a brand refresh, repositioning or complete rebuild.',
+    index: true,
+    pageType: 'WebPage',
+    article: {
+      headline: 'When should an established business rebrand?',
+      datePublished: '2026-08-09',
+      dateModified: '2026-08-09',
+    },
+    lastModified: '2026-08-09',
+  },
+  '/insights/website-rebuild-cost-australia': {
+    title: 'Website Rebuild Cost Australia: A Practical Guide | SOL Media',
+    description:
+      'Understand the typical investment levels, disciplines and hidden work that shape the cost of a professional website rebuild in Australia.',
+    index: true,
+    pageType: 'WebPage',
+    article: {
+      headline: 'What does a professional website rebuild cost in Australia?',
+      datePublished: '2026-08-09',
+      dateModified: '2026-08-09',
+    },
+    lastModified: '2026-08-09',
+  },
+  '/insights/seo-vs-google-ads': {
+    title: 'SEO vs Google Ads: Where Should You Invest First? | SOL Media',
+    description:
+      'Compare SEO and Google Ads for an Australian business, including when each channel should lead and how they can work together.',
+    index: true,
+    pageType: 'WebPage',
+    article: {
+      headline: 'SEO vs Google Ads: where should an Australian business invest first?',
+      datePublished: '2026-08-09',
+      dateModified: '2026-08-09',
+    },
+    lastModified: '2026-08-09',
+  },
 };
 
 export const NOT_FOUND_SEO: SeoConfig = {
@@ -160,6 +212,10 @@ export function structuredDataForPath(pathname: string) {
 
   if (path === '/capabilities') {
     webpage.mainEntity = { '@id': `${canonical}#services` };
+  }
+
+  if (seo.article) {
+    webpage.mainEntity = { '@id': `${canonical}#article` };
   }
 
   const graph: Record<string, unknown>[] = [
@@ -234,6 +290,34 @@ export function structuredDataForPath(pathname: string) {
     webpage.breadcrumb = { '@id': `${canonical}#breadcrumb` };
   }
 
+  if (path.startsWith('/insights/')) {
+    graph.push({
+      '@type': 'BreadcrumbList',
+      '@id': `${canonical}#breadcrumb`,
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Home',
+          item: `${SITE_URL}/`,
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: 'Insights',
+          item: `${SITE_URL}/insights`,
+        },
+        {
+          '@type': 'ListItem',
+          position: 3,
+          name: seo.article?.headline ?? seo.title.split('|')[0].trim(),
+          item: canonical,
+        },
+      ],
+    });
+    webpage.breadcrumb = { '@id': `${canonical}#breadcrumb` };
+  }
+
   if (seo.serviceName) {
     graph.push({
       '@type': 'Service',
@@ -262,6 +346,39 @@ export function structuredDataForPath(pathname: string) {
           name: entry.serviceName,
           url: canonicalUrl(servicePath),
         })),
+    });
+  }
+
+  if (path === '/insights') {
+    graph.push({
+      '@type': 'ItemList',
+      '@id': `${canonical}#articles`,
+      name: 'Spice of Life Media insights',
+      itemListElement: Object.entries(SEO_ROUTES)
+        .filter(([, entry]) => entry.article)
+        .map(([articlePath, entry], index) => ({
+          '@type': 'ListItem',
+          position: index + 1,
+          name: entry.article?.headline,
+          url: canonicalUrl(articlePath),
+        })),
+    });
+    webpage.mainEntity = { '@id': `${canonical}#articles` };
+  }
+
+  if (seo.article) {
+    graph.push({
+      '@type': 'BlogPosting',
+      '@id': `${canonical}#article`,
+      headline: seo.article.headline,
+      description: seo.description,
+      datePublished: seo.article.datePublished,
+      dateModified: seo.article.dateModified,
+      mainEntityOfPage: { '@id': webpageId },
+      author: { '@id': organizationId },
+      publisher: { '@id': organizationId },
+      image: DEFAULT_OG_IMAGE,
+      inLanguage: 'en-AU',
     });
   }
 

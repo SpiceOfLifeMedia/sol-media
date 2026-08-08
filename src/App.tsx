@@ -12,6 +12,8 @@ import Approach from '@/pages/Approach';
 import Agency from '@/pages/Agency';
 import Privacy from '@/pages/Privacy';
 import StartAProject from '@/pages/StartAProject';
+import Insights from '@/pages/Insights';
+import InsightArticle from '@/pages/InsightArticle';
 
 import DigitalPresenceAudit from '@/pages/services/DigitalPresenceAudit';
 import BrandSystems from '@/pages/services/BrandSystems';
@@ -30,6 +32,16 @@ function Router() {
       <Route path="/agency" component={Agency} />
       <Route path="/privacy" component={Privacy} />
       <Route path="/start-a-project" component={StartAProject} />
+      <Route path="/insights" component={Insights} />
+      <Route path="/insights/when-should-an-established-business-rebrand">
+        <InsightArticle slug="when-should-an-established-business-rebrand" />
+      </Route>
+      <Route path="/insights/website-rebuild-cost-australia">
+        <InsightArticle slug="website-rebuild-cost-australia" />
+      </Route>
+      <Route path="/insights/seo-vs-google-ads">
+        <InsightArticle slug="seo-vs-google-ads" />
+      </Route>
       
       <Route path="/services/digital-presence-audit" component={DigitalPresenceAudit} />
       <Route path="/services/brand-systems" component={BrandSystems} />
