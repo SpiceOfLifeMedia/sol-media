@@ -158,11 +158,11 @@ export function Capabilities() {
                   <div className="relative w-full h-full flex flex-col items-center justify-center gap-6 px-10">
                     <div className="w-full bg-[var(--paper)] rounded-full h-[44px] flex items-center px-5 shadow-lg relative z-10">
                       <div className="w-4 h-4 border-[2px] border-[var(--ink)] rounded-full"></div>
-                      <span className="ml-3 text-[14px] font-medium text-[var(--ink)]">web design adelaide</span>
+                      <span className="ml-3 text-[14px] font-medium text-[var(--ink)]">brand agency australia</span>
                     </div>
                     <div className="w-full flex flex-col gap-2">
                       <div className="text-[10px] tracking-wider text-[rgba(242,238,230,0.5)]">HOME &gt; SERVICES &gt; WEB DESIGN</div>
-                      <div className="text-[20px] font-bold text-[#8AB4F8] hover:underline cursor-pointer">Adelaide Web Design Agency | Concept Study</div>
+                      <div className="text-[20px] font-bold text-[#8AB4F8] hover:underline cursor-pointer">Australian Brand Agency | Concept Study</div>
                       <div className="text-[13px] text-[rgba(242,238,230,0.7)] mt-1 line-clamp-2">We audit, sharpen and rebuild the way your business shows up. Clear websites structured for people and search.</div>
                     </div>
                   </div>
