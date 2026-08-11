@@ -9,7 +9,7 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [location] = useLocation();
   const usesLightHeader =
-    isScrolled || ['/capabilities', '/agency', '/privacy'].includes(location) || location.startsWith('/insights');
+    isScrolled || ['/capabilities', '/agency', '/privacy'].includes(location) || location.startsWith('/insights') || location.startsWith('/work');
 
   // Close mobile menu on route change
   useEffect(() => {
@@ -80,6 +80,14 @@ export function Header() {
               } ${location === '/agency' ? 'border-b-2 border-[var(--verm)] pb-1' : ''}`}
             >
               AGENCY
+            </Link>
+            <Link
+              href="/work"
+              className={`text-[14px] font-medium transition-colors ${
+                usesLightHeader ? 'text-[var(--ink)] hover:text-[var(--verm)]' : 'text-[rgba(242,238,230,0.82)] hover:text-white'
+              } ${location.startsWith('/work') ? 'border-b-2 border-[var(--verm)] pb-1' : ''}`}
+            >
+              WORK
             </Link>
             <Link
               href="/insights"
@@ -164,6 +172,9 @@ export function Header() {
               </Link>
               <Link href="/agency" className="text-[26px] font-bold text-[var(--paper)] leading-[56px]">
                 AGENCY
+              </Link>
+              <Link href="/work" className="text-[26px] font-bold text-[var(--paper)] leading-[56px]">
+                WORK
               </Link>
               <Link href="/insights" className="text-[26px] font-bold text-[var(--paper)] leading-[56px]">
                 INSIGHTS

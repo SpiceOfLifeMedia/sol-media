@@ -120,6 +120,22 @@ export const SEO_ROUTES: Record<string, SeoConfig> = {
     pageType: 'CollectionPage',
     lastModified: '2026-08-09',
   },
+  '/work': {
+    title: 'Selected Website & Digital Strategy Work | Spice of Life Media',
+    description:
+      'Explore selected website rebuild, digital strategy, SEO and content work delivered by Spice of Life Media for Australian businesses.',
+    index: true,
+    pageType: 'CollectionPage',
+    lastModified: '2026-08-11',
+  },
+  '/work/full-circle-hair-society': {
+    title: 'Full Circle Hair Society Website Rebuild | SOL Media',
+    description:
+      'See how Spice of Life Media rebuilt the Full Circle Hair Society website and developed a connected social media strategy for the Adelaide salon.',
+    index: true,
+    pageType: 'WebPage',
+    lastModified: '2026-08-11',
+  },
   '/insights/when-should-an-established-business-rebrand': {
     title: 'When Should an Established Business Rebrand? | SOL Media',
     description:

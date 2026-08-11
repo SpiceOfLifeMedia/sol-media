@@ -7,6 +7,7 @@ import { Disconnect } from '@/components/sections/Disconnect';
 import { Capabilities } from '@/components/sections/Capabilities';
 import { Process } from '@/components/sections/Process';
 import { WorkingWith } from '@/components/sections/WorkingWith';
+import { SelectedWork } from '@/components/sections/SelectedWork';
 import { FinalCTA } from '@/components/sections/FinalCTA';
 
 export default function Home() {
@@ -21,6 +22,7 @@ export default function Home() {
         <Disconnect />
         <Capabilities />
         <Process />
+        <SelectedWork />
         <WorkingWith />
         <FinalCTA />
       </main>
