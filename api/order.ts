@@ -200,7 +200,8 @@ async function supabaseRpc<T>(url: string, secret: string, name: string, body: u
     if (error.includes('rate_limit_exceeded')) throw new Error('rate_limit_exceeded');
     throw new Error(`supabase_${response.status}`);
   }
-  return response.json() as Promise<T>;
+  const responseBody = await response.text();
+  return (responseBody ? JSON.parse(responseBody) : undefined) as T;
 }
 
 async function sendEmail(apiKey: string, payload: Record<string, unknown>): Promise<boolean> {
