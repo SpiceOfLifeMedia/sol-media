@@ -36,7 +36,7 @@ function escapeAttribute(value) {
 function headForPath(pathname, includeCanonical = true) {
   const seo = getSeo(pathname);
   const canonical = canonicalUrl(pathname);
-  const robots = seo.index ? 'index, follow' : 'noindex, follow';
+  const robots = `${seo.index ? 'index' : 'noindex'}, ${seo.follow === false ? 'nofollow' : 'follow'}`;
   const structuredData = structuredDataForPath(pathname);
 
   const tags = [

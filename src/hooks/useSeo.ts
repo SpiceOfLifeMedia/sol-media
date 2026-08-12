@@ -29,7 +29,7 @@ export function useSeo() {
     const seo = getSeo(location);
     const knownRoute = normalizePath(location) in SEO_ROUTES;
     const canonical = canonicalUrl(location);
-    const robots = seo.index ? 'index, follow' : 'noindex, follow';
+    const robots = `${seo.index ? 'index' : 'noindex'}, ${seo.follow === false ? 'nofollow' : 'follow'}`;
 
     document.documentElement.lang = 'en-AU';
     document.title = seo.title;

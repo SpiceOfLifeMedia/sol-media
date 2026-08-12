@@ -8,6 +8,7 @@ export type SeoConfig = {
   title: string;
   description: string;
   index: boolean;
+  follow?: boolean;
   pageType: 'WebPage' | 'AboutPage' | 'ContactPage' | 'CollectionPage';
   serviceName?: string;
   article?: {
@@ -66,6 +67,15 @@ export const SEO_ROUTES: Record<string, SeoConfig> = {
     index: false,
     pageType: 'WebPage',
     lastModified: '2026-08-09',
+  },
+  '/custom-cd-order': {
+    title: 'Custom CD Order | Spice of Life Media',
+    description:
+      'Save your custom CD music, artwork, extras and delivery details, then receive an SOL reference to complete payment on Etsy.',
+    index: false,
+    follow: false,
+    pageType: 'WebPage',
+    lastModified: '2026-08-12',
   },
   '/services/digital-presence-audit': {
     title: 'Digital Presence Audit Australia | Spice of Life Media',

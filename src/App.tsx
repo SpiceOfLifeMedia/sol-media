@@ -18,6 +18,7 @@ import Insights from '@/pages/Insights';
 import InsightArticle from '@/pages/InsightArticle';
 import Work from '@/pages/Work';
 import FullCircleCaseStudy from '@/pages/FullCircleCaseStudy';
+import Order from '@/pages/Order';
 
 import DigitalPresenceAudit from '@/pages/services/DigitalPresenceAudit';
 import BrandSystems from '@/pages/services/BrandSystems';
@@ -37,6 +38,16 @@ function ScrollToTop() {
   return null;
 }
 
+function LegacyOrderRedirect() {
+  const [, navigate] = useLocation();
+
+  useEffect(() => {
+    navigate('/custom-cd-order', { replace: true });
+  }, [navigate]);
+
+  return null;
+}
+
 function Router() {
   return (
     <Switch>
@@ -49,6 +60,8 @@ function Router() {
       <Route path="/insights" component={Insights} />
       <Route path="/work" component={Work} />
       <Route path="/work/full-circle-hair-society" component={FullCircleCaseStudy} />
+      <Route path="/custom-cd-order" component={Order} />
+      <Route path="/order" component={LegacyOrderRedirect} />
       <Route path="/insights/when-should-an-established-business-rebrand">
         <InsightArticle slug="when-should-an-established-business-rebrand" />
       </Route>
