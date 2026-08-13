@@ -27,6 +27,11 @@ export default function SocialContentSystems() {
       { num: '03', title: 'Implementation', desc: 'We hand over a complete, manageable engine—or run it for you—so that posting becomes predictable and strategic.' }
     ],
     outcome: "A structured content system that reinforces the brand and makes consistent publishing easier to manage.",
+    featuredWork: {
+      title: "Full Circle Hair Society social media strategy",
+      description: "See how practical content pillars connected the salon’s people, expertise, results and atmosphere to a repeatable social media system.",
+      href: "/work/full-circle-hair-society"
+    },
     relatedLinks: [
       { title: "Brand Systems", href: "/services/brand-systems" },
       { title: "SEO & Search Growth", href: "/services/seo-search-growth" },

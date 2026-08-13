@@ -38,6 +38,13 @@ function headForPath(pathname, includeCanonical = true) {
   const canonical = canonicalUrl(pathname);
   const robots = `${seo.index ? 'index' : 'noindex'}, ${seo.follow === false ? 'nofollow' : 'follow'}`;
   const structuredData = structuredDataForPath(pathname);
+  const socialImage = seo.socialImage ?? {
+    url: DEFAULT_OG_IMAGE,
+    alt: BRAND_IMAGE_ALT,
+    type: 'image/png',
+    width: 1200,
+    height: 630,
+  };
 
   const tags = [
     `    <title>${escapeAttribute(seo.title)}</title>`,
@@ -56,16 +63,16 @@ function headForPath(pathname, includeCanonical = true) {
     `    <meta property="og:title" content="${escapeAttribute(seo.title)}" />`,
     `    <meta property="og:description" content="${escapeAttribute(seo.description)}" />`,
     `    <meta property="og:url" content="${escapeAttribute(canonical)}" />`,
-    `    <meta property="og:image" content="${DEFAULT_OG_IMAGE}" />`,
-    '    <meta property="og:image:width" content="1200" />',
-    '    <meta property="og:image:height" content="630" />',
-    '    <meta property="og:image:type" content="image/png" />',
-    `    <meta property="og:image:alt" content="${escapeAttribute(BRAND_IMAGE_ALT)}" />`,
+    `    <meta property="og:image" content="${escapeAttribute(socialImage.url)}" />`,
+    ...(socialImage.width ? [`    <meta property="og:image:width" content="${socialImage.width}" />`] : []),
+    ...(socialImage.height ? [`    <meta property="og:image:height" content="${socialImage.height}" />`] : []),
+    `    <meta property="og:image:type" content="${socialImage.type}" />`,
+    `    <meta property="og:image:alt" content="${escapeAttribute(socialImage.alt)}" />`,
     '    <meta name="twitter:card" content="summary_large_image" />',
     `    <meta name="twitter:title" content="${escapeAttribute(seo.title)}" />`,
     `    <meta name="twitter:description" content="${escapeAttribute(seo.description)}" />`,
-    `    <meta name="twitter:image" content="${DEFAULT_OG_IMAGE}" />`,
-    `    <meta name="twitter:image:alt" content="${escapeAttribute(BRAND_IMAGE_ALT)}" />`,
+    `    <meta name="twitter:image" content="${escapeAttribute(socialImage.url)}" />`,
+    `    <meta name="twitter:image:alt" content="${escapeAttribute(socialImage.alt)}" />`,
   );
 
   if (structuredData) {

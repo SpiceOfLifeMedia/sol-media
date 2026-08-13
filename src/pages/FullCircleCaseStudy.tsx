@@ -2,6 +2,7 @@ import { Footer } from '@/components/layout/Footer';
 import { Header } from '@/components/layout/Header';
 import { FinalCTA } from '@/components/sections/FinalCTA';
 import { useSeo } from '@/hooks/useSeo';
+import { Link } from 'wouter';
 
 const FULL_CIRCLE_POSTER = 'https://www.fullcirclehairsociety.com/images/hero-reel-poster.jpg';
 
@@ -66,11 +67,13 @@ export default function FullCircleCaseStudy() {
           <figure className="relative min-h-[440px] overflow-hidden bg-[var(--ink)] md:min-h-[760px]">
             <img
               src={FULL_CIRCLE_POSTER}
-              alt="Full Circle Hair Society storefront in Seacliff Park"
+              alt="Full Circle Hair Society salon storefront in Seacliff Park, Adelaide, after its website rebuild"
+              title="Full Circle Hair Society website rebuild and social media strategy"
               className="absolute inset-0 h-full w-full object-cover"
               width="1600"
               height="900"
               fetchPriority="high"
+              decoding="async"
             />
           </figure>
 
@@ -105,7 +108,11 @@ export default function FullCircleCaseStudy() {
                 {scope.map((item, index) => (
                   <li key={item} className="grid grid-cols-[44px_1fr] gap-4 border-b border-[rgba(22,21,15,0.18)] py-6 text-[17px] font-[750]">
                     <span className="text-[var(--verm-text-light)]">0{index + 1}</span>
-                    <span>{item}</span>
+                    <span>
+                      {index === 0 ? <Link href="/services/websites-rebuilds" className="underline decoration-[rgba(22,21,15,0.24)] underline-offset-4 hover:text-[var(--verm-text-light)]">{item}</Link> :
+                        index === 2 ? <Link href="/services/seo-search-growth" className="underline decoration-[rgba(22,21,15,0.24)] underline-offset-4 hover:text-[var(--verm-text-light)]">{item}</Link> :
+                        index === 4 ? <Link href="/services/social-content-systems" className="underline decoration-[rgba(22,21,15,0.24)] underline-offset-4 hover:text-[var(--verm-text-light)]">{item}</Link> : item}
+                    </span>
                   </li>
                 ))}
               </ol>

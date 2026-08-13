@@ -10,9 +10,14 @@ type ServiceProps = {
   process: { num: string; title: string; desc: string }[];
   outcome: string;
   relatedLinks: { title: string; href: string }[];
+  featuredWork?: {
+    title: string;
+    description: string;
+    href: string;
+  };
 };
 
-export function ServiceTemplate({ title, tagline, problem, whoFor, inclusions, process, outcome, relatedLinks }: ServiceProps) {
+export function ServiceTemplate({ title, tagline, problem, whoFor, inclusions, process, outcome, relatedLinks, featuredWork }: ServiceProps) {
   return (
     <>
       {/* Hero */}
@@ -81,6 +86,17 @@ export function ServiceTemplate({ title, tagline, problem, whoFor, inclusions, p
               <div className="caps-label text-[rgba(242,238,230,0.5)] mb-4">THE COMMERCIAL OUTCOME</div>
               <p className="text-[20px] md:text-[24px] leading-[1.4] font-[650]">{outcome}</p>
             </div>
+
+            {featuredWork && (
+              <div className="border border-[rgba(22,21,15,0.16)] bg-white p-8 md:p-10">
+                <div className="caps-label mb-4 text-[var(--verm-text-light)]">SELECTED WORK</div>
+                <h2 className="mb-4 text-[26px] font-[800] tracking-[-0.02em]">{featuredWork.title}</h2>
+                <p className="mb-6 max-w-[620px] text-[15.5px] leading-[1.65] text-[rgba(22,21,15,0.7)]">{featuredWork.description}</p>
+                <Link href={featuredWork.href} className="inline-flex items-center gap-2 text-[14px] font-[800] text-[var(--verm-text-light)]">
+                  Read the case study <span aria-hidden="true">→</span>
+                </Link>
+              </div>
+            )}
           </div>
 
           {/* Sidebar */}

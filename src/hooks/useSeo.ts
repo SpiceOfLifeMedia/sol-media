@@ -29,6 +29,13 @@ export function useSeo() {
     const seo = getSeo(location);
     const knownRoute = normalizePath(location) in SEO_ROUTES;
     const canonical = canonicalUrl(location);
+    const socialImage = seo.socialImage ?? {
+      url: DEFAULT_OG_IMAGE,
+      alt: BRAND_IMAGE_ALT,
+      type: 'image/png' as const,
+      width: 1200,
+      height: 630,
+    };
     const robots = `${seo.index ? 'index' : 'noindex'}, ${seo.follow === false ? 'nofollow' : 'follow'}`;
 
     document.documentElement.lang = 'en-AU';
@@ -55,25 +62,17 @@ export function useSeo() {
     upsertMeta('property', 'og:title', seo.title);
     upsertMeta('property', 'og:description', seo.description);
     upsertMeta('property', 'og:url', canonical);
-    upsertMeta('property', 'og:image', DEFAULT_OG_IMAGE);
-    upsertMeta('property', 'og:image:width', '1200');
-    upsertMeta('property', 'og:image:height', '630');
-    upsertMeta('property', 'og:image:type', 'image/png');
-    upsertMeta(
-      'property',
-      'og:image:alt',
-      BRAND_IMAGE_ALT,
-    );
+    upsertMeta('property', 'og:image', socialImage.url);
+    if (socialImage.width) upsertMeta('property', 'og:image:width', String(socialImage.width));
+    if (socialImage.height) upsertMeta('property', 'og:image:height', String(socialImage.height));
+    upsertMeta('property', 'og:image:type', socialImage.type);
+    upsertMeta('property', 'og:image:alt', socialImage.alt);
 
     upsertMeta('name', 'twitter:card', 'summary_large_image');
     upsertMeta('name', 'twitter:title', seo.title);
     upsertMeta('name', 'twitter:description', seo.description);
-    upsertMeta('name', 'twitter:image', DEFAULT_OG_IMAGE);
-    upsertMeta(
-      'name',
-      'twitter:image:alt',
-      BRAND_IMAGE_ALT,
-    );
+    upsertMeta('name', 'twitter:image', socialImage.url);
+    upsertMeta('name', 'twitter:image:alt', socialImage.alt);
 
     const scriptId = 'sol-structured-data';
     const structuredData = structuredDataForPath(location);

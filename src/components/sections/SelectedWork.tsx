@@ -22,9 +22,11 @@ export function SelectedWork() {
           <div className="relative min-h-[360px] overflow-hidden lg:min-h-[560px]">
             <img
               src={FULL_CIRCLE_POSTER}
-              alt="Full Circle Hair Society storefront in Seacliff Park"
+              alt="Full Circle Hair Society salon storefront in Seacliff Park, Adelaide, featured in an SOL Media website rebuild"
+              title="Full Circle Hair Society website rebuild and social media strategy"
               className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.025]"
               loading="lazy"
+              decoding="async"
               width="1600"
               height="900"
             />

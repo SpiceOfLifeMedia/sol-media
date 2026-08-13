@@ -27,6 +27,11 @@ export default function SEOSearchGrowth() {
       { num: '03', title: 'Ongoing Growth', desc: 'We use search performance data to improve useful content, internal linking and authority over time.' }
     ],
     outcome: "A stronger search foundation and a practical plan for increasing qualified organic visibility over time.",
+    featuredWork: {
+      title: "Full Circle Hair Society local search foundations",
+      description: "See how local relevance, clearer service journeys and technical search foundations were built into an Adelaide salon website rebuild.",
+      href: "/work/full-circle-hair-society"
+    },
     relatedLinks: [
       { title: "Websites & Rebuilds", href: "/services/websites-rebuilds" },
       { title: "Social & Content Systems", href: "/services/social-content-systems" },

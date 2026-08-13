@@ -16,6 +16,13 @@ export type SeoConfig = {
     datePublished: string;
     dateModified: string;
   };
+  socialImage?: {
+    url: string;
+    alt: string;
+    type: 'image/jpeg' | 'image/png' | 'image/webp';
+    width?: number;
+    height?: number;
+  };
   lastModified: string;
 };
 
@@ -87,40 +94,40 @@ export const SEO_ROUTES: Record<string, SeoConfig> = {
     lastModified: '2026-08-09',
   },
   '/services/brand-systems': {
-    title: 'Brand Strategy & Identity Australia | Spice of Life Media',
+    title: 'Brand Strategy & Identity Adelaide | Spice of Life Media',
     description:
-      'Build a consistent brand system with positioning, messaging, identity, typography, colour, digital guidelines and social templates for your business.',
+      'Adelaide brand strategy and identity systems for Australian businesses: positioning, messaging, visual identity, guidelines and practical brand tools.',
     index: true,
     pageType: 'WebPage',
     serviceName: 'Brand Systems',
-    lastModified: '2026-08-09',
+    lastModified: '2026-08-14',
   },
   '/services/websites-rebuilds': {
-    title: 'Website Design & Rebuilds Australia | Spice of Life Media',
+    title: 'Website Design & Rebuilds Adelaide | Spice of Life Media',
     description:
-      'Strategy, conversion-focused copy, UX/UI design and custom website development for service businesses ready for a clearer, faster website.',
+      'Adelaide website design and rebuilds for Australian service businesses, combining strategy, conversion copy, UX/UI, custom development and SEO foundations.',
     index: true,
     pageType: 'WebPage',
     serviceName: 'Websites & Rebuilds',
-    lastModified: '2026-08-09',
+    lastModified: '2026-08-14',
   },
   '/services/seo-search-growth': {
-    title: 'SEO Services Australia | Spice of Life Media',
+    title: 'SEO Agency Adelaide & Australia | Spice of Life Media',
     description:
-      'Grow organic visibility with technical SEO, keyword and intent strategy, on-page optimisation, local SEO, content architecture and long-term planning.',
+      'Adelaide SEO services for Australian businesses: technical SEO, search-intent strategy, on-page optimisation, local SEO and useful content architecture.',
     index: true,
     pageType: 'WebPage',
     serviceName: 'SEO & Search Growth',
-    lastModified: '2026-08-09',
+    lastModified: '2026-08-14',
   },
   '/services/social-content-systems': {
-    title: 'Social Media Strategy Australia | Spice of Life Media',
+    title: 'Social Media Strategy Adelaide | Spice of Life Media',
     description:
-      'Build a practical content system with platform strategy, campaign frameworks, reusable templates, short-form video direction, scheduling and review.',
+      'Adelaide social media strategy for Australian businesses, with practical content pillars, campaign frameworks, templates, scheduling and performance review.',
     index: true,
     pageType: 'WebPage',
     serviceName: 'Social & Content Systems',
-    lastModified: '2026-08-09',
+    lastModified: '2026-08-14',
   },
   '/insights': {
     title: 'Brand, Website & SEO Insights | Spice of Life Media',
@@ -136,7 +143,7 @@ export const SEO_ROUTES: Record<string, SeoConfig> = {
       'Explore selected website rebuild, digital strategy, SEO and content work delivered by Spice of Life Media for Australian businesses.',
     index: true,
     pageType: 'CollectionPage',
-    lastModified: '2026-08-11',
+    lastModified: '2026-08-14',
   },
   '/work/full-circle-hair-society': {
     title: 'Full Circle Hair Society Website Rebuild | SOL Media',
@@ -144,7 +151,14 @@ export const SEO_ROUTES: Record<string, SeoConfig> = {
       'See how Spice of Life Media rebuilt the Full Circle Hair Society website and developed a connected social media strategy for the Adelaide salon.',
     index: true,
     pageType: 'WebPage',
-    lastModified: '2026-08-11',
+    socialImage: {
+      url: 'https://www.fullcirclehairsociety.com/images/hero-reel-poster.jpg',
+      alt: 'Full Circle Hair Society storefront in Seacliff Park, featured in a Spice of Life Media website rebuild case study',
+      type: 'image/jpeg',
+      width: 1600,
+      height: 900,
+    },
+    lastModified: '2026-08-14',
   },
   '/insights/when-should-an-established-business-rebrand': {
     title: 'When Should an Established Business Rebrand? | SOL Media',
@@ -311,6 +325,34 @@ export function structuredDataForPath(pathname: string) {
           '@type': 'ListItem',
           position: 3,
           name: seo.article?.headline ?? seo.title.split('|')[0].trim(),
+          item: canonical,
+        },
+      ],
+    });
+    webpage.breadcrumb = { '@id': `${canonical}#breadcrumb` };
+  }
+
+  if (path === '/work/full-circle-hair-society') {
+    graph.push({
+      '@type': 'BreadcrumbList',
+      '@id': `${canonical}#breadcrumb`,
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Home',
+          item: `${SITE_URL}/`,
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: 'Selected Work',
+          item: `${SITE_URL}/work`,
+        },
+        {
+          '@type': 'ListItem',
+          position: 3,
+          name: 'Full Circle Hair Society',
           item: canonical,
         },
       ],

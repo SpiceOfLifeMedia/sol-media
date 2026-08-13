@@ -27,6 +27,11 @@ export default function WebsitesRebuilds() {
       { num: '03', title: 'Development', desc: 'We build a fast, accessible, and technically sound website engineered for both humans and search engines.' }
     ],
     outcome: "A clear, fast website that explains the offer, supports search visibility and gives visitors an intuitive path to act.",
+    featuredWork: {
+      title: "Full Circle Hair Society website rebuild",
+      description: "See how a clearer service structure, local search foundations and direct booking pathways turned an Adelaide salon website into a more useful business asset.",
+      href: "/work/full-circle-hair-society"
+    },
     relatedLinks: [
       { title: "SEO & Search Growth", href: "/services/seo-search-growth" },
       { title: "Brand Systems", href: "/services/brand-systems" },

@@ -34,10 +34,13 @@ export default function Work() {
               <div className="relative min-h-[420px] overflow-hidden bg-[var(--ink)] lg:min-h-[620px]">
                 <img
                   src={FULL_CIRCLE_POSTER}
-                  alt="Full Circle Hair Society storefront in Seacliff Park"
+                  alt="Full Circle Hair Society salon storefront in Seacliff Park, Adelaide, featured in an SOL Media website rebuild"
+                  title="Full Circle Hair Society website rebuild case study"
                   className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.025]"
                   width="1600"
                   height="900"
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
               <div className="flex flex-col justify-between bg-white p-8 md:p-12">
