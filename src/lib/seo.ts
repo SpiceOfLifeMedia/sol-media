@@ -23,8 +23,28 @@ export type SeoConfig = {
     width?: number;
     height?: number;
   };
+  faq?: { question: string; answer: string }[];
   lastModified: string;
 };
+
+export const BRAND_SYSTEMS_FAQS = [
+  {
+    question: 'What does a brand strategy project include?',
+    answer: 'A brand strategy project can include positioning, audience definition, competitor context, value proposition, brand messaging, tone of voice and the structure needed to guide identity and marketing decisions. The final scope is shaped around the business problem rather than a fixed bundle of deliverables.',
+  },
+  {
+    question: 'Do you offer rebranding services for established businesses?',
+    answer: 'Yes. We help established businesses clarify or reposition the brand when the current identity, message or market perception no longer reflects the company they have become. We preserve useful brand equity where it still serves the business.',
+  },
+  {
+    question: 'Can you refine an existing identity instead of replacing it?',
+    answer: 'Yes. A considered refresh may be more appropriate than a complete redesign. We assess the existing logo, typography, colour, messaging and applications before recommending what should stay, evolve or be rebuilt.',
+  },
+  {
+    question: 'Are you an Adelaide brand agency?',
+    answer: 'Spice of Life Media is based in Adelaide and works with ambitious businesses throughout South Australia and across Australia. Projects can be delivered collaboratively in person or remotely.',
+  },
+];
 
 export const SEO_ROUTES: Record<string, SeoConfig> = {
   '/': {
@@ -96,10 +116,11 @@ export const SEO_ROUTES: Record<string, SeoConfig> = {
   '/services/brand-systems': {
     title: 'Brand Strategy & Identity Adelaide | Spice of Life Media',
     description:
-      'Adelaide brand strategy and identity systems for Australian businesses: positioning, messaging, visual identity, guidelines and practical brand tools.',
+      'Brand strategy and identity design for Adelaide businesses ready to look as established as they are, including positioning, messaging, rebrands and practical brand systems.',
     index: true,
     pageType: 'WebPage',
     serviceName: 'Brand Systems',
+    faq: BRAND_SYSTEMS_FAQS,
     lastModified: '2026-08-14',
   },
   '/services/websites-rebuilds': {
@@ -230,6 +251,10 @@ export function structuredDataForPath(pathname: string) {
 
   if (seo.article) {
     webpage.mainEntity = { '@id': `${canonical}#article` };
+  }
+
+  if (seo.faq) {
+    webpage.subjectOf = { '@id': `${canonical}#faq` };
   }
 
   const graph: Record<string, unknown>[] = [
@@ -421,6 +446,22 @@ export function structuredDataForPath(pathname: string) {
       publisher: { '@id': organizationId },
       image: DEFAULT_OG_IMAGE,
       inLanguage: 'en-AU',
+    });
+  }
+
+  if (seo.faq) {
+    graph.push({
+      '@type': 'FAQPage',
+      '@id': `${canonical}#faq`,
+      url: canonical,
+      mainEntity: seo.faq.map((item) => ({
+        '@type': 'Question',
+        name: item.question,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: item.answer,
+        },
+      })),
     });
   }
 

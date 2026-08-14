@@ -15,9 +15,15 @@ type ServiceProps = {
     description: string;
     href: string;
   };
+  detailSection?: {
+    eyebrow: string;
+    title: string;
+    paragraphs: string[];
+  };
+  faqs?: { question: string; answer: string }[];
 };
 
-export function ServiceTemplate({ title, tagline, problem, whoFor, inclusions, process, outcome, relatedLinks, featuredWork }: ServiceProps) {
+export function ServiceTemplate({ title, tagline, problem, whoFor, inclusions, process, outcome, relatedLinks, featuredWork, detailSection, faqs }: ServiceProps) {
   return (
     <>
       {/* Hero */}
@@ -96,6 +102,36 @@ export function ServiceTemplate({ title, tagline, problem, whoFor, inclusions, p
                   Read the case study <span aria-hidden="true">→</span>
                 </Link>
               </div>
+            )}
+
+            {detailSection && (
+              <section aria-labelledby="service-detail-heading" className="border-t border-[rgba(22,21,15,0.16)] pt-12">
+                <div className="caps-label mb-5 text-[var(--verm-text-light)]">{detailSection.eyebrow}</div>
+                <h2 id="service-detail-heading" className="mb-6 max-w-[16ch] text-[32px] font-[800] leading-[1.08] tracking-[-0.025em] md:text-[44px]">
+                  {detailSection.title}
+                </h2>
+                <div className="max-w-[680px] space-y-5 text-[16px] leading-[1.72] text-[rgba(22,21,15,0.72)]">
+                  {detailSection.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+                </div>
+              </section>
+            )}
+
+            {faqs && faqs.length > 0 && (
+              <section aria-labelledby="service-faq-heading" className="border-t border-[rgba(22,21,15,0.16)] pt-12">
+                <div className="caps-label mb-5 text-[var(--verm-text-light)]">COMMON QUESTIONS</div>
+                <h2 id="service-faq-heading" className="mb-8 text-[32px] font-[800] tracking-[-0.025em] md:text-[42px]">Brand strategy FAQs.</h2>
+                <div className="divide-y divide-[rgba(22,21,15,0.16)] border-y border-[rgba(22,21,15,0.16)]">
+                  {faqs.map((faq) => (
+                    <details key={faq.question} className="group py-6">
+                      <summary className="flex cursor-pointer list-none items-start justify-between gap-6 text-[18px] font-[800] leading-[1.35] marker:content-none">
+                        {faq.question}
+                        <span aria-hidden="true" className="mt-0.5 text-[var(--verm-text-light)] transition-transform group-open:rotate-45">+</span>
+                      </summary>
+                      <p className="max-w-[650px] pt-4 text-[15.5px] leading-[1.7] text-[rgba(22,21,15,0.72)]">{faq.answer}</p>
+                    </details>
+                  ))}
+                </div>
+              </section>
             )}
           </div>
 
