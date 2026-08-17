@@ -46,6 +46,25 @@ export const BRAND_SYSTEMS_FAQS = [
   },
 ];
 
+export const LANDING_PAGE_SPRINT_FAQS = [
+  {
+    question: 'What is included for $800 + GST?',
+    answer: 'The sale offer includes one custom responsive landing page, offer structure, conversion-focused copy, an enquiry form, analytics and lead tracking, standard search and social metadata, launch support and three consolidated change rounds. Complex integrations, new brand identities, paid third-party services and full websites are quoted separately.',
+  },
+  {
+    question: 'When does the 48-hour turnaround begin?',
+    answer: 'The first complete working version is delivered within 48 business hours after the written brief, essential brand assets, required access and payment are confirmed. The clock excludes client response time, weekends and public holidays.',
+  },
+  {
+    question: 'What do I need to provide?',
+    answer: 'We need one clear offer, the target audience, your preferred call to action, logo and brand assets, any essential proof or images, and access to the website or domain environment where the page will be launched. We can shape rough source material into page-ready copy.',
+  },
+  {
+    question: 'How does the money-back guarantee work?',
+    answer: 'You receive three consolidated sets of changes. If you are still unhappy after all three rounds, we will refund the project fee. The unused page will not launch and remains the property of Spice of Life Media. Feedback must come from one nominated decision-maker and remain within the agreed one-page scope.',
+  },
+];
+
 export const SEO_ROUTES: Record<string, SeoConfig> = {
   '/': {
     title: 'Australian Brand, Web & SEO Agency | Spice of Life Media',
@@ -86,6 +105,16 @@ export const SEO_ROUTES: Record<string, SeoConfig> = {
     index: true,
     pageType: 'ContactPage',
     lastModified: '2026-08-09',
+  },
+  '/websprint': {
+    title: '48-Hour Conversion Landing Page | $800 + GST',
+    description:
+      '14-day sale: get one custom, mobile-first conversion landing page with copy, enquiry form and lead tracking, ready within 48 business hours for $800 + GST.',
+    index: true,
+    pageType: 'WebPage',
+    serviceName: '48-Hour Conversion Landing Page',
+    faq: LANDING_PAGE_SPRINT_FAQS,
+    lastModified: '2026-08-17',
   },
   '/privacy': {
     title: 'Privacy Policy | Spice of Life Media',

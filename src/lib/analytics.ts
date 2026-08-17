@@ -7,10 +7,13 @@ type AnalyticsEventMap = {
     page_title: string;
   };
   generate_lead: {
-    form_name: 'start_a_project';
+    form_name: 'start_a_project' | 'landing_page_sprint';
+    project_type?: string;
+    value?: number;
+    currency?: 'AUD';
   };
   form_start: {
-    form_name: 'start_a_project';
+    form_name: 'start_a_project' | 'landing_page_sprint';
   };
   start_project_click: {
     source_path: string;
@@ -61,9 +64,21 @@ export function trackAnalyticsEvent<EventName extends keyof AnalyticsEventMap>(
     }
     case 'generate_lead':
     case 'form_start': {
+      const formEvent = parameters as
+        | AnalyticsEventMap['generate_lead']
+        | AnalyticsEventMap['form_start'];
       window.dataLayer.push({
         event: eventName,
-        form_name: 'start_a_project',
+        form_name: formEvent.form_name,
+        ...('project_type' in formEvent && formEvent.project_type
+          ? { project_type: safePageTitle(formEvent.project_type) }
+          : {}),
+        ...('value' in formEvent && typeof formEvent.value === 'number'
+          ? { value: formEvent.value }
+          : {}),
+        ...('currency' in formEvent && formEvent.currency
+          ? { currency: formEvent.currency }
+          : {}),
       });
       break;
     }

@@ -105,6 +105,7 @@ function buildHtml(d: Record<string, string>): string {
             <table width="100%" cellpadding="0" cellspacing="0">
               ${field('Name', d['name'])}
               ${field('Email', d['email'])}
+              ${field('Phone', d['phone'])}
               ${field('Business / Company', d['business'])}
               ${field('Current Website', d['url'])}
               ${field('Services Interested In', services)}
@@ -137,6 +138,7 @@ function buildText(d: Record<string, string>): string {
     '—'.repeat(40),
     `Name: ${d['name'] ?? '—'}`,
     `Email: ${d['email'] ?? '—'}`,
+    `Phone: ${d['phone'] ?? '—'}`,
     `Business: ${d['business'] ?? '—'}`,
     `Website: ${d['url'] ?? '—'}`,
     `Services: ${d['services'] ?? '—'}`,
