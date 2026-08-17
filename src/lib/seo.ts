@@ -110,7 +110,7 @@ export const SEO_ROUTES: Record<string, SeoConfig> = {
     title: '48-Hour Conversion Landing Page | $800 + GST',
     description:
       '14-day sale: get one custom, mobile-first conversion landing page with copy, enquiry form and lead tracking, ready within 48 business hours for $800 + GST.',
-    index: true,
+    index: false,
     pageType: 'WebPage',
     serviceName: '48-Hour Conversion Landing Page',
     faq: LANDING_PAGE_SPRINT_FAQS,
