@@ -21,8 +21,41 @@ const inclusions = [
 const projectTypes = [
   'One conversion landing page',
   'A new website',
-  'A website rebuild',
-  'A rebrand + website',
+  'A website redesign',
+  'A website + brand refresh',
+  'Choose for me',
+];
+
+const projectGoals = [
+  'Send me enquiries by email',
+  'Get more phone calls',
+  'Request a quote',
+  'Book an appointment or call',
+  'Sell or promote one offer',
+  'Choose for me',
+];
+
+const contentOptions = [
+  'I have final copy and images',
+  'I have rough notes and some images',
+  'I only have the idea',
+  'Choose for me',
+];
+
+const visualOptions = [
+  'Keep my current look',
+  'Clean and trustworthy',
+  'Bold and modern',
+  'Premium and polished',
+  'Friendly and local',
+  'Choose for me',
+];
+
+const brandOptions = [
+  'Keep my current logo',
+  'Refresh my logo',
+  'I need a full rebrand',
+  'Choose for me',
 ];
 
 type FormStatus = 'idle' | 'submitting' | 'success' | 'error';
@@ -61,8 +94,6 @@ export default function LandingPageSprint() {
     if (!data.email) newErrors.email = 'Email is required';
     else if (!/^\S+@\S+\.\S+$/.test(data.email as string)) newErrors.email = 'Enter a valid email';
     if (!data.business) newErrors.business = 'Business name is required';
-    if (!data.problem) newErrors.problem = 'Tell us what the page needs to achieve';
-
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
@@ -118,7 +149,8 @@ export default function LandingPageSprint() {
             </div>
             <aside className="border-l border-[rgba(242,238,230,0.2)] pl-7 md:pl-10">
               <div className="caps-label mb-4 text-[rgba(242,238,230,0.56)]">FIXED PRICE</div>
-              <div className="text-[62px] font-[800] leading-none tracking-[-0.045em] md:text-[78px]">$800 <span className="text-[17px] tracking-normal text-[rgba(242,238,230,0.55)]">+ GST</span></div>
+              <div className="text-[62px] font-[800] leading-none tracking-[-0.045em] md:text-[78px]">$800 <span className="text-[17px] tracking-normal text-[rgba(242,238,230,0.55)]">+ $80 GST</span></div>
+              <div className="mt-3 text-[13px] font-[750] uppercase tracking-[0.12em] text-[var(--verm)]">$880 total including GST</div>
               <p className="mt-6 max-w-[390px] text-[14px] leading-[1.65] text-[rgba(242,238,230,0.66)]">Strategy, copy, custom build, enquiry form and measurement included. No lock-in. No bloated package.</p>
               <a href="#enquire" className="mt-8 inline-flex bg-[var(--verm)] px-8 py-4 text-[14px] font-[800] text-[var(--ink)] transition-colors hover:bg-[var(--paper)]">Book my 48-hour page</a>
             </aside>
@@ -128,7 +160,7 @@ export default function LandingPageSprint() {
         <section className="grid border-b border-[rgba(22,21,15,0.15)] bg-white md:grid-cols-3">
           {[
             ['48 business hours', 'First complete working version'],
-            ['$800 + GST', 'One fixed, transparent price'],
+            ['$880 incl. GST', '$800 project fee + $80 GST'],
             ['One clear objective', 'Built to drive the next action'],
           ].map(([title, copy]) => (
             <div key={title} className="border-b border-[rgba(22,21,15,0.12)] px-6 py-8 last:border-b-0 md:border-b-0 md:border-r md:px-10 md:last:border-r-0">
@@ -178,12 +210,23 @@ export default function LandingPageSprint() {
           </div>
         </section>
 
+        <section className="border-y border-[rgba(22,21,15,0.14)] bg-[var(--paper)] px-5 py-20 md:px-12 md:py-24">
+          <div className="mx-auto grid max-w-[1200px] gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:gap-24">
+            <div className="caps-label text-[var(--verm-text-light)]">FOR FULL WEBSITE PROJECTS</div>
+            <div>
+              <h2 className="max-w-[14ch] text-[40px] font-[800] leading-[1] md:text-[58px]">A polished brand foundation, included.</h2>
+              <p className="mt-7 max-w-[790px] text-[17px] leading-[1.72] text-[rgba(22,21,15,0.68)]">Every new website or website redesign includes a complimentary Brand Starter Kit when you choose to refresh your logo. It includes a refined logo direction, a practical colour and typography system, essential logo files and an editable branded invoice template—giving your business a consistent foundation from day one.</p>
+              <p className="mt-5 max-w-[790px] text-[13px] leading-[1.65] text-[rgba(22,21,15,0.55)]">Available with new website and website redesign projects. This is a focused visual identity refresh, not a full strategic rebrand, and is separate from the $800 + GST single-page WebSprint offer.</p>
+            </div>
+          </div>
+        </section>
+
         <section id="enquire" className="scroll-mt-6 bg-[var(--verm)] px-5 py-20 md:px-12 md:py-28">
           <div className="mx-auto grid max-w-[1200px] gap-12 lg:grid-cols-[0.75fr_1.25fr] lg:gap-24">
             <div>
               <div className="caps-label mb-7 text-[rgba(22,21,15,0.66)]">START YOUR 48 HOURS</div>
               <h2 className="max-w-[10ch] text-[44px] font-[800] leading-[0.97] md:text-[66px]">Give us the goal. We’ll build the page.</h2>
-              <p className="mt-7 max-w-[430px] text-[16px] leading-[1.72] text-[rgba(22,21,15,0.7)]">Send the essentials. We will confirm fit, requirements and the exact start time before any payment is taken.</p>
+              <p className="mt-7 max-w-[430px] text-[16px] leading-[1.72] text-[rgba(22,21,15,0.7)]">Answer what you know and select “Choose for me” for anything you would rather leave to us. We will recommend the clearest path before any payment is taken.</p>
             </div>
 
             <div className="bg-[var(--paper)] p-6 shadow-[0_24px_80px_rgba(22,21,15,0.16)] md:p-10">
@@ -205,26 +248,19 @@ export default function LandingPageSprint() {
                   </div>
                   <Field label="Current website" name="url" type="url" placeholder="https://" optional />
 
-                  <fieldset>
-                    <legend className="mb-3 text-[12px] font-[800] uppercase tracking-[0.12em] text-[rgba(22,21,15,0.75)]">What are you after?</legend>
-                    <div className="grid gap-2 sm:grid-cols-2">
-                      {projectTypes.map((type, index) => (
-                        <label key={type} className="cursor-pointer">
-                          <input className="peer sr-only" type="radio" name="services" value={type} defaultChecked={index === 0} />
-                          <span className="flex min-h-[58px] items-center border border-[rgba(22,21,15,0.2)] bg-white px-4 text-[14px] font-[750] transition-colors peer-checked:border-[var(--ink)] peer-checked:bg-[var(--ink)] peer-checked:text-[var(--paper)]">{type}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </fieldset>
+                  <ChoiceGroup legend="What are you looking for?" name="services" options={projectTypes} />
+                  <ChoiceGroup legend="What is the main result you want?" name="problem" options={projectGoals} />
+                  <ChoiceGroup legend="What content do you already have?" name="content_readiness" options={contentOptions} />
+                  <ChoiceGroup legend="Which direction feels closest?" name="visual_direction" options={visualOptions} />
+                  <ChoiceGroup legend="What should we do with your brand?" name="brand_direction" options={brandOptions} note="A focused logo refresh and editable branded invoice template are complimentary with eligible new website and website redesign projects." />
 
                   <div>
-                    <label htmlFor="problem" className="mb-2 block text-[12px] font-[800] uppercase tracking-[0.12em] text-[rgba(22,21,15,0.75)]">What should this page make people do? *</label>
-                    <textarea id="problem" name="problem" rows={4} className={`w-full resize-none border bg-white p-4 text-[16px] outline-none transition-colors ${errors.problem ? 'border-[var(--verm)]' : 'border-[rgba(22,21,15,0.2)] focus:border-[var(--ink)]'}`} placeholder="For example: enquire, book a call, request a quote or buy an offer." />
-                    {errors.problem && <p className="mt-2 text-[12px] font-[700] text-[var(--verm-text-light)]">{errors.problem}</p>}
+                    <label htmlFor="project_notes" className="mb-2 block text-[12px] font-[800] uppercase tracking-[0.12em] text-[rgba(22,21,15,0.75)]">Anything else we should know? (optional)</label>
+                    <textarea id="project_notes" name="project_notes" rows={3} className="w-full resize-none border border-[rgba(22,21,15,0.2)] bg-white p-4 text-[16px] outline-none transition-colors focus:border-[var(--ink)]" placeholder="A rough idea is enough—we can work out the rest." />
                   </div>
 
                   <input type="hidden" name="timing" value="48-hour landing page sprint" />
-                  <input type="hidden" name="budget" value="$800 + GST fixed offer" />
+                  <input type="hidden" name="budget" value="$800 + $80 GST — $880 total" />
                   <input type="hidden" name="source" value="14-day WebSprint campaign" />
                   <button type="submit" disabled={status === 'submitting'} className="bg-[var(--ink)] px-8 py-5 text-[15px] font-[800] text-[var(--paper)] transition-colors hover:bg-[var(--verm-pressed)] disabled:cursor-not-allowed disabled:opacity-60">{status === 'submitting' ? 'Sending…' : 'Book my $800 landing page'}</button>
                   <p className="-mt-3 text-center text-[12px] leading-[1.5] text-[rgba(22,21,15,0.58)]">No payment is taken here. Read our <Link href="/privacy" className="font-[700] underline underline-offset-4">Privacy Policy</Link>.</p>
@@ -269,5 +305,24 @@ function Field({ label, name, type = 'text', placeholder, optional, error }: Fie
       <input id={name} name={name} type={type} placeholder={placeholder} className={`w-full border bg-white px-4 py-3.5 text-[16px] outline-none transition-colors ${error ? 'border-[var(--verm)]' : 'border-[rgba(22,21,15,0.2)] focus:border-[var(--ink)]'}`} />
       {error && <p className="mt-2 text-[12px] font-[700] text-[var(--verm-text-light)]">{error}</p>}
     </div>
+  );
+}
+
+type ChoiceGroupProps = { legend: string; name: string; options: string[]; note?: string };
+
+function ChoiceGroup({ legend, name, options, note }: ChoiceGroupProps) {
+  return (
+    <fieldset>
+      <legend className="mb-3 text-[12px] font-[800] uppercase tracking-[0.12em] text-[rgba(22,21,15,0.75)]">{legend}</legend>
+      <div className="grid gap-2 sm:grid-cols-2">
+        {options.map((option, index) => (
+          <label key={option} className="cursor-pointer">
+            <input className="peer sr-only" type="radio" name={name} value={option} defaultChecked={index === 0} />
+            <span className="flex min-h-[58px] items-center border border-[rgba(22,21,15,0.2)] bg-white px-4 text-[14px] font-[750] transition-colors peer-checked:border-[var(--ink)] peer-checked:bg-[var(--ink)] peer-checked:text-[var(--paper)]">{option}</span>
+          </label>
+        ))}
+      </div>
+      {note && <p className="mt-3 text-[12px] leading-[1.55] text-[rgba(22,21,15,0.58)]">{note}</p>}
+    </fieldset>
   );
 }

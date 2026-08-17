@@ -111,7 +111,11 @@ function buildHtml(d: Record<string, string>): string {
               ${field('Services Interested In', services)}
               ${field('Budget', d['budget'])}
               ${field('Timing', d['timing'])}
-              ${field('What feels disconnected?', d['problem'])}
+              ${field('Primary Goal', d['problem'])}
+              ${field('Content Readiness', d['content_readiness'])}
+              ${field('Visual Direction', d['visual_direction'])}
+              ${field('Brand Direction', d['brand_direction'])}
+              ${field('Additional Notes', d['project_notes'])}
               ${field('How they heard about us', d['source'])}
               ${attributionRows(d)}
             </table>
@@ -145,8 +149,13 @@ function buildText(d: Record<string, string>): string {
     `Budget: ${d['budget'] ?? '—'}`,
     `Timing: ${d['timing'] ?? '—'}`,
     '',
-    `What feels disconnected?`,
-    d['problem'] ?? '—',
+    `Primary goal: ${d['problem'] ?? '—'}`,
+    `Content readiness: ${d['content_readiness'] ?? '—'}`,
+    `Visual direction: ${d['visual_direction'] ?? '—'}`,
+    `Brand direction: ${d['brand_direction'] ?? '—'}`,
+    '',
+    `Additional notes`,
+    d['project_notes'] ?? '—',
     '',
     `How they heard about us: ${d['source'] ?? '—'}`,
     ...attributionText(d),

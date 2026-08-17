@@ -49,7 +49,7 @@ export const BRAND_SYSTEMS_FAQS = [
 export const LANDING_PAGE_SPRINT_FAQS = [
   {
     question: 'What is included for $800 + GST?',
-    answer: 'The sale offer includes one custom responsive landing page, offer structure, conversion-focused copy, an enquiry form, analytics and lead tracking, standard search and social metadata, launch support and three consolidated change rounds. Complex integrations, new brand identities, paid third-party services and full websites are quoted separately.',
+    answer: 'The $800 project fee plus $80 GST ($880 total) includes one custom responsive landing page, offer structure, conversion-focused copy, an enquiry form, analytics and lead tracking, standard search and social metadata, launch support and three consolidated change rounds. Complex integrations, new brand identities, paid third-party services and full websites are quoted separately.',
   },
   {
     question: 'When does the 48-hour turnaround begin?',
@@ -57,7 +57,11 @@ export const LANDING_PAGE_SPRINT_FAQS = [
   },
   {
     question: 'What do I need to provide?',
-    answer: 'We need one clear offer, the target audience, your preferred call to action, logo and brand assets, any essential proof or images, and access to the website or domain environment where the page will be launched. We can shape rough source material into page-ready copy.',
+    answer: 'Share whatever you already have—even if that is only the business idea and the result you want. The guided brief includes a “Choose for me” option wherever you would prefer us to recommend the strategy, content direction or visual approach.',
+  },
+  {
+    question: 'Is the complimentary Brand Starter Kit included with the $800 landing page?',
+    answer: 'No. The complimentary Brand Starter Kit is available with eligible new website and website redesign projects when you choose a focused logo refresh. The $800 + GST WebSprint uses your existing brand unless additional brand work is scoped separately.',
   },
   {
     question: 'How does the money-back guarantee work?',
@@ -109,7 +113,7 @@ export const SEO_ROUTES: Record<string, SeoConfig> = {
   '/websprint': {
     title: '48-Hour Conversion Landing Page | $800 + GST',
     description:
-      '14-day sale: get one custom, mobile-first conversion landing page with copy, enquiry form and lead tracking, ready within 48 business hours for $800 + GST.',
+      '14-day sale: get one custom, mobile-first conversion landing page with copy, enquiry form and lead tracking, ready within 48 business hours for $800 + $80 GST ($880 total).',
     index: false,
     pageType: 'WebPage',
     serviceName: '48-Hour Conversion Landing Page',
