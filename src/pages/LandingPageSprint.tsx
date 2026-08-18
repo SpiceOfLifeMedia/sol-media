@@ -8,18 +8,19 @@ import { hasAnalyticsConsent } from '@/lib/privacyConsent';
 import { LANDING_PAGE_SPRINT_FAQS } from '@/lib/seo';
 
 const ASSET_PATH = import.meta.env.BASE_URL.replace(/\/$/, '');
+const WEBSITE_SPRINT_TERMS_VERSION = '2026-08-17';
 
 const inclusions = [
-  'One custom, mobile-first landing page',
-  'Offer structure and conversion-focused copy',
+  'Custom website build or strategic rebuild—up to five core pages',
+  'Focused Brand Starter Kit with essential logo files',
+  'Editable branded invoice template',
+  'Essential SEO launch setup',
   'Enquiry form connected to your inbox',
   'Analytics and lead-event tracking',
-  'Search and social sharing metadata',
   'Three consolidated change rounds',
 ];
 
 const projectTypes = [
-  'One conversion landing page',
   'A new website',
   'A website redesign',
   'A website + brand refresh',
@@ -83,6 +84,8 @@ export default function LandingPageSprint() {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const data = Object.fromEntries(formData.entries());
+    const projectType = String(data.services ?? '');
+    const projectValue = 879;
 
     if (data.website_confirm) {
       setStatus('success');
@@ -94,6 +97,7 @@ export default function LandingPageSprint() {
     if (!data.email) newErrors.email = 'Email is required';
     else if (!/^\S+@\S+\.\S+$/.test(data.email as string)) newErrors.email = 'Enter a valid email';
     if (!data.business) newErrors.business = 'Business name is required';
+    if (data.terms_acceptance !== 'Accepted') newErrors.terms_acceptance = 'Please accept the Website Sprint Terms';
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
@@ -101,6 +105,9 @@ export default function LandingPageSprint() {
 
     setErrors({});
     setStatus('submitting');
+    formData.set('budget', '$879 total — $59 deposit, $820 balance after approval');
+    formData.set('timing', '48-hour Website Launch Sprint');
+    formData.set('source', 'Website Launch Sprint sale');
     appendConsentApprovedAttribution(formData, hasAnalyticsConsent());
 
     try {
@@ -114,8 +121,8 @@ export default function LandingPageSprint() {
         leadTracked.current = true;
         trackAnalyticsEvent('generate_lead', {
           form_name: 'landing_page_sprint',
-          project_type: String(data.services),
-          value: 800,
+          project_type: projectType,
+          value: projectValue,
           currency: 'AUD',
         });
       }
@@ -143,25 +150,39 @@ export default function LandingPageSprint() {
           <div aria-hidden="true" className="absolute -right-[70px] top-[195px] h-[330px] w-[330px] rounded-full border border-[rgba(242,238,230,0.12)] md:h-[500px] md:w-[500px]" />
           <div className="relative mx-auto grid max-w-[1440px] gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-end lg:gap-24">
             <div>
-              <div className="caps-label mb-8 text-[var(--verm)]">14-DAY SALE · ENDS 31 AUGUST 2026</div>
-              <h1 className="max-w-[11ch] text-[52px] font-[800] leading-[0.93] tracking-[-0.045em] md:text-[92px]">Turn the next click into a real enquiry<span className="text-[var(--verm)]">.</span></h1>
-              <p className="mt-8 max-w-[690px] text-[18px] leading-[1.65] text-[rgba(242,238,230,0.74)] md:text-[21px]">One sharp, mobile-first landing page—written, designed and built around a single offer, ready to send traffic to within 48 business hours.</p>
+              <div className="caps-label mb-8 text-[var(--verm)]">WEBSITE LAUNCH SPECIAL · FIRST 20 PROJECTS</div>
+              <h1 className="max-w-[11ch] text-[52px] font-[800] leading-[0.93] tracking-[-0.045em] md:text-[92px]">A complete website, ready to win work<span className="text-[var(--verm)]">.</span></h1>
+              <p className="mt-8 max-w-[690px] text-[18px] leading-[1.65] text-[rgba(242,238,230,0.74)] md:text-[21px]">A custom new website or strategic rebuild—up to five core pages—with a focused brand kit, invoice template and essential SEO setup. First complete working version within 48 business hours.</p>
             </div>
             <aside className="border-l border-[rgba(242,238,230,0.2)] pl-7 md:pl-10">
-              <div className="caps-label mb-4 text-[rgba(242,238,230,0.56)]">FIXED PRICE</div>
-              <div className="text-[62px] font-[800] leading-none tracking-[-0.045em] md:text-[78px]">$800 <span className="text-[17px] tracking-normal text-[rgba(242,238,230,0.55)]">+ $80 GST</span></div>
-              <div className="mt-3 text-[13px] font-[750] uppercase tracking-[0.12em] text-[var(--verm)]">$880 total including GST</div>
-              <p className="mt-6 max-w-[390px] text-[14px] leading-[1.65] text-[rgba(242,238,230,0.66)]">Strategy, copy, custom build, enquiry form and measurement included. No lock-in. No bloated package.</p>
-              <a href="#enquire" className="mt-8 inline-flex bg-[var(--verm)] px-8 py-4 text-[14px] font-[800] text-[var(--ink)] transition-colors hover:bg-[var(--paper)]">Book my 48-hour page</a>
+              <div className="caps-label mb-4 text-[rgba(242,238,230,0.56)]">LAUNCH PARTNERSHIP PRICE</div>
+              <div className="text-[62px] font-[800] leading-none tracking-[-0.045em] md:text-[78px]">$879</div>
+              <div className="mt-6 border-y border-[rgba(242,238,230,0.18)] py-5">
+                <div className="text-[20px] font-[800]">$59 deposit to begin</div>
+                <p className="mt-2 text-[13px] leading-[1.55] text-[rgba(242,238,230,0.62)]">Receive your first complete working draft within 48 business hours, then pay the $820 balance only after approval and before launch or handover.</p>
+              </div>
+              <p className="mt-6 max-w-[390px] text-[14px] leading-[1.65] text-[rgba(242,238,230,0.66)]">Website, focused brand essentials, invoice template, SEO foundations and lead measurement included. Fixed scope. Available to the first 20 accepted portfolio-partner projects.</p>
+              <a href="#enquire" className="mt-8 inline-flex bg-[var(--verm)] px-8 py-4 text-[14px] font-[800] text-[var(--ink)] transition-colors hover:bg-[var(--paper)]">Claim the $879 Website Sprint</a>
             </aside>
+          </div>
+        </section>
+
+        <section className="bg-[var(--verm)] px-5 py-16 md:px-12 md:py-20">
+          <div className="mx-auto grid max-w-[1200px] gap-8 lg:grid-cols-[0.7fr_1.3fr] lg:gap-24">
+            <div className="caps-label text-[rgba(22,21,15,0.64)]">WHY THIS OFFER EXISTS</div>
+            <div>
+              <h2 className="max-w-[15ch] text-[36px] font-[800] leading-[1] md:text-[52px]">New brand. New portfolio. Proper work in public.</h2>
+              <p className="mt-6 max-w-[800px] text-[16px] leading-[1.72] text-[rgba(22,21,15,0.72)]">Spice of Life Media has completed a major rebrand, and we want our public portfolio to demonstrate the standard of work we now deliver. That is why the first 20 accepted Website Sprint projects are available for $879 total.</p>
+              <p className="mt-4 max-w-[800px] text-[16px] leading-[1.72] text-[rgba(22,21,15,0.72)]">The launch price is available to businesses happy for us to showcase the finished public website, business name and approved project story on the Spice of Life Media website and in our marketing. Private information, credentials and confidential business material are never included.</p>
+            </div>
           </div>
         </section>
 
         <section className="grid border-b border-[rgba(22,21,15,0.15)] bg-white md:grid-cols-3">
           {[
             ['48 business hours', 'First complete working version'],
-            ['$880 incl. GST', '$800 project fee + $80 GST'],
-            ['One clear objective', 'Built to drive the next action'],
+            ['$59 deposit', '$820 balance after approval'],
+            ['Three change rounds', 'Before final approval and launch'],
           ].map(([title, copy]) => (
             <div key={title} className="border-b border-[rgba(22,21,15,0.12)] px-6 py-8 last:border-b-0 md:border-b-0 md:border-r md:px-10 md:last:border-r-0">
               <div className="text-[21px] font-[800]">{title}</div>
@@ -174,8 +195,8 @@ export default function LandingPageSprint() {
           <div className="mx-auto grid max-w-[1200px] gap-14 lg:grid-cols-[0.82fr_1.18fr] lg:gap-24">
             <div>
               <div className="caps-label mb-7 text-[var(--verm-text-light)]">WHAT YOU GET</div>
-              <h2 className="max-w-[10ch] text-[42px] font-[800] leading-[0.99] md:text-[62px]">Everything the page needs. Nothing it doesn’t.</h2>
-              <p className="mt-7 max-w-[470px] text-[16px] leading-[1.72] text-[rgba(22,21,15,0.65)]">Built for a defined service, campaign or offer using your existing brand. You provide the essentials; we turn them into one focused conversion journey.</p>
+              <h2 className="max-w-[10ch] text-[42px] font-[800] leading-[0.99] md:text-[62px]">Everything your business needs to launch sharper.</h2>
+              <p className="mt-7 max-w-[470px] text-[16px] leading-[1.72] text-[rgba(22,21,15,0.65)]">Built for service businesses that need a credible, conversion-ready digital presence without a drawn-out agency process. Supply your essential business information and available content; we shape it into a focused website system.</p>
             </div>
             <ol className="border-t border-[rgba(22,21,15,0.18)]">
               {inclusions.map((item, index) => (
@@ -192,7 +213,7 @@ export default function LandingPageSprint() {
             <div className="caps-label text-[var(--verm)]">THE ON-BRIEF GUARANTEE</div>
             <div>
               <h2 className="max-w-[15ch] text-[38px] font-[800] leading-[1] md:text-[56px]">If it misses the brief, your money comes back.</h2>
-              <p className="mt-7 max-w-[780px] text-[16px] leading-[1.72] text-[rgba(242,238,230,0.68)]">You receive three consolidated sets of changes. If you are still unhappy after all three rounds, we will refund the project fee. The unused page will not launch and remains the property of Spice of Life Media. One written brief and feedback from one nominated decision-maker keep the promise fair and fast.</p>
+              <p className="mt-7 max-w-[780px] text-[16px] leading-[1.72] text-[rgba(242,238,230,0.68)]">Pay a $59 deposit to begin. You receive three consolidated sets of changes and pay the $820 balance only after approval and before launch or handover. If you are still unhappy after all three rounds, we will refund the deposit. The unused website and brand assets will not launch and remain the property of Spice of Life Media. One written brief and feedback from one nominated decision-maker keep the promise fair and fast.</p>
             </div>
           </div>
         </section>
@@ -212,11 +233,25 @@ export default function LandingPageSprint() {
 
         <section className="border-y border-[rgba(22,21,15,0.14)] bg-[var(--paper)] px-5 py-20 md:px-12 md:py-24">
           <div className="mx-auto grid max-w-[1200px] gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:gap-24">
-            <div className="caps-label text-[var(--verm-text-light)]">FOR FULL WEBSITE PROJECTS</div>
+            <div className="caps-label text-[var(--verm-text-light)]">MORE THAN A WEBSITE</div>
             <div>
-              <h2 className="max-w-[14ch] text-[40px] font-[800] leading-[1] md:text-[58px]">A polished brand foundation, included.</h2>
-              <p className="mt-7 max-w-[790px] text-[17px] leading-[1.72] text-[rgba(22,21,15,0.68)]">Every new website or website redesign includes a complimentary Brand Starter Kit when you choose to refresh your logo. It includes a refined logo direction, a practical colour and typography system, essential logo files and an editable branded invoice template—giving your business a consistent foundation from day one.</p>
-              <p className="mt-5 max-w-[790px] text-[13px] leading-[1.65] text-[rgba(22,21,15,0.55)]">Available with new website and website redesign projects. This is a focused visual identity refresh, not a full strategic rebrand, and is separate from the $800 + GST single-page WebSprint offer.</p>
+              <h2 className="max-w-[14ch] text-[40px] font-[800] leading-[1] md:text-[58px]">A consistent business foundation, included.</h2>
+              <p className="mt-7 max-w-[790px] text-[17px] leading-[1.72] text-[rgba(22,21,15,0.68)]">The Website Launch Sprint connects the website, visual essentials and search foundations—so the finished result feels credible everywhere your customer encounters it.</p>
+              <div className="mt-10 grid border-l border-t border-[rgba(22,21,15,0.14)] sm:grid-cols-2">
+                {[
+                  ['Brand Starter Kit', 'A focused logo refresh, practical colour and typography system, plus essential logo files.'],
+                  ['Editable invoice template', 'A polished, on-brand invoice layout your business can update and reuse.'],
+                  ['Essential SEO launch setup', 'Core page titles and descriptions, indexability, sitemap readiness and lead-measurement foundations.'],
+                  ['Conversion foundations', 'Clear enquiry pathways, contact actions and lead-event tracking from launch.'],
+                ].map(([title, copy]) => (
+                  <div key={title} className="border-b border-r border-[rgba(22,21,15,0.14)] p-6 md:p-7">
+                    <h3 className="text-[17px] font-[800]">{title}</h3>
+                    <p className="mt-3 text-[14px] leading-[1.65] text-[rgba(22,21,15,0.62)]">{copy}</p>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-5 max-w-[790px] text-[13px] leading-[1.65] text-[rgba(22,21,15,0.55)]">Fixed scope: up to five core pages using supplied or approved content. Websites are custom-developed in our managed build and deployment stack; Wix, Squarespace and other drag-and-drop builder projects are not included. The brand component is a focused visual identity refresh—not a full strategic rebrand. Ecommerce, complex integrations, extensive copywriting, paid third-party services and ongoing SEO are quoted separately. Domain registration or renewal and web-hosting fees are not included; these charges are set and billed by third-party providers. We can connect the completed website to an existing domain and suitable hosting environment when the required access is supplied.</p>
+              <a href="#enquire" className="mt-8 inline-flex bg-[var(--ink)] px-7 py-4 text-[14px] font-[800] text-[var(--paper)] transition-colors hover:bg-[var(--verm-pressed)]">Claim the $879 launch offer</a>
             </div>
           </div>
         </section>
@@ -225,7 +260,7 @@ export default function LandingPageSprint() {
           <div className="mx-auto grid max-w-[1200px] gap-12 lg:grid-cols-[0.75fr_1.25fr] lg:gap-24">
             <div>
               <div className="caps-label mb-7 text-[rgba(22,21,15,0.66)]">START YOUR 48 HOURS</div>
-              <h2 className="max-w-[10ch] text-[44px] font-[800] leading-[0.97] md:text-[66px]">Give us the goal. We’ll build the page.</h2>
+              <h2 className="max-w-[10ch] text-[44px] font-[800] leading-[0.97] md:text-[66px]">Give us the essentials. We’ll build the website.</h2>
               <p className="mt-7 max-w-[430px] text-[16px] leading-[1.72] text-[rgba(22,21,15,0.7)]">Answer what you know and select “Choose for me” for anything you would rather leave to us. We will recommend the clearest path before any payment is taken.</p>
             </div>
 
@@ -234,7 +269,7 @@ export default function LandingPageSprint() {
                 <div className="flex min-h-[420px] flex-col items-center justify-center text-center">
                   <div className="mb-7 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--ink)] text-3xl text-[var(--verm)]">✓</div>
                   <h3 className="text-[32px] font-[800]">You’re in.</h3>
-                  <p className="mt-4 max-w-[470px] text-[16px] leading-[1.65] text-[rgba(22,21,15,0.65)]">We will review the goal and respond with what we need to start the 48-hour build.</p>
+                  <p className="mt-4 max-w-[470px] text-[16px] leading-[1.65] text-[rgba(22,21,15,0.65)]">We will review the brief, confirm project fit and send the $59 deposit details needed to start the 48-hour Website Sprint.</p>
                 </div>
               ) : (
                 <form onFocusCapture={handleFormStart} onInput={handleFormStart} onSubmit={handleSubmit} className="flex flex-col gap-7">
@@ -252,18 +287,27 @@ export default function LandingPageSprint() {
                   <ChoiceGroup legend="What is the main result you want?" name="problem" options={projectGoals} />
                   <ChoiceGroup legend="What content do you already have?" name="content_readiness" options={contentOptions} />
                   <ChoiceGroup legend="Which direction feels closest?" name="visual_direction" options={visualOptions} />
-                  <ChoiceGroup legend="What should we do with your brand?" name="brand_direction" options={brandOptions} note="A focused logo refresh and editable branded invoice template are complimentary with eligible new website and website redesign projects." />
+                  <ChoiceGroup legend="What should we do with your brand?" name="brand_direction" options={brandOptions} note="The Website Launch Sprint includes a focused Brand Starter Kit, editable branded invoice template and essential SEO launch setup." />
 
                   <div>
                     <label htmlFor="project_notes" className="mb-2 block text-[12px] font-[800] uppercase tracking-[0.12em] text-[rgba(22,21,15,0.75)]">Anything else we should know? (optional)</label>
                     <textarea id="project_notes" name="project_notes" rows={3} className="w-full resize-none border border-[rgba(22,21,15,0.2)] bg-white p-4 text-[16px] outline-none transition-colors focus:border-[var(--ink)]" placeholder="A rough idea is enough—we can work out the rest." />
                   </div>
 
-                  <input type="hidden" name="timing" value="48-hour landing page sprint" />
-                  <input type="hidden" name="budget" value="$800 + $80 GST — $880 total" />
-                  <input type="hidden" name="source" value="14-day WebSprint campaign" />
-                  <button type="submit" disabled={status === 'submitting'} className="bg-[var(--ink)] px-8 py-5 text-[15px] font-[800] text-[var(--paper)] transition-colors hover:bg-[var(--verm-pressed)] disabled:cursor-not-allowed disabled:opacity-60">{status === 'submitting' ? 'Sending…' : 'Book my $800 landing page'}</button>
-                  <p className="-mt-3 text-center text-[12px] leading-[1.5] text-[rgba(22,21,15,0.58)]">No payment is taken here. Read our <Link href="/privacy" className="font-[700] underline underline-offset-4">Privacy Policy</Link>.</p>
+                  <input type="hidden" name="timing" value="48-hour Website Launch Sprint" />
+                  <input type="hidden" name="budget" value="$879 total — $59 deposit, $820 balance after approval" />
+                  <input type="hidden" name="source" value="Website Launch Sprint sale" />
+                  <input type="hidden" name="terms_version" value={WEBSITE_SPRINT_TERMS_VERSION} />
+                  <label className="flex cursor-pointer items-start gap-3 border border-[rgba(22,21,15,0.2)] bg-white p-4">
+                    <input className="mt-1 h-4 w-4 shrink-0 accent-[var(--ink)]" type="checkbox" name="terms_acceptance" value="Accepted" required />
+                    <span className="text-[13px] leading-[1.6] text-[rgba(22,21,15,0.72)]">
+                      I have read and agree to the{' '}
+                      <a href="/website-sprint-terms" target="_blank" rel="noreferrer" className="font-[800] underline underline-offset-4">Website Sprint Terms</a>, including the fixed scope, payment stages, three change rounds and permission to showcase the finished public project.
+                    </span>
+                  </label>
+                  {errors.terms_acceptance && <p className="-mt-5 text-[12px] font-[700] text-[var(--verm-text-light)]">{errors.terms_acceptance}</p>}
+                  <button type="submit" disabled={status === 'submitting'} className="bg-[var(--ink)] px-8 py-5 text-[15px] font-[800] text-[var(--paper)] transition-colors hover:bg-[var(--verm-pressed)] disabled:cursor-not-allowed disabled:opacity-60">{status === 'submitting' ? 'Sending…' : 'Claim the $879 Website Sprint'}</button>
+                  <p className="-mt-3 text-center text-[12px] leading-[1.5] text-[rgba(22,21,15,0.58)]">No payment is taken here. The $59 deposit is requested only after we confirm project suitability. Read our <Link href="/privacy" className="font-[700] underline underline-offset-4">Privacy Policy</Link>.</p>
                 </form>
               )}
             </div>
@@ -289,7 +333,7 @@ export default function LandingPageSprint() {
       <footer className="bg-[var(--ink)] px-5 py-10 text-[var(--paper)] md:px-12">
         <div className="mx-auto flex max-w-[1440px] flex-col gap-6 text-[13px] text-[rgba(242,238,230,0.62)] sm:flex-row sm:items-center sm:justify-between">
           <Link href="/" className="font-[800] tracking-[0.16em] text-[var(--paper)]">SPICE OF LIFE MEDIA</Link>
-          <div className="flex gap-6"><a href="mailto:info@spiceoflifemedia.com.au">info@spiceoflifemedia.com.au</a><Link href="/privacy">Privacy</Link></div>
+          <div className="flex flex-wrap gap-6"><a href="mailto:info@spiceoflifemedia.com.au">info@spiceoflifemedia.com.au</a><Link href="/website-sprint-terms">Sprint Terms</Link><Link href="/privacy">Privacy</Link></div>
         </div>
       </footer>
     </div>

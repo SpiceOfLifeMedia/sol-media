@@ -116,6 +116,9 @@ function buildHtml(d: Record<string, string>): string {
               ${field('Visual Direction', d['visual_direction'])}
               ${field('Brand Direction', d['brand_direction'])}
               ${field('Additional Notes', d['project_notes'])}
+              ${field('Website Sprint Terms', d['terms_acceptance'])}
+              ${field('Terms Version', d['terms_version'])}
+              ${field('Terms Accepted At', d['terms_accepted_at'])}
               ${field('How they heard about us', d['source'])}
               ${attributionRows(d)}
             </table>
@@ -153,6 +156,9 @@ function buildText(d: Record<string, string>): string {
     `Content readiness: ${d['content_readiness'] ?? '—'}`,
     `Visual direction: ${d['visual_direction'] ?? '—'}`,
     `Brand direction: ${d['brand_direction'] ?? '—'}`,
+    `Website Sprint Terms: ${d['terms_acceptance'] ?? '—'}`,
+    `Terms Version: ${d['terms_version'] ?? '—'}`,
+    `Terms Accepted At: ${d['terms_accepted_at'] ?? '—'}`,
     '',
     `Additional notes`,
     d['project_notes'] ?? '—',
@@ -212,6 +218,19 @@ export default async function handler(req: Request): Promise<Response> {
       headers: { 'Content-Type': 'application/json' },
     });
   }
+
+  const isWebsiteSprint = data['source'] === 'Website Launch Sprint sale';
+  if (
+    isWebsiteSprint &&
+    (data['terms_acceptance'] !== 'Accepted' || data['terms_version'] !== '2026-08-17')
+  ) {
+    return new Response(JSON.stringify({ error: 'Website Sprint Terms must be accepted' }), {
+      status: 422,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
+  if (isWebsiteSprint) data['terms_accepted_at'] = new Date().toISOString();
 
   const toEmail = process.env['CONTACT_TO_EMAIL'] ?? TO_EMAIL;
   const fromEmail = process.env['CONTACT_FROM_EMAIL'] ?? FROM_EMAIL;

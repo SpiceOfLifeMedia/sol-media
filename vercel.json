@@ -36,6 +36,16 @@
       "source": "/order",
       "destination": "/custom-cd-order",
       "permanent": true
+    },
+    {
+      "source": "/website-sprint",
+      "destination": "/website-launch-special",
+      "permanent": true
+    },
+    {
+      "source": "/websprint",
+      "destination": "/website-launch-special",
+      "permanent": true
     }
   ],
   "headers": [

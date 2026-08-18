@@ -20,6 +20,7 @@ import Work from '@/pages/Work';
 import FullCircleCaseStudy from '@/pages/FullCircleCaseStudy';
 import Order from '@/pages/Order';
 import LandingPageSprint from '@/pages/LandingPageSprint';
+import WebsiteSprintTerms from '@/pages/WebsiteSprintTerms';
 
 import DigitalPresenceAudit from '@/pages/services/DigitalPresenceAudit';
 import BrandSystems from '@/pages/services/BrandSystems';
@@ -49,6 +50,16 @@ function LegacyOrderRedirect() {
   return null;
 }
 
+function LegacyWebSprintRedirect() {
+  const [, navigate] = useLocation();
+
+  useEffect(() => {
+    navigate('/website-launch-special', { replace: true });
+  }, [navigate]);
+
+  return null;
+}
+
 function Router() {
   return (
     <Switch>
@@ -58,7 +69,10 @@ function Router() {
       <Route path="/agency" component={Agency} />
       <Route path="/privacy" component={Privacy} />
       <Route path="/start-a-project" component={StartAProject} />
-      <Route path="/websprint" component={LandingPageSprint} />
+      <Route path="/website-launch-special" component={LandingPageSprint} />
+      <Route path="/website-sprint" component={LegacyWebSprintRedirect} />
+      <Route path="/website-sprint-terms" component={WebsiteSprintTerms} />
+      <Route path="/websprint" component={LegacyWebSprintRedirect} />
       <Route path="/insights" component={Insights} />
       <Route path="/work" component={Work} />
       <Route path="/work/full-circle-hair-society" component={FullCircleCaseStudy} />

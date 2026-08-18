@@ -9,7 +9,7 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [location] = useLocation();
   const usesLightHeader =
-    isScrolled || ['/capabilities', '/agency', '/privacy'].includes(location) || location.startsWith('/insights') || location.startsWith('/work');
+    isScrolled || ['/capabilities', '/agency', '/privacy', '/website-sprint-terms'].includes(location) || location.startsWith('/insights') || location.startsWith('/work');
 
   // Close mobile menu on route change
   useEffect(() => {
