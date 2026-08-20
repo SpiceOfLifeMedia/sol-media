@@ -31,8 +31,37 @@ export default function Insights() {
         </section>
 
         <section className="px-5 pb-24 md:px-12 md:pb-32">
-          <div className="mx-auto grid max-w-[1440px] gap-6 lg:grid-cols-3">
-            {PUBLISHED_INSIGHTS.map((insight, index) => (
+          {PUBLISHED_INSIGHTS.length === 1 ? (
+            <article className="mx-auto grid min-h-[460px] max-w-[1440px] overflow-hidden border border-[rgba(22,21,15,0.16)] lg:grid-cols-[1.15fr_0.85fr]">
+              <div className="flex flex-col bg-[var(--ink)] p-7 text-[var(--paper)] md:p-12 lg:p-16">
+                <div className="caps-label mb-12 text-[var(--verm)]">{PUBLISHED_INSIGHTS[0].category}</div>
+                <h2 className="max-w-[15ch] text-[42px] font-[800] leading-[1.02] tracking-[-0.03em] md:text-[58px]">
+                  {PUBLISHED_INSIGHTS[0].title}
+                </h2>
+                <div className="mt-auto flex gap-3 pt-12 text-[12px] text-[rgba(242,238,230,0.55)]">
+                  <span>{PUBLISHED_INSIGHTS[0].displayDate}</span>
+                  <span aria-hidden="true">•</span>
+                  <span>{PUBLISHED_INSIGHTS[0].readTime}</span>
+                </div>
+              </div>
+              <div className="flex flex-col justify-between bg-white p-7 md:p-12 lg:p-16">
+                <div>
+                  <div className="caps-label mb-8 text-[var(--verm-text-light)]">LATEST PERSPECTIVE</div>
+                  <p className="max-w-[580px] text-[20px] leading-[1.65] text-[rgba(22,21,15,0.72)] md:text-[24px]">
+                    {PUBLISHED_INSIGHTS[0].excerpt}
+                  </p>
+                </div>
+                <Link
+                  href={`/insights/${PUBLISHED_INSIGHTS[0].slug}`}
+                  className="group mt-12 inline-flex items-center gap-2 text-[16px] font-[800] text-[var(--verm-text-light)]"
+                >
+                  Read insight <span className="transition-transform group-hover:translate-x-1">→</span>
+                </Link>
+              </div>
+            </article>
+          ) : (
+            <div className="mx-auto grid max-w-[1440px] gap-6 lg:grid-cols-3">
+              {PUBLISHED_INSIGHTS.map((insight, index) => (
               <article
                 key={insight.slug}
                 className={`group flex min-h-[460px] flex-col border border-[rgba(22,21,15,0.16)] p-7 transition-colors hover:border-[var(--verm)] md:p-9 ${
@@ -62,8 +91,9 @@ export default function Insights() {
                   </Link>
                 </div>
               </article>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </section>
 
         <FinalCTA />
