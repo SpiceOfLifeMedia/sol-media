@@ -33,7 +33,7 @@ export default function Agency() {
             <figure className="order-2 lg:order-1">
               <div className="aspect-[4/5] w-full max-w-[420px] overflow-hidden bg-[var(--ink)]">
                 <img
-                  src="/assets/founder-sam-leverenz-sol.jpg"
+                src="/assets/founder-sam-leverenz-sol-v2.png"
                   alt="Sam Leverenz, founder of SOL Media"
                   className="h-full w-full object-cover object-center"
                   width="1122"
