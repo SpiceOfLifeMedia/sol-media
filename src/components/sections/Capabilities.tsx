@@ -134,24 +134,30 @@ export function Capabilities() {
                 )}
 
                 {cap.mediaType === 'web' && (
-                  <div className="relative w-full h-full flex items-center justify-center pt-12">
-                    <div className="w-[320px] h-[280px] bg-[var(--paper)] rounded-t-md shadow-2xl relative overflow-hidden ml-12">
-                      <div className="h-6 border-b border-[rgba(22,21,15,0.1)] flex items-center px-4">
-                        <span className="text-[8px] font-bold tracking-widest text-[var(--ink)]">CONCEPT STUDY</span>
-                      </div>
-                      <div className="p-6">
-                        <div className="text-[28px] font-bold leading-tight">Built to be<br/>chosen.</div>
-                        <div className="w-[120px] h-[1px] bg-black my-4"></div>
-                        <div className="w-[100px] h-[30px] bg-[var(--verm)] rounded-sm"></div>
-                      </div>
+                  <Link
+                    href="/work/full-circle-hair-society"
+                    className="relative flex h-full w-full flex-col overflow-hidden text-[var(--paper)]"
+                    aria-label="View the Full Circle Hair Society website rebuild case study"
+                  >
+                    <div className="relative h-[64%] min-h-0 overflow-hidden border-b border-[rgba(242,238,230,0.14)]">
+                      <img
+                        src="/assets/work/full-circle-website-desktop.png"
+                        alt="Full Circle Hair Society website designed by SOL Media"
+                        className="h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.02]"
+                        width="1512"
+                        height="773"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[rgba(22,21,15,0.22)] to-transparent" aria-hidden="true" />
                     </div>
-                    <div className="absolute w-[120px] h-[220px] bg-white rounded-md shadow-2xl left-[80px] bottom-[20px] border border-[rgba(22,21,15,0.05)] flex flex-col items-center p-3 gap-3">
-                       <div className="w-full h-2 bg-gray-200"></div>
-                       <div className="w-full h-2 bg-gray-200"></div>
-                       <div className="w-full h-16 bg-[var(--verm)] opacity-20"></div>
+                    <div className="relative flex flex-1 flex-col justify-center px-7 py-5 md:px-8">
+                      <span className="absolute -top-7 left-7 h-14 w-[3px] bg-[var(--verm)] md:left-8" aria-hidden="true" />
+                      <div className="text-[9px] font-[800] tracking-[0.22em] text-[var(--verm)]">CLIENT WORK</div>
+                      <div className="mt-2 text-[20px] font-[800] leading-none tracking-[-0.01em] md:text-[22px]">FULL CIRCLE HAIR SOCIETY</div>
+                      <div className="mt-2 text-[11px] text-[rgba(242,238,230,0.62)] md:text-[12.5px]">Website rebuild · Seacliff Park, Adelaide</div>
+                      <div className="mt-3 text-[12px] font-[750] text-[var(--verm)]">See the case study <span aria-hidden="true">→</span></div>
                     </div>
-                    <div className="absolute top-0 w-full h-full bg-gradient-to-b from-[rgba(242,238,230,0.09)] to-transparent pointer-events-none opacity-50"></div>
-                  </div>
+                  </Link>
                 )}
 
                 {cap.mediaType === 'seo' && (
@@ -183,9 +189,11 @@ export function Capabilities() {
                 )}
 
                 {/* Bottom label */}
-                <div className="absolute bottom-5 right-5 text-[9px] font-[800] tracking-[0.15em] text-[rgba(242,238,230,0.6)] z-20 bg-[var(--ink-stage)] px-2">
-                  {cap.label}
-                </div>
+                {cap.mediaType !== 'web' && (
+                  <div className="absolute bottom-5 right-5 text-[9px] font-[800] tracking-[0.15em] text-[rgba(242,238,230,0.6)] z-20 bg-[var(--ink-stage)] px-2">
+                    {cap.label}
+                  </div>
+                )}
               </div>
             );
 
