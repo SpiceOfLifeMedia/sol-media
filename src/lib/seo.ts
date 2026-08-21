@@ -47,15 +47,15 @@ export const SEO_ROUTES: Record<string, SeoConfig> = {
   '/agency': {
     title: 'Australian Brand, Web & SEO Agency | Spice of Life Media',
     description:
-      'Meet the Adelaide-based agency connecting brand, websites, search and content under one accountable lead for established businesses across Australia.',
+      'Meet the Australian agency connecting brand, websites, search and content under one accountable lead for established businesses nationwide.',
     index: true,
     pageType: 'AboutPage',
     lastModified: '2026-08-09',
   },
   '/start-a-project': {
-    title: 'Start a Project | Spice of Life Media Australia',
+    title: 'Complimentary Brand Starter Kit | Spice of Life Media',
     description:
-      'Tell us what feels disconnected, outdated or underperforming across your brand, website, search or content. We’ll recommend the clearest next step.',
+      'Start a brand conversation with SOL Media. Qualified businesses can receive a complimentary starter kit with colour, typography, logo guidance and creative direction.',
     index: true,
     pageType: 'ContactPage',
     lastModified: '2026-08-09',
@@ -233,14 +233,6 @@ export function structuredDataForPath(pathname: string) {
       },
       email: 'info@spiceoflifemedia.com.au',
       areaServed: [
-        {
-          '@type': 'City',
-          name: 'Adelaide',
-        },
-        {
-          '@type': 'AdministrativeArea',
-          name: 'South Australia',
-        },
         {
           '@type': 'Country',
           name: 'Australia',

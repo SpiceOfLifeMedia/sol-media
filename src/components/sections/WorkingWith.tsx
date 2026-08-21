@@ -14,7 +14,7 @@ export function WorkingWith() {
     },
     {
       title: "Australia-wide, remote-first.",
-      desc: "Based in Adelaide and structured to work seamlessly with clients across Australia."
+      desc: "Structured to work seamlessly with clients anywhere in Australia."
     }
   ];
 

@@ -22,7 +22,7 @@ export default function Agency() {
                 We connect brand, website, search and content under one accountable lead — for established Australian businesses whose digital presence no longer matches the quality of their work.
               </p>
               <p className="text-[16px] md:text-[18px] leading-[1.65] text-[rgba(22,21,15,0.7)] max-w-[680px]">
-                Adelaide-based and remote-first, Spice of Life Media assembles and manages the right expertise for each project, working with businesses across Australia and beyond.
+                Australia-wide and remote-first, Spice of Life Media assembles and manages the right expertise for each project, working with businesses nationwide and beyond.
               </p>
             </div>
           </div>
@@ -52,7 +52,7 @@ export default function Agency() {
                 One accountable lead, from brief to launch<span className="text-[var(--verm)]">.</span>
               </h2>
               <p className="max-w-[46ch] text-[17px] leading-[1.75] text-[rgba(22,21,15,0.72)] md:text-[18px]">
-                Sam Leverenz founded SOL Media to bring studio-quality brand and web work to Australian service businesses, with the service standard those businesses actually need. He works directly with every client — brief, build, launch — so there is never a gap between who you speak to and who does the work. SOL Media is based in Adelaide and works with businesses across Australia.
+                Sam Leverenz founded SOL Media to bring studio-quality brand and web work to Australian service businesses, with the service standard those businesses actually need. He works directly with every client — brief, build, launch — so there is never a gap between who you speak to and who does the work. SOL Media works with businesses across Australia.
               </p>
               <Link
                 href="/start-a-project"

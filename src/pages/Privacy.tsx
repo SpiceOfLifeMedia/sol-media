@@ -31,7 +31,7 @@ export default function Privacy() {
                 Who we are
               </h2>
               <p>
-                Spice of Life Media is based in Adelaide, South Australia. This
+                Spice of Life Media is based in Australia. This
                 policy applies to this website and the project enquiries sent
                 through it.
               </p>

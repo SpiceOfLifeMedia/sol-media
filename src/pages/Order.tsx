@@ -1,4 +1,11 @@
-import { FormEvent, ReactNode, useRef, useState } from 'react';
+import { FormEvent, ReactNode, useEffect, useRef, useState } from 'react';
+import {
+  addressFromPlace,
+  DeliveryAddress,
+  GooglePlacePrediction,
+  loadPlacesLibrary,
+  PlaceAutocompleteElementInstance,
+} from '../lib/googlePlaces';
 import './Order.css';
 
 const MASTER_TEMPLATE_URL = 'https://bit.ly/EtsyCustomCd';
@@ -110,18 +117,94 @@ function Success({ reference, emailDelivered }: { reference: string; emailDelive
 export default function Order() {
   const [musicSource, setMusicSource] = useState<MusicSource>('');
   const [giftCard, setGiftCard] = useState<YesNo>('');
-  const [country, setCountry] = useState('Australia');
+  const [deliveryAddress, setDeliveryAddress] = useState<DeliveryAddress>({
+    streetAddress: '', city: '', region: '', postcode: '', country: 'Australia',
+  });
+  const [placesReady, setPlacesReady] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [serverError, setServerError] = useState('');
   const [success, setSuccess] = useState<{ reference: string; emailDelivered: boolean } | null>(null);
   const idempotencyKey = useRef('');
-  const isAustralia = country.trim().toLowerCase() === 'australia';
+  const autocompleteHost = useRef<HTMLDivElement>(null);
+  const autocompleteElement = useRef<PlaceAutocompleteElementInstance | null>(null);
+  const addressRef = useRef(deliveryAddress);
+  addressRef.current = deliveryAddress;
+  const isAustralia = deliveryAddress.country.trim().toLowerCase() === 'australia';
+
+  useEffect(() => {
+    const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY?.trim();
+    const host = autocompleteHost.current;
+    if (!apiKey || !host) return;
+
+    let active = true;
+    let element: PlaceAutocompleteElementInstance | null = null;
+    let removeListeners = () => {};
+
+    void loadPlacesLibrary(apiKey).then(({ PlaceAutocompleteElement }) => {
+      if (!active) return;
+      element = new PlaceAutocompleteElement();
+      element.id = 'streetAddress';
+      element.placeholder = 'House number and street';
+      element.value = addressRef.current.streetAddress;
+      element.setAttribute('aria-label', 'Street address');
+      element.setAttribute('autocomplete', 'street-address');
+
+      const handleInput = () => {
+        const streetAddress = element?.value ?? '';
+        setDeliveryAddress((current) => ({ ...current, streetAddress }));
+      };
+      const handleSelection = async (event: Event) => {
+        const selectEvent = event as Event & {
+          placePrediction?: GooglePlacePrediction;
+          detail?: { placePrediction?: GooglePlacePrediction };
+        };
+        const prediction = selectEvent.placePrediction ?? selectEvent.detail?.placePrediction;
+        if (!prediction || !element) return;
+        try {
+          const place = prediction.toPlace();
+          await place.fetchFields({ fields: ['addressComponents', 'formattedAddress'] });
+          if (!active) return;
+          const selectedAddress = addressFromPlace(place);
+          element.value = selectedAddress.streetAddress || element.value;
+          setDeliveryAddress(selectedAddress);
+          setErrors((current) => ({ ...current, streetAddress: '' }));
+        } catch {
+          handleInput();
+        }
+      };
+
+      element.addEventListener('input', handleInput);
+      element.addEventListener('gmp-select', handleSelection);
+      host.replaceChildren(element);
+      autocompleteElement.current = element;
+      setPlacesReady(true);
+      removeListeners = () => {
+        element?.removeEventListener('input', handleInput);
+        element?.removeEventListener('gmp-select', handleSelection);
+      };
+    }).catch(() => {
+      if (active) setPlacesReady(false);
+    });
+
+    return () => {
+      active = false;
+      removeListeners();
+      autocompleteElement.current = null;
+      element?.remove();
+    };
+  }, []);
 
   async function submitOrder(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
     if (!form.reportValidity()) return;
+    const streetAddress = autocompleteElement.current?.value.trim() || deliveryAddress.streetAddress.trim();
+    if (!streetAddress) {
+      setErrors((current) => ({ ...current, streetAddress: 'Enter a street address.' }));
+      autocompleteElement.current?.focus();
+      return;
+    }
 
     if (!idempotencyKey.current) idempotencyKey.current = crypto.randomUUID();
     setSubmitting(true);
@@ -129,6 +212,7 @@ export default function Order() {
     setServerError('');
     const formData = new FormData(form);
     const payload = Object.fromEntries(formData.entries()) as Record<string, unknown>;
+    payload.streetAddress = streetAddress;
     for (const checkbox of ['spotifyPublic', 'spotifyOrderConfirmed', 'driveFilesNumbered', 'under79Minutes', 'rightsConfirmed', 'shippingConfirmed']) {
       payload[checkbox] = formData.has(checkbox);
     }
@@ -187,24 +271,27 @@ export default function Order() {
               <FieldError name="phone" errors={errors} />
               <div className="order-callout">Use your browser’s saved-address suggestion, then check every field. Suburb, state and postcode cannot be left out.</div>
               <label htmlFor="streetAddress">STREET ADDRESS <RequiredMark /></label>
-              <input id="streetAddress" name="streetAddress" type="text" placeholder="House number and street" autoComplete="address-line1" required />
+              <div ref={autocompleteHost} className={`order-places ${placesReady ? 'order-places--ready' : ''}`} />
+              {!placesReady && <input id="streetAddress" name="streetAddress" type="text" placeholder="House number and street" autoComplete="address-line1" value={deliveryAddress.streetAddress} onChange={(event) => setDeliveryAddress((current) => ({ ...current, streetAddress: event.target.value }))} required aria-invalid={Boolean(errors.streetAddress)} />}
+              {placesReady && <input name="streetAddress" type="hidden" value={deliveryAddress.streetAddress} />}
+              <FieldError name="streetAddress" errors={errors} />
               <label htmlFor="addressExtra">APARTMENT, UNIT OR BUILDING</label>
               <input id="addressExtra" name="addressExtra" type="text" placeholder="Optional" autoComplete="address-line2" />
               <div className="order-grid order-grid--city">
-                <div><label htmlFor="city">SUBURB OR CITY <RequiredMark /></label><input id="city" name="city" type="text" autoComplete="address-level2" required /></div>
+                <div><label htmlFor="city">SUBURB OR CITY <RequiredMark /></label><input id="city" name="city" type="text" autoComplete="address-level2" value={deliveryAddress.city} onChange={(event) => setDeliveryAddress((current) => ({ ...current, city: event.target.value }))} required /></div>
                 <div>
                   <label htmlFor="region">{isAustralia ? 'STATE' : 'STATE / PROVINCE / REGION'} <RequiredMark /></label>
                   {isAustralia ? (
-                    <select id="region" name="region" autoComplete="address-level1" required defaultValue="">
+                    <select id="region" name="region" autoComplete="address-level1" required value={deliveryAddress.region} onChange={(event) => setDeliveryAddress((current) => ({ ...current, region: event.target.value }))}>
                       <option value="" disabled>Choose</option>{AUSTRALIAN_STATES.map((state) => <option key={state}>{state}</option>)}
                     </select>
-                  ) : <input id="region" name="region" type="text" autoComplete="address-level1" required />}
+                  ) : <input id="region" name="region" type="text" autoComplete="address-level1" value={deliveryAddress.region} onChange={(event) => setDeliveryAddress((current) => ({ ...current, region: event.target.value }))} required />}
                   <FieldError name="region" errors={errors} />
                 </div>
               </div>
               <div className="order-grid order-grid--postcode">
-                <div><label htmlFor="postcode">POSTCODE <RequiredMark /></label><input id="postcode" name="postcode" type="text" autoComplete="postal-code" required /></div>
-                <div><label htmlFor="country">COUNTRY <RequiredMark /></label><input id="country" name="country" type="text" autoComplete="country-name" value={country} onChange={(event) => setCountry(event.target.value)} required /></div>
+                <div><label htmlFor="postcode">POSTCODE <RequiredMark /></label><input id="postcode" name="postcode" type="text" autoComplete="postal-code" value={deliveryAddress.postcode} onChange={(event) => setDeliveryAddress((current) => ({ ...current, postcode: event.target.value }))} required /></div>
+                <div><label htmlFor="country">COUNTRY <RequiredMark /></label><input id="country" name="country" type="text" autoComplete="country-name" value={deliveryAddress.country} onChange={(event) => setDeliveryAddress((current) => ({ ...current, country: event.target.value }))} required /></div>
               </div>
             </div>
           </section>

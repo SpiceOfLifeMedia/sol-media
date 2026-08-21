@@ -113,10 +113,10 @@ export default function StartAProject() {
         <section className="bg-[var(--ink)] pt-[150px] pb-[80px] px-5 md:px-12 text-[var(--paper)]">
           <div className="max-w-[800px] mx-auto text-center">
             <h1 className="text-[48px] md:text-[72px] leading-[1.02] font-[800] tracking-[-0.025em] mb-6" style={{ fontStretch: '125%' }}>
-              Start a project<span className="text-[var(--verm)]">.</span>
+              Start a brand conversation<span className="text-[var(--verm)]">.</span>
             </h1>
             <p className="text-[18px] md:text-[20px] leading-[1.6] text-[rgba(242,238,230,0.7)] max-w-[600px] mx-auto">
-              Tell us what feels disconnected, outdated or underperforming. We'll recommend the clearest next step.
+              Tell us what feels disconnected, outdated or underperforming. If we're a good fit, we'll prepare a complimentary brand starter kit and recommend the clearest next step.
             </p>
           </div>
         </section>

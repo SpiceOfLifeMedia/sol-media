@@ -144,6 +144,17 @@
 .order-fields input[aria-invalid='true'],
 .order-fields select[aria-invalid='true'] { border-color: #b42318; }
 
+.order-places { display: none; }
+.order-places--ready { display: block; margin-top: 9px; }
+.order-places gmp-place-autocomplete {
+  display: block;
+  width: 100%;
+  min-height: 54px;
+  box-sizing: border-box;
+  color-scheme: light;
+  font-family: inherit;
+}
+
 .order-callout {
   margin-top: 26px;
   padding: 16px 18px;
@@ -259,6 +270,7 @@
   .order-choice-grid--wide { grid-template-columns: 1fr; }
   .order-choice-grid { gap: 10px; }
   .order-choice { padding: 15px 16px; }
+  .order-places gmp-place-autocomplete { min-height: 54px; }
   .order-footer { align-items: flex-start; flex-direction: column; gap: 20px; }
   .order-footer > a:last-child { font-size: 9.5px; letter-spacing: .1em; }
   .order-success__inner { padding: 64px 0 76px; }
