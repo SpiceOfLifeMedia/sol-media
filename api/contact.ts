@@ -105,6 +105,9 @@ function buildHtml(d: Record<string, string>): string {
             <table width="100%" cellpadding="0" cellspacing="0">
               ${field('Name', d['name'])}
               ${field('Email', d['email'])}
+              ${field('Phone / Mobile', d['phone'])}
+              ${field('Preferred Contact Method', d['preferredContact'])}
+              ${field('Preferred Contact Time', d['preferredTime'])}
               ${field('Business / Company', d['business'])}
               ${field('Current Website', d['url'])}
               ${field('Services Interested In', services)}
@@ -137,6 +140,9 @@ function buildText(d: Record<string, string>): string {
     '—'.repeat(40),
     `Name: ${d['name'] ?? '—'}`,
     `Email: ${d['email'] ?? '—'}`,
+    `Phone / Mobile: ${d['phone'] ?? '—'}`,
+    `Preferred contact method: ${d['preferredContact'] ?? '—'}`,
+    `Preferred contact time: ${d['preferredTime'] ?? '—'}`,
     `Business: ${d['business'] ?? '—'}`,
     `Website: ${d['url'] ?? '—'}`,
     `Services: ${d['services'] ?? '—'}`,
@@ -149,6 +155,47 @@ function buildText(d: Record<string, string>): string {
     `How they heard about us: ${d['source'] ?? '—'}`,
     ...attributionText(d),
   ].join('\n');
+}
+
+function buildCustomerConfirmation(d: Record<string, string>) {
+  const name = escapeHtml(d['name']?.trim() || 'there');
+  return {
+    html: `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><title>Your SOL Media Brand Starter Kit request</title></head>
+<body style="margin:0;padding:0;background:#f2eee6;font-family:'Helvetica Neue',Arial,sans-serif;color:#16150f;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f2eee6;padding:40px 20px;">
+    <tr><td align="center">
+      <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid #e0dbd0;max-width:600px;width:100%;">
+        <tr><td style="background:#16150f;padding:32px 40px;color:#f2eee6;">
+          <p style="margin:0;font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#e8451c;">REQUEST RECEIVED</p>
+          <h1 style="margin:8px 0 0;font-size:28px;font-weight:800;letter-spacing:-.02em;">Your complimentary Brand Starter Kit</h1>
+        </td></tr>
+        <tr><td style="padding:40px;font-size:15px;line-height:1.65;">
+          <p style="margin:0 0 18px;">Hi ${name},</p>
+          <p style="margin:0 0 18px;">Thanks for telling us about your business. Sam Leverenz, founder of SOL Media, will contact you personally using your preferred method and time for a short brand conversation.</p>
+          <p style="margin:0 0 18px;"><strong>You do not need to upload anything now.</strong> If you have an existing logo, brand files or examples you like, you can reply to this email and attach them whenever convenient. A website or social page is also enough for us to begin.</p>
+          <p style="margin:0 0 18px;">Your Brand Starter Kit is complimentary and yours to keep, whether or not you proceed with SOL Media. There is no payment or obligation.</p>
+          <p style="margin:28px 0 0;">Sam Leverenz<br>Founder, SOL Media</p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`,
+    text: [
+      `Hi ${d['name']?.trim() || 'there'},`,
+      '',
+      'Thanks for telling us about your business. Sam Leverenz, founder of SOL Media, will contact you personally using your preferred method and time for a short brand conversation.',
+      '',
+      'You do not need to upload anything now. If you have an existing logo, brand files or examples you like, simply reply to this email and attach them whenever convenient. A website or social page is also enough for us to begin.',
+      '',
+      'Your Brand Starter Kit is complimentary and yours to keep, whether or not you proceed with SOL Media. There is no payment or obligation.',
+      '',
+      'Sam Leverenz',
+      'Founder, SOL Media',
+    ].join('\n'),
+  };
 }
 
 export default async function handler(req: Request): Promise<Response> {
@@ -195,7 +242,7 @@ export default async function handler(req: Request): Promise<Response> {
   }
 
   // Server-side validation
-  if (!data['name'] || !data['email'] || !data['business'] || !data['problem']) {
+  if (!data['name'] || !data['email'] || !data['phone'] || !data['preferredContact'] || !data['preferredTime'] || !data['business'] || !data['problem']) {
     return new Response(JSON.stringify({ error: 'Missing required fields' }), {
       status: 422,
       headers: { 'Content-Type': 'application/json' },
@@ -231,6 +278,27 @@ export default async function handler(req: Request): Promise<Response> {
         status: 502,
         headers: { 'Content-Type': 'application/json' },
       });
+    }
+
+    const confirmation = buildCustomerConfirmation(data);
+    const confirmationRes = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: fromEmail,
+        to: [data['email']],
+        reply_to: toEmail,
+        subject: 'Your complimentary SOL Media Brand Starter Kit request',
+        ...confirmation,
+      }),
+    });
+
+    if (!confirmationRes.ok) {
+      const body = await confirmationRes.text();
+      console.error(`[contact] Confirmation email error ${confirmationRes.status}:`, body);
     }
 
     return new Response(JSON.stringify({ ok: true }), {

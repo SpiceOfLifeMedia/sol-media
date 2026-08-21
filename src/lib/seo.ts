@@ -55,7 +55,7 @@ export const SEO_ROUTES: Record<string, SeoConfig> = {
   '/start-a-project': {
     title: 'Complimentary Brand Starter Kit | Spice of Life Media',
     description:
-      'Start a brand conversation with SOL Media. Qualified businesses can receive a complimentary starter kit with colour, typography, logo guidance and creative direction.',
+      'Request a complimentary Brand Starter Kit from SOL Media, including colour, typography, logo guidance and creative direction. Australia-wide, with no payment or obligation.',
     index: true,
     pageType: 'ContactPage',
     lastModified: '2026-08-09',

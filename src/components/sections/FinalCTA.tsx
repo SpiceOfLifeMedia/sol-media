@@ -11,18 +11,18 @@ export function FinalCTA() {
         </h2>
         
         <p className="text-[16px] md:text-[18px] leading-[1.6] text-[rgba(242,238,230,0.7)] max-w-[500px] mb-12">
-          Book a brand conversation. If we're a good fit, we'll prepare a complimentary starter kit with colour, typography, logo guidance and a one-page creative direction.
+          Request a complimentary Brand Starter Kit with colour, typography, logo guidance and a one-page creative direction. Sam Leverenz, founder of SOL Media, will contact you personally for a short brand conversation before preparing it.
         </p>
         
         <Link 
           href="/start-a-project" 
           className="bg-[var(--verm)] text-[var(--ink)] text-[16px] font-[750] tracking-[0.02em] px-[40px] py-[20px] w-full md:w-auto hover:bg-[var(--paper)] hover:text-[var(--ink)] transition-colors text-center inline-block"
         >
-          Start a brand conversation
+          Request my complimentary kit
         </Link>
         
         <div className="mt-10 caps-label text-[rgba(242,238,230,0.6)]">
-          WE'LL RESPOND AS SOON AS POSSIBLE.
+          NO PAYMENT · NO OBLIGATION · YOURS TO KEEP
         </div>
       </div>
     </section>

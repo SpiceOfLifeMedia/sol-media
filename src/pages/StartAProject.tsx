@@ -46,6 +46,7 @@ export default function StartAProject() {
     if (!data.name) newErrors.name = 'Name is required';
     if (!data.email) newErrors.email = 'Work email is required';
     else if (!/^\S+@\S+\.\S+$/.test(data.email as string)) newErrors.email = 'Please enter a valid email';
+    if (!data.phone) newErrors.phone = 'Phone number is required';
     if (!data.business) newErrors.business = 'Business / company is required';
     if (!data.problem) newErrors.problem = 'Please tell us what currently feels disconnected';
     
@@ -81,6 +82,7 @@ export default function StartAProject() {
   };
 
   const services = [
+    "Complimentary Brand Starter Kit",
     "Digital Presence Audit",
     "Brand Systems",
     "Websites & Rebuilds",
@@ -116,7 +118,10 @@ export default function StartAProject() {
               Start a brand conversation<span className="text-[var(--verm)]">.</span>
             </h1>
             <p className="text-[18px] md:text-[20px] leading-[1.6] text-[rgba(242,238,230,0.7)] max-w-[600px] mx-auto">
-              Tell us what feels disconnected, outdated or underperforming. If we're a good fit, we'll prepare a complimentary brand starter kit and recommend the clearest next step.
+              Tell us about your business and receive a complimentary Brand Starter Kit. Sam Leverenz, founder of SOL Media, will contact you personally for a short brand conversation before preparing it.
+            </p>
+            <p className="mt-5 text-[13px] font-[750] tracking-[0.08em] uppercase text-[var(--verm)]">
+              No files or logo upload needed now
             </p>
           </div>
         </section>
@@ -129,7 +134,7 @@ export default function StartAProject() {
               <div className="bg-white p-12 border border-[rgba(22,21,15,0.1)] text-center flex flex-col items-center gap-6 shadow-sm">
                 <div className="w-16 h-16 rounded-full bg-[var(--paper)] flex items-center justify-center text-[var(--verm)] text-3xl">✓</div>
                 <h2 className="text-[28px] font-[800] tracking-[-0.02em]">Enquiry received.</h2>
-                <p className="text-[16px] text-[rgba(22,21,15,0.7)]">We've received your enquiry. We'll be in touch as soon as possible.</p>
+                <p className="text-[16px] text-[rgba(22,21,15,0.7)]">Sam will contact you personally using your preferred method and time to arrange a short brand conversation.</p>
               </div>
             ) : (
               <form
@@ -162,14 +167,48 @@ export default function StartAProject() {
                   </div>
 
                   <div className="flex flex-col gap-2">
+                    <label htmlFor="phone" className="text-[13px] font-[800] tracking-[0.05em] uppercase text-[rgba(22,21,15,0.8)]">Phone / Mobile *</label>
+                    <input type="tel" id="phone" name="phone" autoComplete="tel" className={`border-b ${errors.phone ? 'border-[var(--verm)]' : 'border-[rgba(22,21,15,0.2)] focus:border-[var(--ink)]'} bg-transparent py-3 outline-none text-[16px] transition-colors`} aria-invalid={!!errors.phone} />
+                    {errors.phone && <span className="text-[var(--verm)] text-[12px]">{errors.phone}</span>}
+                  </div>
+
+                  <div className="flex flex-col gap-2">
                     <label htmlFor="business" className="text-[13px] font-[800] tracking-[0.05em] uppercase text-[rgba(22,21,15,0.8)]">Business / Company *</label>
                     <input type="text" id="business" name="business" className={`border-b ${errors.business ? 'border-[var(--verm)]' : 'border-[rgba(22,21,15,0.2)] focus:border-[var(--ink)]'} bg-transparent py-3 outline-none text-[16px] transition-colors`} aria-invalid={!!errors.business} />
                     {errors.business && <span className="text-[var(--verm)] text-[12px]">{errors.business}</span>}
                   </div>
 
                   <div className="flex flex-col gap-2">
-                    <label htmlFor="url" className="text-[13px] font-[800] tracking-[0.05em] uppercase text-[rgba(22,21,15,0.8)]">Current Website URL (Optional)</label>
+                    <label htmlFor="url" className="text-[13px] font-[800] tracking-[0.05em] uppercase text-[rgba(22,21,15,0.8)]">Website or Social Page (Optional)</label>
                     <input type="url" id="url" name="url" className="border-b border-[rgba(22,21,15,0.2)] focus:border-[var(--ink)] bg-transparent py-3 outline-none text-[16px] transition-colors" placeholder="https://" />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="preferredContact" className="text-[13px] font-[800] tracking-[0.05em] uppercase text-[rgba(22,21,15,0.8)]">Preferred Contact Method *</label>
+                    <div className="relative">
+                      <select id="preferredContact" name="preferredContact" defaultValue="" className="w-full border-b border-[rgba(22,21,15,0.2)] focus:border-[var(--ink)] bg-transparent py-3 outline-none text-[16px] transition-colors appearance-none rounded-none cursor-pointer" required>
+                        <option value="" disabled>Select an option</option>
+                        <option value="Phone / mobile">Phone / mobile</option>
+                        <option value="Email">Email</option>
+                      </select>
+                      <div className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none">▼</div>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="preferredTime" className="text-[13px] font-[800] tracking-[0.05em] uppercase text-[rgba(22,21,15,0.8)]">Preferred Contact Time *</label>
+                    <div className="relative">
+                      <select id="preferredTime" name="preferredTime" defaultValue="" className="w-full border-b border-[rgba(22,21,15,0.2)] focus:border-[var(--ink)] bg-transparent py-3 outline-none text-[16px] transition-colors appearance-none rounded-none cursor-pointer" required>
+                        <option value="" disabled>Select a time</option>
+                        <option value="Morning">Morning</option>
+                        <option value="Afternoon">Afternoon</option>
+                        <option value="Evening">Evening</option>
+                        <option value="Any time">Any time</option>
+                      </select>
+                      <div className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none">▼</div>
+                    </div>
                   </div>
                 </div>
 
@@ -192,10 +231,10 @@ export default function StartAProject() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="flex flex-col gap-2">
-                    <label htmlFor="budget" className="text-[13px] font-[800] tracking-[0.05em] uppercase text-[rgba(22,21,15,0.8)]">Approximate Project Budget *</label>
+                    <label htmlFor="budget" className="text-[13px] font-[800] tracking-[0.05em] uppercase text-[rgba(22,21,15,0.8)]">Approximate Project Budget (Optional)</label>
                     <div className="relative">
-                      <select id="budget" name="budget" defaultValue="" className="w-full border-b border-[rgba(22,21,15,0.2)] focus:border-[var(--ink)] bg-transparent py-3 outline-none text-[16px] transition-colors appearance-none rounded-none cursor-pointer" required>
-                        <option value="" disabled>Select an option</option>
+                      <select id="budget" name="budget" defaultValue="" className="w-full border-b border-[rgba(22,21,15,0.2)] focus:border-[var(--ink)] bg-transparent py-3 outline-none text-[16px] transition-colors appearance-none rounded-none cursor-pointer">
+                        <option value="">Not sure / not applicable</option>
                         {budgets.map(b => <option key={b} value={b}>{b}</option>)}
                       </select>
                       <div className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none">▼</div>
@@ -230,9 +269,15 @@ export default function StartAProject() {
                   disabled={status === 'submitting'}
                   className="bg-[var(--verm)] text-[var(--ink)] text-[16px] font-[750] tracking-[0.02em] px-[40px] py-[20px] w-full hover:bg-[var(--ink)] hover:text-[var(--paper)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {status === 'submitting' ? 'Submitting...' : 'Submit Enquiry'}
+                  {status === 'submitting' ? 'Submitting...' : 'Request my complimentary Brand Starter Kit'}
                 </button>
-                <p className="-mt-5 text-center text-[12px] leading-[1.5] text-[rgba(22,21,15,0.58)]">
+                <p className="-mt-5 text-center text-[13px] font-[650] leading-[1.6] text-[rgba(22,21,15,0.72)]">
+                  No payment. No obligation. Your Brand Starter Kit is yours to keep, whether or not you proceed with SOL Media. Additional revisions, custom logo development and website work are quoted separately.
+                </p>
+                <p className="-mt-6 text-center text-[12px] leading-[1.5] text-[rgba(22,21,15,0.58)]">
+                  You do not need to upload a logo or any files now. After you submit, simply reply to our confirmation email with any existing assets when convenient.
+                </p>
+                <p className="text-center text-[12px] leading-[1.5] text-[rgba(22,21,15,0.58)]">
                   We’ll use your details to respond to your enquiry. Read our{' '}
                   <Link
                     className="font-[700] text-[var(--ink)] underline decoration-[rgba(22,21,15,0.35)] underline-offset-4 hover:decoration-[var(--ink)]"
