@@ -1,4 +1,101 @@
+import { useEffect, useRef, useState } from 'react';
+import { Search } from 'lucide-react';
 import { Link } from 'wouter';
+
+const auditSymptoms = [
+  { label: 'Unclear offer' },
+  { label: 'Confusing pages' },
+  { label: 'Not found on Google', google: true },
+] as const;
+const auditActions = ['Clarify the message', 'Rebuild the page flow', 'Make pages Google-ready'] as const;
+
+function AuditMedia() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isRevealed, setIsRevealed] = useState(false);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    if (
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      || !('IntersectionObserver' in window)
+    ) {
+      setIsRevealed(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        setIsRevealed(true);
+        observer.disconnect();
+      },
+      { threshold: 0.45 },
+    );
+
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={containerRef}
+      className="relative w-full h-full px-5 sm:px-8 py-8"
+      data-audit-animation={isRevealed ? 'complete' : 'waiting'}
+    >
+      <div className="audit-story-title">FROM SYMPTOMS TO A CLEAR PLAN</div>
+
+      <div className="audit-story" aria-label="The audit identifies visible problems, connects their causes and turns them into a prioritised action plan">
+        <div className="audit-stage audit-stage--symptoms">
+          <div className="audit-stage-label">WHAT YOU NOTICE</div>
+          <div className="audit-list">
+            {auditSymptoms.map((symptom, index) => (
+              <div key={symptom.label} className={`audit-symptom audit-item--${index + 1}`}>
+                {'google' in symptom ? <Search className="audit-search-mark" aria-hidden="true" /> : <span aria-hidden="true" />}
+                {symptom.label}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="audit-flow" aria-hidden="true">
+          <span className="audit-flow-line" />
+          <span className="audit-flow-arrow">→</span>
+        </div>
+
+        <div className="audit-core">
+          <span className="audit-core-pulse" aria-hidden="true" />
+          <span className="audit-core-kicker">SOL</span>
+          <strong>AUDIT</strong>
+          <small>finds the cause</small>
+        </div>
+
+        <div className="audit-flow audit-flow--out" aria-hidden="true">
+          <span className="audit-flow-line" />
+          <span className="audit-flow-arrow">→</span>
+        </div>
+
+        <div className="audit-stage audit-stage--actions">
+          <div className="audit-stage-label">WHAT HAPPENS NEXT</div>
+          <div className="audit-list">
+            {auditActions.map((action, index) => (
+              <div key={action} className={`audit-action audit-item--${index + 1}`}>
+                <span>0{index + 1}</span>
+                {action}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="audit-story-outcome">
+        <span>WHY SEO MATTERS</span>
+        If Google cannot understand the site, the right customers will not find it.
+      </div>
+    </div>
+  );
+}
 
 export function Capabilities() {
   const caps = [
@@ -11,7 +108,7 @@ export function Capabilities() {
       inc: 'Website audit · SEO audit · Brand & messaging review · Competitor review · Content review · Customer journey · Conversion review · Prioritised recommendations',
       link: '/services/digital-presence-audit',
       cta: 'Explore the audit',
-      label: 'WHAT SHOULD CHANGE — AND WHAT HAPPENS FIRST',
+      label: 'BE UNDERSTOOD · BE FOUND · BE CHOSEN',
       mediaType: 'audit'
     },
     {
@@ -107,12 +204,7 @@ export function Capabilities() {
               <div className="w-full md:w-[560px] h-[360px] md:h-[440px] bg-[var(--ink-stage)] rounded-sm overflow-hidden relative group hover:-translate-y-2 transition-transform duration-300 flex-shrink-0 flex items-center justify-center">
                 {/* Media internals based on type */}
                 {cap.mediaType === 'audit' && (
-                  <div className="relative w-full h-full flex items-center justify-center">
-                    <div className="w-[280px] h-[320px] border-[1.5px] border-[rgba(242,238,230,0.2)] rounded-md opacity-40"></div>
-                    <div className="absolute top-[80px] left-[50px] bg-[var(--verm)] text-[var(--ink)] p-3 text-[10px] font-bold tracking-wider shadow-lg">PRIORITY 01<br/><span className="font-normal">Message clarity</span></div>
-                    <div className="absolute top-[160px] right-[40px] bg-[var(--verm)] text-[var(--ink)] p-3 text-[10px] font-bold tracking-wider shadow-lg">PRIORITY 02<br/><span className="font-normal">Page architecture</span></div>
-                    <div className="absolute bottom-[80px] left-[80px] bg-[var(--verm)] text-[var(--ink)] p-3 text-[10px] font-bold tracking-wider shadow-lg">PRIORITY 03<br/><span className="font-normal">Search structure</span></div>
-                  </div>
+                  <AuditMedia />
                 )}
                 
                 {cap.mediaType === 'brand' && (
@@ -134,23 +226,44 @@ export function Capabilities() {
                 )}
 
                 {cap.mediaType === 'web' && (
-                  <div className="relative w-full h-full flex items-center justify-center pt-12">
-                    <div className="w-[320px] h-[280px] bg-[var(--paper)] rounded-t-md shadow-2xl relative overflow-hidden ml-12">
-                      <div className="h-6 border-b border-[rgba(22,21,15,0.1)] flex items-center px-4">
-                        <span className="text-[8px] font-bold tracking-widest text-[var(--ink)]">CONCEPT STUDY</span>
+                  <div className="relative h-full w-full overflow-hidden px-5 py-7 sm:px-8 sm:py-9">
+                    <div className="mb-5 flex items-center justify-between text-[8px] font-[800] tracking-[0.14em]">
+                      <span className="text-[var(--verm)]">LIVE CLIENT BUILD</span>
+                      <span className="text-[rgba(242,238,230,0.48)]">FULL CIRCLE HAIR SOCIETY</span>
+                    </div>
+
+                    <div className="relative mx-auto h-[255px] w-full max-w-[450px] sm:h-[315px]">
+                      <div className="absolute left-0 top-0 w-[88%] overflow-hidden rounded-[5px] border border-[rgba(242,238,230,0.2)] bg-[#f1dfd5] shadow-2xl">
+                        <div className="flex h-5 items-center gap-1.5 border-b border-black/10 bg-[var(--paper)] px-2.5" aria-hidden="true">
+                          <span className="h-1.5 w-1.5 rounded-full bg-[var(--verm)]" />
+                          <span className="h-1.5 w-1.5 rounded-full bg-black/20" />
+                          <span className="h-1.5 w-1.5 rounded-full bg-black/20" />
+                          <span className="ml-2 text-[6px] font-[700] tracking-[0.08em] text-black/45">fullcirclehairsociety.com</span>
+                        </div>
+                        <img
+                          src="/assets/work/full-circle-home-desktop.png"
+                          alt="Full Circle Hair Society website designed and built by Spice of Life Media, shown on desktop"
+                          className="aspect-[16/10] w-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.018]"
+                          loading="lazy"
+                          decoding="async"
+                          width="1440"
+                          height="900"
+                        />
                       </div>
-                      <div className="p-6">
-                        <div className="text-[28px] font-bold leading-tight">Built to be<br/>chosen.</div>
-                        <div className="w-[120px] h-[1px] bg-black my-4"></div>
-                        <div className="w-[100px] h-[30px] bg-[var(--verm)] rounded-sm"></div>
+
+                      <div className="absolute bottom-0 right-0 w-[27%] overflow-hidden rounded-[12px] border-[3px] border-[var(--paper)] bg-[#f1dfd5] shadow-2xl">
+                        <div className="mx-auto mt-1 h-1 w-7 rounded-full bg-black/35" aria-hidden="true" />
+                        <img
+                          src="/assets/work/full-circle-home-mobile.png"
+                          alt="Full Circle Hair Society website designed and built by Spice of Life Media, shown on mobile"
+                          className="mt-1 aspect-[390/760] w-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.025]"
+                          loading="lazy"
+                          decoding="async"
+                          width="390"
+                          height="844"
+                        />
                       </div>
                     </div>
-                    <div className="absolute w-[120px] h-[220px] bg-white rounded-md shadow-2xl left-[80px] bottom-[20px] border border-[rgba(22,21,15,0.05)] flex flex-col items-center p-3 gap-3">
-                       <div className="w-full h-2 bg-gray-200"></div>
-                       <div className="w-full h-2 bg-gray-200"></div>
-                       <div className="w-full h-16 bg-[var(--verm)] opacity-20"></div>
-                    </div>
-                    <div className="absolute top-0 w-full h-full bg-gradient-to-b from-[rgba(242,238,230,0.09)] to-transparent pointer-events-none opacity-50"></div>
                   </div>
                 )}
 

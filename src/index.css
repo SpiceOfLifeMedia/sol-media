@@ -100,3 +100,292 @@
   from { transform: translateY(20px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
+
+@keyframes audit-fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes audit-enter-left {
+  from { opacity: 0; transform: translateX(-18px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes audit-enter-right {
+  from { opacity: 0; transform: translateX(18px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes audit-flow-draw {
+  from { opacity: 0; transform: scaleX(0); }
+  to { opacity: 1; transform: scaleX(1); }
+}
+
+@keyframes audit-core-reveal {
+  0% { opacity: 0; transform: scale(0.72); }
+  70% { opacity: 1; transform: scale(1.05); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes audit-core-pulse {
+  0% { opacity: 0.75; transform: scale(0.75); }
+  100% { opacity: 0; transform: scale(1.45); }
+}
+
+.audit-story-title {
+  color: rgba(242, 238, 230, 0.62);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-align: center;
+  opacity: 0;
+}
+
+.audit-story {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 26px 84px 26px minmax(0, 1.14fr);
+  align-items: center;
+  gap: 6px;
+  min-height: 250px;
+}
+
+.audit-stage-label {
+  color: rgba(242, 238, 230, 0.42);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  margin-bottom: 10px;
+}
+
+.audit-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.audit-symptom,
+.audit-action {
+  min-height: 42px;
+  opacity: 0;
+}
+
+.audit-symptom {
+  align-items: center;
+  border: 1px solid rgba(242, 238, 230, 0.14);
+  color: rgba(242, 238, 230, 0.76);
+  display: flex;
+  font-size: 10px;
+  line-height: 1.25;
+  padding: 8px;
+}
+
+.audit-symptom > span {
+  background: var(--verm);
+  border-radius: 999px;
+  flex: 0 0 auto;
+  height: 5px;
+  margin-right: 7px;
+  width: 5px;
+}
+
+.audit-search-mark {
+  color: var(--verm);
+  flex: 0 0 auto;
+  height: 13px;
+  margin-right: 6px;
+  stroke-width: 2;
+  width: 13px;
+}
+
+.audit-action {
+  align-items: center;
+  background: var(--verm);
+  color: var(--ink);
+  display: grid;
+  font-size: 9px;
+  font-weight: 650;
+  grid-template-columns: 22px 1fr;
+  line-height: 1.2;
+  padding: 7px 8px;
+}
+
+.audit-action > span {
+  font-size: 8px;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+}
+
+.audit-flow {
+  align-items: center;
+  display: flex;
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+.audit-flow-line {
+  background: rgba(242, 238, 230, 0.28);
+  height: 1px;
+  width: 100%;
+}
+
+.audit-flow-arrow {
+  color: var(--verm);
+  font-size: 13px;
+  line-height: 1;
+  margin-left: -2px;
+}
+
+.audit-core {
+  align-items: center;
+  aspect-ratio: 1;
+  background: var(--paper);
+  border-radius: 50%;
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  opacity: 0;
+  position: relative;
+  text-align: center;
+  z-index: 2;
+}
+
+.audit-core-kicker {
+  color: var(--verm-text-light);
+  font-size: 8px;
+  font-weight: 850;
+  letter-spacing: 0.14em;
+}
+
+.audit-core strong {
+  font-size: 15px;
+  line-height: 1.1;
+}
+
+.audit-core small {
+  color: rgba(22, 21, 15, 0.64);
+  font-size: 7px;
+  margin-top: 3px;
+}
+
+.audit-core-pulse {
+  border: 1px solid var(--verm);
+  border-radius: 50%;
+  inset: 0;
+  opacity: 0;
+  position: absolute;
+}
+
+.audit-story-outcome {
+  border-top: 1px solid rgba(242, 238, 230, 0.14);
+  color: rgba(242, 238, 230, 0.76);
+  font-size: 10px;
+  line-height: 1.4;
+  opacity: 0;
+  padding-top: 12px;
+  text-align: center;
+}
+
+.audit-story-outcome > span {
+  color: var(--verm);
+  font-size: 8.5px;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+  margin-right: 8px;
+}
+
+[data-audit-animation='complete'] .audit-story-title {
+  animation: audit-fade-up 360ms ease-out forwards;
+}
+
+[data-audit-animation='complete'] .audit-symptom {
+  animation: audit-enter-left 380ms cubic-bezier(0.2, 1, 0.35, 1) forwards;
+}
+
+[data-audit-animation='complete'] .audit-symptom.audit-item--1 { animation-delay: 200ms; }
+[data-audit-animation='complete'] .audit-symptom.audit-item--2 { animation-delay: 330ms; }
+[data-audit-animation='complete'] .audit-symptom.audit-item--3 { animation-delay: 460ms; }
+
+[data-audit-animation='complete'] .audit-flow:not(.audit-flow--out) {
+  animation: audit-flow-draw 300ms ease-out 690ms forwards;
+}
+
+[data-audit-animation='complete'] .audit-core {
+  animation: audit-core-reveal 440ms cubic-bezier(0.2, 1, 0.35, 1) 850ms forwards;
+}
+
+[data-audit-animation='complete'] .audit-core-pulse {
+  animation: audit-core-pulse 650ms ease-out 1120ms forwards;
+}
+
+[data-audit-animation='complete'] .audit-flow--out {
+  animation: audit-flow-draw 300ms ease-out 1260ms forwards;
+}
+
+[data-audit-animation='complete'] .audit-action {
+  animation: audit-enter-right 380ms cubic-bezier(0.2, 1, 0.35, 1) forwards;
+}
+
+[data-audit-animation='complete'] .audit-action.audit-item--1 { animation-delay: 1460ms; }
+[data-audit-animation='complete'] .audit-action.audit-item--2 { animation-delay: 1590ms; }
+[data-audit-animation='complete'] .audit-action.audit-item--3 { animation-delay: 1720ms; }
+
+[data-audit-animation='complete'] .audit-story-outcome {
+  animation: audit-fade-up 420ms ease-out 2010ms forwards;
+}
+
+@media (max-width: 520px) {
+  .audit-story {
+    grid-template-columns: minmax(0, 1fr) 66px minmax(0, 1.08fr);
+    gap: 8px;
+    min-height: 235px;
+  }
+
+  .audit-flow {
+    display: none;
+  }
+
+  .audit-stage-label {
+    font-size: 7px;
+    letter-spacing: 0.09em;
+  }
+
+  .audit-symptom,
+  .audit-action {
+    min-height: 38px;
+  }
+
+  .audit-symptom {
+    font-size: 8px;
+    padding: 6px;
+  }
+
+  .audit-action {
+    font-size: 8px;
+    grid-template-columns: 18px 1fr;
+    padding: 6px;
+  }
+
+  .audit-core strong { font-size: 12px; }
+  .audit-core small { font-size: 6px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .audit-story-title,
+  .audit-symptom,
+  .audit-flow,
+  .audit-core,
+  .audit-action,
+  .audit-story-outcome,
+  [data-audit-animation='complete'] .audit-story-title,
+  [data-audit-animation='complete'] .audit-symptom,
+  [data-audit-animation='complete'] .audit-flow,
+  [data-audit-animation='complete'] .audit-core,
+  [data-audit-animation='complete'] .audit-action,
+  [data-audit-animation='complete'] .audit-story-outcome {
+    animation: none;
+    transform: none;
+    opacity: 1;
+  }
+}
