@@ -124,13 +124,13 @@ export function ReelStage() {
   };
 
   return (
-    <div className="w-full bg-[var(--ink-stage)] relative overflow-hidden" style={{ height: 'clamp(240px, 28.75vw, 414px)' }}>
+    <div className="w-full bg-black relative overflow-hidden" style={{ height: 'clamp(240px, 56.25vw, 720px)' }}>
 
       {/* Real video — autoplay, muted, no controls */}
       <video
         ref={videoRef}
-        className="absolute inset-0 w-full h-full object-cover object-center"
-        poster={`${ASSET_PATH}/media/sol-transformation-poster.jpg`}
+        className="absolute inset-0 w-full h-full object-contain object-center"
+        poster={`${ASSET_PATH}/media/sol-process-logo-poster.jpg`}
         preload="none"
         muted
         playsInline
@@ -141,12 +141,12 @@ export function ReelStage() {
         }}
         onPause={() => setIsPlaying(false)}
         onEnded={handleVideoEnd}
-        aria-label="Transformation reel: brand, website, search and content system coming together"
+        aria-label="SOL Media process reel: a website system is created across desktop and mobile, then resolves into the SOL brand mark"
       >
         {shouldLoadVideo && (
           <>
-            <source src={`${ASSET_PATH}/media/sol-transformation-hero.webm`} type="video/webm" />
-            <source src={`${ASSET_PATH}/media/sol-transformation-hero.mp4`} type="video/mp4" />
+            <source src={`${ASSET_PATH}/media/sol-process-logo-hero.webm`} type="video/webm" />
+            <source src={`${ASSET_PATH}/media/sol-process-logo-hero.mp4`} type="video/mp4" />
           </>
         )}
         <track
@@ -166,7 +166,7 @@ export function ReelStage() {
       </div>
 
       {/* Top-right: SOL mark */}
-      <div className="absolute top-5 right-5 md:right-12 z-10 pointer-events-none">
+      <div className="absolute top-5 right-5 md:right-12 z-10 pointer-events-none hidden sm:block">
         <img
           src={`${ASSET_PATH}/assets/sol-mark-white.svg`}
           alt=""
