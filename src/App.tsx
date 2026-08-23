@@ -27,6 +27,7 @@ import BrandSystems from '@/pages/services/BrandSystems';
 import WebsitesRebuilds from '@/pages/services/WebsitesRebuilds';
 import SEOSearchGrowth from '@/pages/services/SEOSearchGrowth';
 import SocialContentSystems from '@/pages/services/SocialContentSystems';
+import AppProductDesign from '@/pages/services/AppProductDesign';
 
 const queryClient = new QueryClient();
 
@@ -85,6 +86,7 @@ function Router() {
       <Route path="/services/digital-presence-audit" component={DigitalPresenceAudit} />
       <Route path="/services/brand-systems" component={BrandSystems} />
       <Route path="/services/websites-rebuilds" component={WebsitesRebuilds} />
+      <Route path="/services/app-design" component={AppProductDesign} />
       <Route path="/services/seo-search-growth" component={SEOSearchGrowth} />
       <Route path="/services/social-content-systems" component={SocialContentSystems} />
       

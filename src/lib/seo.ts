@@ -91,12 +91,12 @@ export const LANDING_PAGE_SPRINT_FAQS = [
 
 export const SEO_ROUTES: Record<string, SeoConfig> = {
   '/': {
-    title: 'Australian Brand, Web & SEO Agency | Spice of Life Media',
+    title: 'Brand, Web & SEO Agency Adelaide | Spice of Life Media',
     description:
-      'Australian brand and digital agency helping established businesses sharpen their identity, rebuild better websites, grow in search and create consistent content systems.',
+      'Adelaide brand, website and SEO agency helping established Australian businesses sharpen their identity, rebuild better websites and grow through search.',
     index: true,
     pageType: 'WebPage',
-    lastModified: '2026-08-09',
+    lastModified: '2026-08-22',
   },
   '/capabilities': {
     title: 'Brand, Web, SEO & Content Services | Spice of Life Media',
@@ -128,17 +128,17 @@ export const SEO_ROUTES: Record<string, SeoConfig> = {
       'Tell us what feels disconnected, outdated or underperforming across your brand, website, search or content. We’ll recommend the clearest next step.',
     index: true,
     pageType: 'ContactPage',
-    lastModified: '2026-08-09',
+    lastModified: '2026-08-22',
   },
   '/website-launch-special': {
-    title: 'Website Launch Special | 48-Hour Website for $879',
+    title: '48-Hour Website Design Adelaide | $879 Launch Special',
     description:
-      'Rebrand launch offer: the first 20 accepted projects can get a custom website build or rebuild, Brand Starter Kit, invoice template and SEO foundations for $879.',
-    index: false,
+      'Get a custom website build or strategic rebuild, Brand Starter Kit, invoice template and essential SEO setup for $879. First draft in 48 business hours.',
+    index: true,
     pageType: 'WebPage',
     serviceName: '48-Hour Website Launch Sprint',
     faq: LANDING_PAGE_SPRINT_FAQS,
-    lastModified: '2026-08-17',
+    lastModified: '2026-08-22',
   },
   '/website-sprint-terms': {
     title: 'Website Sprint Terms | Spice of Life Media',
@@ -175,14 +175,14 @@ export const SEO_ROUTES: Record<string, SeoConfig> = {
     lastModified: '2026-08-09',
   },
   '/services/brand-systems': {
-    title: 'Brand Strategy & Identity Adelaide | Spice of Life Media',
+    title: 'Branding Agency Adelaide | Strategy & Identity',
     description:
-      'Brand strategy and identity design for Adelaide businesses ready to look as established as they are, including positioning, messaging, rebrands and practical brand systems.',
+      'Brand strategy and identity design for Adelaide businesses, including positioning, messaging, rebrands and practical brand systems built for growth.',
     index: true,
     pageType: 'WebPage',
     serviceName: 'Brand Systems',
     faq: BRAND_SYSTEMS_FAQS,
-    lastModified: '2026-08-14',
+    lastModified: '2026-08-22',
   },
   '/services/websites-rebuilds': {
     title: 'Website Design & Rebuilds Adelaide | Spice of Life Media',
@@ -192,6 +192,15 @@ export const SEO_ROUTES: Record<string, SeoConfig> = {
     pageType: 'WebPage',
     serviceName: 'Websites & Rebuilds',
     lastModified: '2026-08-14',
+  },
+  '/services/app-design': {
+    title: 'App & Product Design Australia | Spice of Life Media',
+    description:
+      'Strategic app and digital product design for Australian businesses, including product discovery, UX/UI, prototypes, design systems and developer-ready handoff.',
+    index: true,
+    pageType: 'WebPage',
+    serviceName: 'App & Product Design',
+    lastModified: '2026-08-23',
   },
   '/services/seo-search-growth': {
     title: 'SEO Agency Adelaide & Australia | Spice of Life Media',
@@ -220,12 +229,12 @@ export const SEO_ROUTES: Record<string, SeoConfig> = {
     lastModified: '2026-08-09',
   },
   '/work': {
-    title: 'Selected Website & Digital Strategy Work | Spice of Life Media',
+    title: 'Website & Digital Strategy Work | Spice of Life Media',
     description:
       'Explore selected website rebuild, digital strategy, SEO and content work delivered by Spice of Life Media for Australian businesses.',
     index: true,
     pageType: 'CollectionPage',
-    lastModified: '2026-08-14',
+    lastModified: '2026-08-22',
   },
   '/work/full-circle-hair-society': {
     title: 'Full Circle Hair Society Website Rebuild | SOL Media',

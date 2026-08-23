@@ -33,6 +33,7 @@ export default function WebsitesRebuilds() {
       href: "/work/full-circle-hair-society"
     },
     relatedLinks: [
+      { title: "App & Product Design", href: "/services/app-design" },
       { title: "SEO & Search Growth", href: "/services/seo-search-growth" },
       { title: "Brand Systems", href: "/services/brand-systems" },
       { title: "Digital Presence Audit", href: "/services/digital-presence-audit" }

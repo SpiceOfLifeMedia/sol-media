@@ -132,6 +132,10 @@ export function Capabilities() {
       inc: 'Website strategy · Information architecture · UX & UI · Website copy · Responsive design · New builds · Complete rebuilds · Landing pages · Conversion pathways · Analytics · Technical launch',
       link: '/services/websites-rebuilds',
       cta: 'Explore website design',
+      specialistLink: {
+        label: 'Planning an app or digital product? Explore app design',
+        href: '/services/app-design'
+      },
       label: 'ONE DESIGN — EVERY DEVICE',
       mediaType: 'web'
     },
@@ -197,6 +201,15 @@ export function Capabilities() {
                   {cap.cta}
                   <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
                 </Link>
+                {'specialistLink' in cap && cap.specialistLink && (
+                  <Link
+                    href={cap.specialistLink.href}
+                    className="group -mt-3 w-fit text-[13px] font-[750] text-[var(--verm-text-light)] transition-colors hover:text-[var(--ink)]"
+                  >
+                    {cap.specialistLink.label}{' '}
+                    <span className="inline-block transition-transform duration-200 group-hover:translate-x-1">→</span>
+                  </Link>
+                )}
               </div>
             );
 

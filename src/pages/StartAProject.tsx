@@ -81,11 +81,12 @@ export default function StartAProject() {
   };
 
   const services = [
-    "Digital Presence Audit",
-    "Brand Systems",
-    "Websites & Rebuilds",
-    "SEO & Search Growth",
-    "Social & Content Systems"
+    { label: "Digital Presence Audit", value: "Digital Presence Audit" },
+    { label: "Brand Systems", value: "Brand Systems" },
+    { label: "Websites & Rebuilds", value: "Websites & Rebuilds" },
+    { label: "App & Product Design", value: "app-product-design" },
+    { label: "SEO & Search Growth", value: "SEO & Search Growth" },
+    { label: "Social & Content Systems", value: "Social & Content Systems" }
   ];
 
   const budgets = [
@@ -177,14 +178,14 @@ export default function StartAProject() {
                   <label className="text-[13px] font-[800] tracking-[0.05em] uppercase text-[rgba(22,21,15,0.8)] mb-2">What do you need help with?</label>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {services.map(service => (
-                      <label key={service} className="flex items-center gap-3 cursor-pointer group">
+                      <label key={service.value} className="flex items-center gap-3 cursor-pointer group">
                         <div className="relative flex items-center justify-center">
-                          <input type="checkbox" name="services" value={service} className="peer appearance-none w-5 h-5 border-[1.5px] border-[rgba(22,21,15,0.3)] checked:border-[var(--verm)] checked:bg-[var(--verm)] transition-colors rounded-sm cursor-pointer" />
+                          <input type="checkbox" name="services" value={service.value} className="peer appearance-none w-5 h-5 border-[1.5px] border-[rgba(22,21,15,0.3)] checked:border-[var(--verm)] checked:bg-[var(--verm)] transition-colors rounded-sm cursor-pointer" />
                           <svg className="absolute w-3 h-3 text-white pointer-events-none opacity-0 peer-checked:opacity-100" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M2.5 7L5.5 10L11.5 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                           </svg>
                         </div>
-                        <span className="text-[15px] group-hover:text-[var(--verm)] transition-colors">{service}</span>
+                        <span className="text-[15px] group-hover:text-[var(--verm)] transition-colors">{service.label}</span>
                       </label>
                     ))}
                   </div>
