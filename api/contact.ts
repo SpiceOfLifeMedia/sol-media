@@ -109,6 +109,7 @@ function buildHtml(d: Record<string, string>): string {
               ${field('Business / Company', d['business'])}
               ${field('Current Website', d['url'])}
               ${field('Services Interested In', services)}
+              ${field('Preferred Website Engagement', d['engagement'])}
               ${field('Budget', d['budget'])}
               ${field('Timing', d['timing'])}
               ${field('Primary Goal', d['problem'])}
@@ -149,6 +150,7 @@ function buildText(d: Record<string, string>): string {
     `Business: ${d['business'] ?? '—'}`,
     `Website: ${d['url'] ?? '—'}`,
     `Services: ${d['services'] ?? '—'}`,
+    `Preferred website engagement: ${d['engagement'] ?? '—'}`,
     `Budget: ${d['budget'] ?? '—'}`,
     `Timing: ${d['timing'] ?? '—'}`,
     '',

@@ -193,6 +193,15 @@ export const SEO_ROUTES: Record<string, SeoConfig> = {
     serviceName: 'Websites & Rebuilds',
     lastModified: '2026-08-14',
   },
+  '/website-partnership': {
+    title: 'Website Partnership Australia | Spice of Life Media',
+    description:
+      'Choose a custom website project or an ongoing SOL website partnership with custom design, development, managed hosting, everyday updates and improvement.',
+    index: true,
+    pageType: 'WebPage',
+    serviceName: 'Website Partnership',
+    lastModified: '2026-08-24',
+  },
   '/services/app-design': {
     title: 'App & Product Design Australia | Spice of Life Media',
     description:

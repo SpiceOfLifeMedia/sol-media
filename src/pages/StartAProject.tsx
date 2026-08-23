@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'wouter';
 import { useSeo } from '@/hooks/useSeo';
 import { Header } from '@/components/layout/Header';
@@ -12,8 +12,22 @@ export default function StartAProject() {
 
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [engagement, setEngagement] = useState('');
   const formStarted = useRef(false);
   const leadTracked = useRef(false);
+
+  useEffect(() => {
+    const requestedEngagement = new URLSearchParams(window.location.search).get('engagement');
+    const values: Record<string, string> = {
+      'custom-project': 'Custom website project',
+      partnership: 'SOL website partnership',
+      undecided: 'Not sure yet',
+    };
+
+    if (requestedEngagement && values[requestedEngagement]) {
+      setEngagement(values[requestedEngagement]);
+    }
+  }, []);
 
   const handleFormStart = (event: React.SyntheticEvent<HTMLFormElement>) => {
     if (
@@ -190,6 +204,26 @@ export default function StartAProject() {
                     ))}
                   </div>
                 </div>
+
+                <fieldset className="flex flex-col gap-4 border-y border-[rgba(22,21,15,0.12)] py-7">
+                  <legend className="px-2 text-[13px] font-[800] uppercase tracking-[0.05em] text-[rgba(22,21,15,0.8)]">For website work, how would you prefer to engage?</legend>
+                  <p className="text-[13px] leading-[1.55] text-[rgba(22,21,15,0.58)]">Choose an option if your enquiry includes a website. You can change your mind after we discuss the scope.</p>
+                  <div className="grid gap-3 md:grid-cols-3">
+                    {['Custom website project', 'SOL website partnership', 'Not sure yet'].map((option) => (
+                      <label key={option} className={`flex cursor-pointer items-center gap-3 border p-4 transition-colors ${engagement === option ? 'border-[var(--verm)] bg-white' : 'border-[rgba(22,21,15,0.16)] hover:border-[rgba(22,21,15,0.4)]'}`}>
+                        <input
+                          type="radio"
+                          name="engagement"
+                          value={option}
+                          checked={engagement === option}
+                          onChange={(event) => setEngagement(event.target.value)}
+                          className="h-4 w-4 accent-[var(--verm)]"
+                        />
+                        <span className="text-[13.5px] font-[700] leading-[1.35]">{option}</span>
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="flex flex-col gap-2">

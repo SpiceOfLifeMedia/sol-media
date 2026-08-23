@@ -97,6 +97,101 @@ function AuditMedia() {
   );
 }
 
+function BrandMedia() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    if (
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      || !('IntersectionObserver' in window)
+    ) {
+      setIsVisible(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { threshold: 0.35 },
+    );
+
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={containerRef}
+      className="brand-study relative flex h-full w-full flex-col items-center justify-center gap-6"
+      data-brand-animation={isVisible ? 'playing' : 'paused'}
+      aria-label="A brand identity system assembling from a logo mark, typography and colour palette"
+    >
+      <span className="brand-study-line" aria-hidden="true" />
+      <div className="flex items-center gap-6">
+        <div className="brand-study-mark flex h-[120px] w-[120px] items-center justify-center bg-[var(--paper)] text-[54px] font-bold text-[var(--ink)] shadow-xl">N</div>
+        <div className="brand-study-type flex flex-col gap-2">
+          <div className="text-[28px] font-serif font-bold text-[var(--paper)]">Aa</div>
+          <div className="text-[12px] tracking-widest text-[rgba(242,238,230,0.5)]">CONCEPT STUDY</div>
+        </div>
+      </div>
+      <div className="brand-study-swatches flex gap-2" aria-label="Brand colour palette">
+        <div className="brand-study-swatch h-8 w-12 bg-[var(--paper)]" />
+        <div className="brand-study-swatch h-8 w-12 bg-[var(--verm)]" />
+        <div className="brand-study-swatch h-8 w-12 bg-[#2A2A2A]" />
+        <div className="brand-study-swatch h-8 w-12 bg-[#444]" />
+      </div>
+    </div>
+  );
+}
+
+function SeoMedia() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    if (
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      || !('IntersectionObserver' in window)
+    ) {
+      setIsVisible(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { threshold: 0.35 },
+    );
+
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={containerRef}
+      className="seo-study relative flex h-full w-full flex-col items-center justify-center gap-6 px-6 sm:px-10"
+      data-seo-animation={isVisible ? 'playing' : 'paused'}
+      aria-label="A search for brand agency Australia revealing a relevant search result"
+    >
+      <div className="relative z-10 flex h-[44px] w-full items-center rounded-full bg-[var(--paper)] px-5 shadow-lg">
+        <div className="h-4 w-4 flex-none rounded-full border-[2px] border-[var(--ink)]" />
+        <span className="seo-typed-text ml-3 text-[14px] font-medium text-[var(--ink)]">brand agency australia</span>
+      </div>
+      <div className="seo-search-result flex w-full flex-col gap-2">
+        <div className="text-[10px] tracking-wider text-[rgba(242,238,230,0.5)]">HOME &gt; SERVICES &gt; WEB DESIGN</div>
+        <div className="cursor-pointer text-[20px] font-bold text-[#8AB4F8] hover:underline">Australian Brand Agency | Concept Study</div>
+        <div className="mt-1 line-clamp-2 text-[13px] text-[rgba(242,238,230,0.7)]">We audit, sharpen and rebuild the way your business shows up. Clear websites structured for people and search.</div>
+      </div>
+    </div>
+  );
+}
+
 export function Capabilities() {
   const caps = [
     {
@@ -221,21 +316,7 @@ export function Capabilities() {
                 )}
                 
                 {cap.mediaType === 'brand' && (
-                  <div className="relative w-full h-full flex flex-col items-center justify-center gap-6">
-                    <div className="flex items-center gap-6">
-                      <div className="w-[120px] h-[120px] bg-[var(--paper)] text-[var(--ink)] flex items-center justify-center text-[54px] font-bold shadow-xl">N</div>
-                      <div className="flex flex-col gap-2">
-                        <div className="text-[28px] font-serif font-bold text-[var(--paper)]">Aa</div>
-                        <div className="text-[12px] tracking-widest text-[rgba(242,238,230,0.5)]">CONCEPT STUDY</div>
-                      </div>
-                    </div>
-                    <div className="flex gap-2">
-                      <div className="w-12 h-8 bg-[var(--paper)]"></div>
-                      <div className="w-12 h-8 bg-[var(--verm)]"></div>
-                      <div className="w-12 h-8 bg-[#2A2A2A]"></div>
-                      <div className="w-12 h-8 bg-[#444]"></div>
-                    </div>
-                  </div>
+                  <BrandMedia />
                 )}
 
                 {cap.mediaType === 'web' && (
@@ -281,17 +362,7 @@ export function Capabilities() {
                 )}
 
                 {cap.mediaType === 'seo' && (
-                  <div className="relative w-full h-full flex flex-col items-center justify-center gap-6 px-10">
-                    <div className="w-full bg-[var(--paper)] rounded-full h-[44px] flex items-center px-5 shadow-lg relative z-10">
-                      <div className="w-4 h-4 border-[2px] border-[var(--ink)] rounded-full"></div>
-                      <span className="ml-3 text-[14px] font-medium text-[var(--ink)]">brand agency australia</span>
-                    </div>
-                    <div className="w-full flex flex-col gap-2">
-                      <div className="text-[10px] tracking-wider text-[rgba(242,238,230,0.5)]">HOME &gt; SERVICES &gt; WEB DESIGN</div>
-                      <div className="text-[20px] font-bold text-[#8AB4F8] hover:underline cursor-pointer">Australian Brand Agency | Concept Study</div>
-                      <div className="text-[13px] text-[rgba(242,238,230,0.7)] mt-1 line-clamp-2">We audit, sharpen and rebuild the way your business shows up. Clear websites structured for people and search.</div>
-                    </div>
-                  </div>
+                  <SeoMedia />
                 )}
 
                 {cap.mediaType === 'content' && (
