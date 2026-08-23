@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import type { CSSProperties } from 'react';
 import { Search } from 'lucide-react';
 import { Link } from 'wouter';
 
@@ -192,6 +193,79 @@ function SeoMedia() {
   );
 }
 
+const contentCalendarFrames = [
+  [4, 9, 12, 18, 22, 25],
+  [3, 8, 13, 16, 21, 27],
+  [0, 6, 10, 15, 19, 24],
+  [2, 5, 11, 14, 20, 26],
+] as const;
+
+function ContentMedia() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const [frame, setFrame] = useState(0);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    if (!('IntersectionObserver' in window)) {
+      setIsVisible(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { threshold: 0.35 },
+    );
+
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!isVisible || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const timer = window.setInterval(() => {
+      setFrame((current) => (current + 1) % contentCalendarFrames.length);
+    }, 1450);
+
+    return () => window.clearInterval(timer);
+  }, [isVisible]);
+
+  return (
+    <div
+      ref={containerRef}
+      className="relative flex h-full w-full flex-col items-center justify-center gap-4 p-5 sm:p-8"
+      data-content-animation={isVisible ? 'playing' : 'paused'}
+      aria-label="A structured content calendar moving planned posts through a repeating publishing rhythm"
+    >
+      <div className="flex w-full items-center justify-between border-b border-[rgba(242,238,230,0.1)] pb-2 text-[var(--paper)]">
+        <span className="text-[12px] font-bold tracking-widest">CONTENT CALENDAR</span>
+        <span className="text-[12px] font-bold tracking-widest opacity-50">MAY</span>
+      </div>
+      <div className="content-calendar-grid">
+        {Array.from({ length: 28 }).map((_, index) => (
+          <div key={index} className="content-calendar-cell" aria-hidden="true" />
+        ))}
+        <div className="content-calendar-active-layer" aria-hidden="true">
+          {contentCalendarFrames[frame].map((position, index) => (
+            <span
+              key={index}
+              className="content-calendar-tile"
+              style={{
+                '--calendar-col': position % 7,
+                '--calendar-row': Math.floor(position / 7),
+                '--calendar-delay': `${index * 45}ms`,
+              } as CSSProperties}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function Capabilities() {
   const caps = [
     {
@@ -366,17 +440,7 @@ export function Capabilities() {
                 )}
 
                 {cap.mediaType === 'content' && (
-                  <div className="relative w-full h-full flex flex-col items-center justify-center p-8 gap-4">
-                    <div className="w-full flex justify-between items-center text-[var(--paper)] border-b border-[rgba(242,238,230,0.1)] pb-2">
-                      <span className="text-[12px] tracking-widest font-bold">CONTENT CALENDAR</span>
-                      <span className="text-[12px] tracking-widest font-bold opacity-50">MAY</span>
-                    </div>
-                    <div className="w-full grid grid-cols-7 gap-2">
-                      {Array.from({ length: 28 }).map((_, idx) => (
-                        <div key={idx} className={`aspect-square rounded-sm ${[4,9,12,18,22,25].includes(idx) ? 'bg-[var(--verm)]' : 'bg-[rgba(242,238,230,0.05)] border border-[rgba(242,238,230,0.1)]'}`}></div>
-                      ))}
-                    </div>
-                  </div>
+                  <ContentMedia />
                 )}
 
                 {/* Bottom label */}
