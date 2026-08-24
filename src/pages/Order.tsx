@@ -8,8 +8,7 @@ import {
 } from '../lib/googlePlaces';
 import './Order.css';
 
-const MASTER_TEMPLATE_URL = 'https://bit.ly/EtsyCustomCd';
-const RHINESTONE_URL = 'https://www.etsy.com/au/listing/4452870715/rhinestone-cd-decorating-kit-add-on';
+const MASTER_TEMPLATE_URL = 'https://www.canva.com/design/DAHCUOooVnA/pb6oNxBkkWEllsadLbruyg/view?utm_content=DAHCUOooVnA&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink&mode=preview';
 const ETSY_ORDER_URL = 'https://www.etsy.com/au/listing/4382552922/personalised-burned-mixtape-cd-custom';
 const AUSTRALIAN_STATES = ['ACT', 'NSW', 'NT', 'QLD', 'SA', 'TAS', 'VIC', 'WA'];
 
@@ -338,14 +337,6 @@ export default function Order() {
               <label htmlFor="artworkLink">CANVA ARTWORK LINK</label>
               <input id="artworkLink" name="artworkLink" type="url" placeholder="Optional — leave blank for a blank CD" />
               <p className="order-microcopy">ARTWORK MUST USE THE <a href={MASTER_TEMPLATE_URL} target="_blank" rel="noreferrer">MASTER TEMPLATE</a>. NO LINK MEANS THE CD IS SENT BLANK.</p>
-              <fieldset>
-                <legend>ADD RHINESTONE GEMS TO DECORATE YOUR CD? <RequiredMark /></legend>
-                <p className="order-help">Open the <a href={RHINESTONE_URL} target="_blank" rel="noreferrer">AU$5.95 rhinestone add-on</a> and add it at Etsy checkout if you choose Yes.</p>
-                <div className="order-choice-grid order-choice-grid--wide">
-                  <Choice name="rhinestones" value="yes" required errors={errors}><span className="order-choice__caps">YES — AU$5.95, I’LL ADD IT ON ETSY</span></Choice>
-                  <Choice name="rhinestones" value="no" required errors={errors}><span className="order-choice__caps">NO THANKS</span></Choice>
-                </div>
-              </fieldset>
               <fieldset onChange={(event) => {
                 if (event.target instanceof HTMLInputElement) setGiftCard(event.target.value as YesNo);
               }}>
