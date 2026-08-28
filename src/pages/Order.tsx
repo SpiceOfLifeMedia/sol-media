@@ -13,7 +13,6 @@ const ETSY_ORDER_URL = 'https://www.etsy.com/au/listing/4382552922/personalised-
 const AUSTRALIAN_STATES = ['ACT', 'NSW', 'NT', 'QLD', 'SA', 'TAS', 'VIC', 'WA'];
 
 type MusicSource = '' | 'spotify' | 'google_drive' | 'dropbox';
-type YesNo = '' | 'yes' | 'no';
 type FieldErrors = Record<string, string>;
 
 function FieldError({ name, errors }: { name: string; errors: FieldErrors }) {
@@ -136,7 +135,6 @@ function Success({ reference, emailDelivered }: { reference: string; emailDelive
 
 export default function Order() {
   const [musicSource, setMusicSource] = useState<MusicSource>('');
-  const [giftCard, setGiftCard] = useState<YesNo>('');
   const [deliveryAddress, setDeliveryAddress] = useState<DeliveryAddress>({
     streetAddress: '', city: '', region: '', postcode: '', country: 'Australia',
   });
@@ -368,21 +366,11 @@ export default function Order() {
           </section>
 
           <section className="order-section" aria-labelledby="extras-title">
-            <div className="order-section__heading"><span>03</span><h2 id="extras-title">Artwork and extras</h2></div>
+            <div className="order-section__heading"><span>03</span><h2 id="extras-title">Artwork</h2></div>
             <div className="order-fields">
               <label htmlFor="artworkLink">CANVA ARTWORK LINK</label>
               <input id="artworkLink" name="artworkLink" type="url" placeholder="Optional — leave blank for a blank CD" />
               <p className="order-microcopy">ARTWORK MUST USE THE <a href={MASTER_TEMPLATE_URL} target="_blank" rel="noreferrer">MASTER TEMPLATE</a>. NO LINK MEANS THE CD IS SENT BLANK.</p>
-              <fieldset onChange={(event) => {
-                if (event.target instanceof HTMLInputElement) setGiftCard(event.target.value as YesNo);
-              }}>
-                <legend>WOULD YOU LIKE A PRINTED GIFT CARD FOR AN EXTRA AU$4.95 AT ETSY CHECKOUT? <RequiredMark /></legend>
-                <div className="order-choice-grid order-choice-grid--wide">
-                  <Choice name="giftCard" value="yes" required errors={errors}><span className="order-choice__caps">YES — AU$4.95, I’LL ENTER THE MESSAGE BELOW</span></Choice>
-                  <Choice name="giftCard" value="no" required errors={errors}><span className="order-choice__caps">NO THANKS</span></Choice>
-                </div>
-              </fieldset>
-              {giftCard === 'yes' && <><label htmlFor="giftMessage">GIFT CARD MESSAGE <RequiredMark /></label><textarea id="giftMessage" name="giftMessage" rows={3} placeholder="Enter the printed gift card message" required /></>}
             </div>
           </section>
 

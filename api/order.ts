@@ -28,8 +28,6 @@ type OrderData = {
   under79Minutes: boolean;
   rightsConfirmed: boolean;
   artworkLink: string;
-  giftCard: 'yes' | 'no';
-  giftMessage: string;
   shippingConfirmed: boolean;
   marketingConsent: boolean;
   idempotencyKey: string;
@@ -97,8 +95,6 @@ function validate(raw: Record<string, unknown>): { data?: OrderData; errors?: Re
     under79Minutes: booleanValue(raw.under79Minutes),
     rightsConfirmed: booleanValue(raw.rightsConfirmed),
     artworkLink: stringValue(raw.artworkLink, 1200),
-    giftCard: raw.giftCard === 'yes' ? 'yes' : 'no',
-    giftMessage: stringValue(raw.giftMessage, 600),
     shippingConfirmed: booleanValue(raw.shippingConfirmed),
     marketingConsent: booleanValue(raw.marketingConsent),
     idempotencyKey: stringValue(raw.idempotencyKey, 36),
@@ -140,12 +136,6 @@ function validate(raw: Record<string, unknown>): { data?: OrderData; errors?: Re
   if (data.country.toLowerCase() === 'australia' && !AUSTRALIAN_STATES.has(data.region)) {
     errors.region = 'Choose an Australian state or territory.';
   }
-  if (raw.giftCard !== 'yes' && raw.giftCard !== 'no') {
-    errors.giftCard = 'Choose Yes or No.';
-  }
-  if (data.giftCard === 'yes' && !data.giftMessage) {
-    errors.giftMessage = 'Enter the printed gift card message.';
-  }
   if (data.musicSource === 'spotify' && !data.spotifyPublic) {
     errors.spotifyPublic = 'Confirm that your Spotify playlist is public.';
   }
@@ -186,8 +176,6 @@ function orderRows(data: OrderData): string {
     ['CD title', data.cdTitle],
     ['Music source', musicSourceLabel(data.musicSource)],
     ['Music link', data.musicLink], ['Artwork link', data.artworkLink || 'Blank CD'],
-    ['Printed gift card', data.giftCard === 'yes' ? 'Yes — customer will add at Etsy checkout' : 'No'],
-    ['Gift card message', data.giftMessage || '—'],
   ];
   return rows.map(([label, value]) => `<tr><td style="padding:9px 0;border-bottom:1px solid #ded9cf;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#716c61;vertical-align:top">${escapeHtml(label)}</td><td style="padding:9px 0 9px 20px;border-bottom:1px solid #ded9cf;font-size:14px;color:#16150f;word-break:break-word">${escapeHtml(value)}</td></tr>`).join('');
 }
@@ -196,7 +184,7 @@ function ownerEmail(data: OrderData, reference: string) {
   return {
     subject: `${reference} — Custom CD order from ${data.fullName}`,
     html: `<!doctype html><html><body style="margin:0;background:#f2eee6;font-family:Arial,sans-serif;color:#16150f"><div style="max-width:680px;margin:0 auto;padding:32px"><div style="background:#16150f;padding:28px 32px;color:#f2eee6"><div style="font-size:11px;font-weight:700;letter-spacing:.16em;color:#e8451c">CUSTOM CD ORDER</div><h1 style="margin:8px 0 0;font-size:32px">${reference}</h1><p style="margin:8px 0 0;color:#d8d3ca">Awaiting Etsy payment match</p></div><div style="background:#fff;padding:28px 32px"><table style="width:100%;border-collapse:collapse">${orderRows(data)}</table></div></div></body></html>`,
-    text: [`CUSTOM CD ORDER — ${reference}`, 'Status: Awaiting Etsy payment match', '', `Name: ${data.fullName}`, `Email: ${data.email}`, `Phone: ${data.phone}`, `Address: ${[data.streetAddress, data.addressExtra, data.city, data.region, data.postcode, data.country].filter(Boolean).join(', ')}`, `CD title: ${data.cdTitle}`, `Music source: ${data.musicSource}`, `Music link: ${data.musicLink}`, `Artwork: ${data.artworkLink || 'Blank CD'}`, `Gift card: ${data.giftCard}`, `Gift message: ${data.giftMessage || '—'}`].join('\n'),
+    text: [`CUSTOM CD ORDER — ${reference}`, 'Status: Awaiting Etsy payment match', '', `Name: ${data.fullName}`, `Email: ${data.email}`, `Phone: ${data.phone}`, `Address: ${[data.streetAddress, data.addressExtra, data.city, data.region, data.postcode, data.country].filter(Boolean).join(', ')}`, `CD title: ${data.cdTitle}`, `Music source: ${data.musicSource}`, `Music link: ${data.musicLink}`, `Artwork: ${data.artworkLink || 'Blank CD'}`].join('\n'),
   };
 }
 
