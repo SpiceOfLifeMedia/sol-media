@@ -355,7 +355,12 @@ export default function Order() {
                 <Choice type="checkbox" name="driveFilesNumbered" required errors={errors}>I have numbered every filename 01, 02, 03 and so on in the exact order the songs must appear on the CD. <RequiredMark /></Choice>
                 <FieldError name="driveFilesNumbered" errors={errors} />
               </>}
-              <Choice type="checkbox" name="under79Minutes" required errors={errors}>Is your CD under 79 minutes? Audio CDs have a strict time limit. If you proceed with a longer playlist, your Etsy order will be automatically cancelled and refunded. <RequiredMark /></Choice>
+              <div className="order-limit-warning" role="note" aria-label="79-minute hard limit">
+                <strong>79-MINUTE HARD LIMIT</strong>
+                <h3>Over 79 minutes means the order is automatically rejected.</h3>
+                <p>Your Spotify playlist or uploaded song files must total less than 79 minutes. Audio over this limit cannot fit on the CD, and the Etsy order will be cancelled and refunded.</p>
+              </div>
+              <Choice type="checkbox" name="under79Minutes" required errors={errors}>I have checked the total running time and confirm that my music is under 79 minutes. I understand that an order over 79 minutes will be automatically rejected and refunded. <RequiredMark /></Choice>
               <FieldError name="under79Minutes" errors={errors} />
               <Choice type="checkbox" name="rightsConfirmed" required errors={errors}>I confirm that any audio and artwork I supply is original, licensed, public domain, or otherwise authorised for reproduction. <RequiredMark /></Choice>
               <FieldError name="rightsConfirmed" errors={errors} />

@@ -155,7 +155,9 @@ function validate(raw: Record<string, unknown>): { data?: OrderData; errors?: Re
   if (data.musicSource !== 'spotify' && !data.driveFilesNumbered) {
     errors.driveFilesNumbered = 'Confirm that every filename is numbered.';
   }
-  if (!data.under79Minutes) errors.under79Minutes = 'Confirm that the CD is under 79 minutes.';
+  if (!data.under79Minutes) {
+    errors.under79Minutes = 'Tick to confirm that your music is under 79 minutes. Longer orders are automatically rejected.';
+  }
   if (!data.rightsConfirmed) errors.rightsConfirmed = 'Confirm that you may reproduce the supplied files.';
   if (!data.shippingConfirmed) errors.shippingConfirmed = 'Confirm that you understand the shipping information.';
   if (!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(data.idempotencyKey)) {
