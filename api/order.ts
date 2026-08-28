@@ -6,6 +6,7 @@ const OWNER_EMAIL = 'info@spiceoflifemedia.com.au';
 const FROM_EMAIL = 'Spice of Life Media <orders@spiceoflifemedia.com.au>';
 const ETSY_ORDER_URL =
   'https://www.etsy.com/au/listing/4382552922/personalised-burned-mixtape-cd-custom';
+const UNSUBSCRIBE_BASE_URL = 'https://www.spiceoflifemedia.com.au/api/unsubscribe';
 const AUSTRALIAN_STATES = new Set(['ACT', 'NSW', 'NT', 'QLD', 'SA', 'TAS', 'VIC', 'WA']);
 
 type OrderData = {
@@ -19,7 +20,7 @@ type OrderData = {
   postcode: string;
   country: string;
   cdTitle: string;
-  musicSource: 'spotify' | 'drive';
+  musicSource: 'spotify' | 'google_drive' | 'dropbox';
   musicLink: string;
   spotifyPublic: boolean;
   spotifyOrderConfirmed: boolean;
@@ -30,10 +31,13 @@ type OrderData = {
   giftCard: 'yes' | 'no';
   giftMessage: string;
   shippingConfirmed: boolean;
+  marketingConsent: boolean;
   idempotencyKey: string;
 };
 
 type RpcOrder = { reference: string; created: boolean };
+type RpcPromo = { promo_code: string | null };
+type ResendResult = { ok: boolean; id?: string };
 
 const jsonHeaders = { 'Content-Type': 'application/json; charset=utf-8' };
 
@@ -58,6 +62,19 @@ function validHttpsUrl(value: string): boolean {
   }
 }
 
+function validMusicLink(source: OrderData['musicSource'], value: string): boolean {
+  try {
+    const url = new URL(value);
+    const host = url.hostname.toLowerCase().replace(/^www\./, '');
+    if (url.protocol !== 'https:') return false;
+    if (source === 'spotify') return host === 'open.spotify.com' && url.pathname.startsWith('/playlist/');
+    if (source === 'google_drive') return host === 'drive.google.com' && url.pathname.includes('/folders/');
+    return host === 'dropbox.com';
+  } catch {
+    return false;
+  }
+}
+
 function validate(raw: Record<string, unknown>): { data?: OrderData; errors?: Record<string, string> } {
   const data: OrderData = {
     fullName: stringValue(raw.fullName, 120),
@@ -70,7 +87,9 @@ function validate(raw: Record<string, unknown>): { data?: OrderData; errors?: Re
     postcode: stringValue(raw.postcode, 24),
     country: stringValue(raw.country, 100),
     cdTitle: stringValue(raw.cdTitle, 120),
-    musicSource: raw.musicSource === 'spotify' ? 'spotify' : 'drive',
+    musicSource: raw.musicSource === 'spotify' || raw.musicSource === 'google_drive' || raw.musicSource === 'dropbox'
+      ? raw.musicSource
+      : 'spotify',
     musicLink: stringValue(raw.musicLink, 1200),
     spotifyPublic: booleanValue(raw.spotifyPublic),
     spotifyOrderConfirmed: booleanValue(raw.spotifyOrderConfirmed),
@@ -81,6 +100,7 @@ function validate(raw: Record<string, unknown>): { data?: OrderData; errors?: Re
     giftCard: raw.giftCard === 'yes' ? 'yes' : 'no',
     giftMessage: stringValue(raw.giftMessage, 600),
     shippingConfirmed: booleanValue(raw.shippingConfirmed),
+    marketingConsent: booleanValue(raw.marketingConsent),
     idempotencyKey: stringValue(raw.idempotencyKey, 36),
   };
 
@@ -104,11 +124,15 @@ function validate(raw: Record<string, unknown>): { data?: OrderData; errors?: Re
   if (data.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
     errors.email = 'Enter a valid email address.';
   }
-  if (raw.musicSource !== 'spotify' && raw.musicSource !== 'drive') {
+  if (raw.musicSource !== 'spotify' && raw.musicSource !== 'google_drive' && raw.musicSource !== 'dropbox') {
     errors.musicSource = 'Choose how you are sending the music.';
   }
-  if (data.musicLink && !validHttpsUrl(data.musicLink)) {
-    errors.musicLink = 'Enter a complete https:// link.';
+  if (data.musicLink && !validMusicLink(data.musicSource, data.musicLink)) {
+    errors.musicLink = data.musicSource === 'spotify'
+      ? 'Paste a public Spotify playlist link from open.spotify.com.'
+      : data.musicSource === 'google_drive'
+        ? 'Paste a shared Google Drive folder link.'
+        : 'Paste a shared Dropbox folder link.';
   }
   if (data.artworkLink && !validHttpsUrl(data.artworkLink)) {
     errors.artworkLink = 'Enter a complete https:// link.';
@@ -128,7 +152,7 @@ function validate(raw: Record<string, unknown>): { data?: OrderData; errors?: Re
   if (data.musicSource === 'spotify' && !data.spotifyOrderConfirmed) {
     errors.spotifyOrderConfirmed = 'Confirm the Spotify playlist order.';
   }
-  if (data.musicSource === 'drive' && !data.driveFilesNumbered) {
+  if (data.musicSource !== 'spotify' && !data.driveFilesNumbered) {
     errors.driveFilesNumbered = 'Confirm that every filename is numbered.';
   }
   if (!data.under79Minutes) errors.under79Minutes = 'Confirm that the CD is under 79 minutes.';
@@ -147,12 +171,18 @@ function escapeHtml(value: string): string {
   })[character] ?? character);
 }
 
+function musicSourceLabel(source: OrderData['musicSource']): string {
+  if (source === 'spotify') return 'Spotify playlist';
+  if (source === 'google_drive') return 'Google Drive folder';
+  return 'Dropbox folder';
+}
+
 function orderRows(data: OrderData): string {
   const rows: Array<[string, string]> = [
     ['Name', data.fullName], ['Email', data.email], ['Phone', data.phone],
     ['Address', [data.streetAddress, data.addressExtra, data.city, data.region, data.postcode, data.country].filter(Boolean).join(', ')],
     ['CD title', data.cdTitle],
-    ['Music source', data.musicSource === 'spotify' ? 'Spotify playlist' : 'Google Drive folder'],
+    ['Music source', musicSourceLabel(data.musicSource)],
     ['Music link', data.musicLink], ['Artwork link', data.artworkLink || 'Blank CD'],
     ['Printed gift card', data.giftCard === 'yes' ? 'Yes — customer will add at Etsy checkout' : 'No'],
     ['Gift card message', data.giftMessage || '—'],
@@ -176,10 +206,26 @@ function customerEmail(data: OrderData, reference: string) {
   };
 }
 
+function followupEmail(data: OrderData, promoCode: string, unsubscribeUrl: string) {
+  const firstName = data.fullName.split(/\s+/)[0] || data.fullName;
+  const directOrderSubject = encodeURIComponent(`Direct custom CD reorder — ${promoCode}`);
+  const directOrderUrl = `mailto:${OWNER_EMAIL}?subject=${directOrderSubject}`;
+  return {
+    subject: `Your 5% returning customer code: ${promoCode}`,
+    html: `<!doctype html><html><body style="margin:0;background:#f2eee6;font-family:Arial,sans-serif;color:#16150f"><div style="max-width:620px;margin:0 auto;padding:32px"><div style="background:#16150f;padding:32px;color:#f2eee6"><div style="font-size:11px;font-weight:700;letter-spacing:.16em;color:#e8451c">A THANK YOU FROM SPICE OF LIFE MEDIA</div><h1 style="margin:10px 0;font-size:38px">5% off your next order.</h1><p style="margin:0;color:#d8d3ca">Order directly through Spice of Life Media next time and save.</p></div><div style="background:#fff;padding:32px"><p style="margin-top:0">Hi ${escapeHtml(firstName)},</p><p>Use this unique code when you order your next custom CD directly through Spice of Life Media:</p><div style="margin:24px 0;padding:20px;border:2px solid #e8451c;text-align:center;font-size:28px;font-weight:800;letter-spacing:.12em">${escapeHtml(promoCode)}</div><p>Reply to this email with your code and what you would like made, or use the button below to start the email.</p><p style="margin:28px 0"><a href="${directOrderUrl}" style="display:inline-block;background:#e8451c;color:#16150f;padding:16px 22px;font-weight:800;text-decoration:none;letter-spacing:.08em">ORDER DIRECT AND SAVE 5%</a></p><p style="font-size:13px;color:#716c61">Spice of Life Media · ${OWNER_EMAIL}</p><p style="margin-bottom:0;font-size:12px;color:#716c61"><a href="${escapeHtml(unsubscribeUrl)}" style="color:#716c61">Unsubscribe from this follow-up offer</a></p></div></div></body></html>`,
+    text: `Hi ${firstName},\n\nOrder your next custom CD directly through Spice of Life Media and take 5% off.\n\nYour unique code: ${promoCode}\n\nReply to this email with your code and what you would like made.\n\nSpice of Life Media\n${OWNER_EMAIL}\n\nUnsubscribe: ${unsubscribeUrl}`,
+  };
+}
+
 async function fingerprint(req: Request, salt: string): Promise<string> {
   const forwarded = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim().slice(0, 64) || 'unknown';
   const bytes = new TextEncoder().encode(`${salt}:${forwarded}`);
   const digest = await crypto.subtle.digest('SHA-256', bytes);
+  return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('');
+}
+
+async function sha256Hex(value: string): Promise<string> {
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value));
   return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('');
 }
 
@@ -198,13 +244,19 @@ async function supabaseRpc<T>(url: string, secret: string, name: string, body: u
   return (responseBody ? JSON.parse(responseBody) : undefined) as T;
 }
 
-async function sendEmail(apiKey: string, payload: Record<string, unknown>): Promise<boolean> {
+async function sendEmail(apiKey: string, payload: Record<string, unknown>, idempotencyKey?: string): Promise<ResendResult> {
   const response = await fetch('https://api.resend.com/emails', {
     method: 'POST',
-    headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+      ...(idempotencyKey ? { 'Idempotency-Key': idempotencyKey } : {}),
+    },
     body: JSON.stringify(payload),
   });
-  return response.ok;
+  if (!response.ok) return { ok: false };
+  const result = await response.json().catch(() => ({})) as { id?: string };
+  return { ok: true, id: result.id };
 }
 
 export default async function handler(req: Request): Promise<Response> {
@@ -252,6 +304,23 @@ export default async function handler(req: Request): Promise<Response> {
     return json({ ok: true, reference: rpcOrder.reference, emailDelivered: true });
   }
 
+  let promoCode = '';
+  let unsubscribeToken = '';
+  if (data.marketingConsent) {
+    unsubscribeToken = `${crypto.randomUUID()}${crypto.randomUUID()}`.replaceAll('-', '');
+  }
+
+  try {
+    const configured = await supabaseRpc<RpcPromo[]>(supabaseUrl, supabaseSecret, 'configure_custom_cd_followup', {
+      p_reference: rpcOrder.reference,
+      p_marketing_consent: data.marketingConsent,
+      p_unsubscribe_token_hash: unsubscribeToken ? await sha256Hex(unsubscribeToken) : null,
+    });
+    promoCode = configured[0]?.promo_code ?? '';
+  } catch {
+    console.error('[order] Follow-up configuration failed');
+  }
+
   const owner = ownerEmail(data, rpcOrder.reference);
   const customer = customerEmail(data, rpcOrder.reference);
   const toEmail = (process.env['ORDER_TO_EMAIL'] ?? OWNER_EMAIL).trim();
@@ -260,7 +329,7 @@ export default async function handler(req: Request): Promise<Response> {
     sendEmail(resendApiKey, { from: fromEmail, to: [toEmail], reply_to: data.email, ...owner }),
     sendEmail(resendApiKey, { from: fromEmail, to: [data.email], ...customer }),
   ]);
-  const delivered = emailResults.map((result) => result.status === 'fulfilled' && result.value);
+  const delivered = emailResults.map((result) => result.status === 'fulfilled' && result.value.ok);
   const emailState = delivered.every(Boolean) ? 'sent' : delivered.some(Boolean) ? 'partial_failure' : 'failed';
 
   try {
@@ -270,6 +339,30 @@ export default async function handler(req: Request): Promise<Response> {
     });
   } catch {
     console.error('[order] Email state update failed');
+  }
+
+  if (data.marketingConsent && promoCode && unsubscribeToken) {
+    const scheduledAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+    const unsubscribeUrl = `${UNSUBSCRIBE_BASE_URL}?token=${encodeURIComponent(unsubscribeToken)}`;
+    const followup = followupEmail(data, promoCode, unsubscribeUrl);
+    const scheduled = await sendEmail(resendApiKey, {
+      from: fromEmail,
+      to: [data.email],
+      reply_to: OWNER_EMAIL,
+      scheduled_at: scheduledAt,
+      ...followup,
+    }, `custom-cd-followup-${rpcOrder.reference}`);
+
+    try {
+      await supabaseRpc<unknown>(supabaseUrl, supabaseSecret, 'mark_custom_cd_followup_email_state', {
+        p_reference: rpcOrder.reference,
+        p_state: scheduled.ok ? 'scheduled' : 'failed',
+        p_email_id: scheduled.id ?? null,
+        p_scheduled_at: scheduled.ok ? scheduledAt : null,
+      });
+    } catch {
+      console.error('[order] Follow-up email state update failed');
+    }
   }
 
   return json({

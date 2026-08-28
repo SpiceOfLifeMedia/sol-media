@@ -176,6 +176,7 @@
 .order-help { margin: 8px 0 0; color: rgb(22 21 15 / 72%); font-size: 14px; line-height: 1.5; }
 
 .order-choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 11px; }
+.order-choice-grid--three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .order-choice-grid--wide { grid-template-columns: minmax(0, 1fr) 200px; margin-top: 13px; }
 .order-choice {
   display: flex;

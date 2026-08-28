@@ -12,7 +12,7 @@ const MASTER_TEMPLATE_URL = 'https://www.canva.com/design/DAHCUOooVnA/pb6oNxBkkW
 const ETSY_ORDER_URL = 'https://www.etsy.com/au/listing/4382552922/personalised-burned-mixtape-cd-custom';
 const AUSTRALIAN_STATES = ['ACT', 'NSW', 'NT', 'QLD', 'SA', 'TAS', 'VIC', 'WA'];
 
-type MusicSource = '' | 'spotify' | 'drive';
+type MusicSource = '' | 'spotify' | 'google_drive' | 'dropbox';
 type YesNo = '' | 'yes' | 'no';
 type FieldErrors = Record<string, string>;
 
@@ -23,6 +23,27 @@ function FieldError({ name, errors }: { name: string; errors: FieldErrors }) {
 
 function RequiredMark() {
   return <span className="order-required" aria-hidden="true">*</span>;
+}
+
+function musicLinkError(source: MusicSource, value: string): string {
+  if (!source || !value) return '';
+  try {
+    const url = new URL(value);
+    const host = url.hostname.toLowerCase().replace(/^www\./, '');
+    if (url.protocol !== 'https:') return 'Enter a complete https:// link.';
+    if (source === 'spotify' && (host !== 'open.spotify.com' || !url.pathname.startsWith('/playlist/'))) {
+      return 'Paste a public Spotify playlist link from open.spotify.com.';
+    }
+    if (source === 'google_drive' && (host !== 'drive.google.com' || !url.pathname.includes('/folders/'))) {
+      return 'Paste a shared Google Drive folder link.';
+    }
+    if (source === 'dropbox' && host !== 'dropbox.com') {
+      return 'Paste a shared Dropbox folder link.';
+    }
+    return '';
+  } catch {
+    return 'Enter a complete https:// link.';
+  }
 }
 
 function Choice({
@@ -205,14 +226,22 @@ export default function Order() {
       return;
     }
 
+    const formData = new FormData(form);
+    const selectedSource = String(formData.get('musicSource') ?? '') as MusicSource;
+    const linkError = musicLinkError(selectedSource, String(formData.get('musicLink') ?? '').trim());
+    if (linkError) {
+      setErrors((current) => ({ ...current, musicLink: linkError }));
+      (form.elements.namedItem('musicLink') as HTMLInputElement | null)?.focus();
+      return;
+    }
+
     if (!idempotencyKey.current) idempotencyKey.current = crypto.randomUUID();
     setSubmitting(true);
     setErrors({});
     setServerError('');
-    const formData = new FormData(form);
     const payload = Object.fromEntries(formData.entries()) as Record<string, unknown>;
     payload.streetAddress = streetAddress;
-    for (const checkbox of ['spotifyPublic', 'spotifyOrderConfirmed', 'driveFilesNumbered', 'under79Minutes', 'rightsConfirmed', 'shippingConfirmed']) {
+    for (const checkbox of ['spotifyPublic', 'spotifyOrderConfirmed', 'driveFilesNumbered', 'under79Minutes', 'rightsConfirmed', 'shippingConfirmed', 'marketingConsent']) {
       payload[checkbox] = formData.has(checkbox);
     }
     payload.idempotencyKey = idempotencyKey.current;
@@ -305,14 +334,16 @@ export default function Order() {
                 if (event.target instanceof HTMLInputElement) setMusicSource(event.target.value as MusicSource);
               }}>
                 <legend>HOW ARE YOU SENDING THE MUSIC? <RequiredMark /></legend>
-                <div className="order-choice-grid">
+                <div className="order-choice-grid order-choice-grid--three">
                   <Choice name="musicSource" value="spotify" required errors={errors}><span className="order-choice__caps">SPOTIFY PLAYLIST</span></Choice>
-                  <Choice name="musicSource" value="drive" required errors={errors}><span className="order-choice__caps">GOOGLE DRIVE FOLDER</span></Choice>
+                  <Choice name="musicSource" value="google_drive" required errors={errors}><span className="order-choice__caps">GOOGLE DRIVE FOLDER</span></Choice>
+                  <Choice name="musicSource" value="dropbox" required errors={errors}><span className="order-choice__caps">DROPBOX FOLDER</span></Choice>
                 </div>
               </fieldset>
-              <label htmlFor="musicLink">{musicSource === 'spotify' ? 'SPOTIFY PLAYLIST LINK' : musicSource === 'drive' ? 'SHARED GOOGLE DRIVE FOLDER LINK' : 'PLAYLIST OR FOLDER LINK'} <RequiredMark /></label>
-              <input id="musicLink" name="musicLink" type="url" placeholder="Paste the Spotify or Google Drive link" required />
-              <div className="order-callout"><strong>WANT TO SEND YOUR FILES DIRECTLY?</strong>Choose Google Drive above, share the folder link, and number every filename so the songs appear in the correct order.</div>
+              <label htmlFor="musicLink">{musicSource === 'spotify' ? 'SPOTIFY PLAYLIST LINK' : musicSource === 'google_drive' ? 'SHARED GOOGLE DRIVE FOLDER LINK' : musicSource === 'dropbox' ? 'SHARED DROPBOX FOLDER LINK' : 'PLAYLIST OR FOLDER LINK'} <RequiredMark /></label>
+              <input id="musicLink" name="musicLink" type="url" placeholder="Paste a Spotify, Google Drive or Dropbox link" required aria-invalid={Boolean(errors.musicLink)} aria-describedby={errors.musicLink ? 'musicLink-error' : undefined} />
+              <FieldError name="musicLink" errors={errors} />
+              <div className="order-callout"><strong>ONLY THESE MUSIC SOURCES ARE ACCEPTED</strong>Send a public Spotify playlist, a shared Google Drive folder, or a shared Dropbox folder. Apple Music, YouTube Music and other streaming services cannot be processed.</div>
 
               {musicSource === 'spotify' && <>
                 <Choice type="checkbox" name="spotifyPublic" required errors={errors}>Is your Spotify playlist public? It must be public so we can access it. <RequiredMark /></Choice>
@@ -320,7 +351,7 @@ export default function Order() {
                 <Choice type="checkbox" name="spotifyOrderConfirmed" required errors={errors}>Please understand that the music will be burned onto the disc in the exact order it appears in your Spotify playlist. <RequiredMark /></Choice>
                 <FieldError name="spotifyOrderConfirmed" errors={errors} />
               </>}
-              {musicSource === 'drive' && <>
+              {(musicSource === 'google_drive' || musicSource === 'dropbox') && <>
                 <Choice type="checkbox" name="driveFilesNumbered" required errors={errors}>I have numbered every filename 01, 02, 03 and so on in the exact order the songs must appear on the CD. <RequiredMark /></Choice>
                 <FieldError name="driveFilesNumbered" errors={errors} />
               </>}
@@ -356,10 +387,12 @@ export default function Order() {
               <div className="order-shipping"><strong>CHOOSE THE RIGHT SPEED AT ETSY CHECKOUT</strong><p>Economy shipping is the default method designed to save you money. It can take up to 14 business days, so please do not choose Economy if you need the item quickly.</p><p>We strongly recommend Tracked Standard or Express Shipping. If your Economy parcel has not arrived after 14 business days, we will replace it at no charge.</p></div>
               <Choice type="checkbox" name="shippingConfirmed" required errors={errors}>I have read and understand the shipping information. Express Post is available at checkout for urgent gifts. <RequiredMark /></Choice>
               <FieldError name="shippingConfirmed" errors={errors} />
+              <Choice type="checkbox" name="marketingConsent" errors={errors}>Yes, email me one follow-up offer from Spice of Life Media after I submit this form. I can unsubscribe at any time.</Choice>
+              <p className="order-privacy">Optional. Your choice does not affect this order.</p>
               {serverError && <div className="order-server-error" role="alert">{serverError}</div>}
               <button className="order-submit" type="submit" disabled={submitting}>{submitting ? 'SAVING YOUR DETAILS…' : 'SAVE DETAILS AND GET REFERENCE'}</button>
               {/* TODO(order-launch): add a privacy-policy link only after the owner confirms its public URL. */}
-              <p className="order-privacy">Used only to prepare and deliver your order. Never used for marketing.</p>
+              <p className="order-privacy">Your order details are used to prepare and deliver your CD. We only send the optional follow-up offer if you tick the box above.</p>
             </div>
           </section>
         </form>
