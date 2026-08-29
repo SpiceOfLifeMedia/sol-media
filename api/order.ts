@@ -8,6 +8,12 @@ const ETSY_ORDER_URL =
   'https://www.etsy.com/au/listing/4382552922/personalised-burned-mixtape-cd-custom';
 const UNSUBSCRIBE_BASE_URL = 'https://www.spiceoflifemedia.com.au/api/unsubscribe';
 const AUSTRALIAN_STATES = new Set(['ACT', 'NSW', 'NT', 'QLD', 'SA', 'TAS', 'VIC', 'WA']);
+const ARTWORK_BUCKET = 'custom-cd-artwork';
+const ARTWORK_SLOTS = ['front', 'back', 'disc'] as const;
+const MAX_ARTWORK_BYTES = 20 * 1024 * 1024;
+
+type ArtworkSlot = typeof ARTWORK_SLOTS[number];
+type ArtworkFile = { path: string; name: string; type: string; size: number };
 
 type OrderData = {
   fullName: string;
@@ -27,7 +33,10 @@ type OrderData = {
   driveFilesNumbered: boolean;
   under79Minutes: boolean;
   rightsConfirmed: boolean;
-  artworkLink: string;
+  artworkOption: 'plain' | 'full';
+  artworkFiles: Partial<Record<ArtworkSlot, ArtworkFile>>;
+  artworkPrintConfirmed: boolean;
+  plainCdConfirmed: boolean;
   shippingConfirmed: boolean;
   marketingConsent: boolean;
   idempotencyKey: string;
@@ -51,15 +60,6 @@ function booleanValue(value: unknown): boolean {
   return value === true;
 }
 
-function validHttpsUrl(value: string): boolean {
-  if (!value) return false;
-  try {
-    return new URL(value).protocol === 'https:';
-  } catch {
-    return false;
-  }
-}
-
 function validMusicLink(source: OrderData['musicSource'], value: string): boolean {
   try {
     const url = new URL(value);
@@ -71,6 +71,24 @@ function validMusicLink(source: OrderData['musicSource'], value: string): boolea
   } catch {
     return false;
   }
+}
+
+function artworkFilesValue(value: unknown): Partial<Record<ArtworkSlot, ArtworkFile>> {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
+  const rawFiles = value as Record<string, unknown>;
+  const files: Partial<Record<ArtworkSlot, ArtworkFile>> = {};
+  for (const slot of ARTWORK_SLOTS) {
+    const rawFile = rawFiles[slot];
+    if (!rawFile || typeof rawFile !== 'object' || Array.isArray(rawFile)) continue;
+    const item = rawFile as Record<string, unknown>;
+    files[slot] = {
+      path: stringValue(item.path, 260),
+      name: stringValue(item.name, 180),
+      type: stringValue(item.type, 80).toLowerCase(),
+      size: typeof item.size === 'number' ? Math.floor(item.size) : 0,
+    };
+  }
+  return files;
 }
 
 function validate(raw: Record<string, unknown>): { data?: OrderData; errors?: Record<string, string> } {
@@ -94,7 +112,10 @@ function validate(raw: Record<string, unknown>): { data?: OrderData; errors?: Re
     driveFilesNumbered: booleanValue(raw.driveFilesNumbered),
     under79Minutes: booleanValue(raw.under79Minutes),
     rightsConfirmed: booleanValue(raw.rightsConfirmed),
-    artworkLink: stringValue(raw.artworkLink, 1200),
+    artworkOption: raw.artworkOption === 'plain' || raw.artworkOption === 'full' ? raw.artworkOption : 'plain',
+    artworkFiles: artworkFilesValue(raw.artworkFiles),
+    artworkPrintConfirmed: booleanValue(raw.artworkPrintConfirmed),
+    plainCdConfirmed: booleanValue(raw.plainCdConfirmed),
     shippingConfirmed: booleanValue(raw.shippingConfirmed),
     marketingConsent: booleanValue(raw.marketingConsent),
     idempotencyKey: stringValue(raw.idempotencyKey, 36),
@@ -130,8 +151,27 @@ function validate(raw: Record<string, unknown>): { data?: OrderData; errors?: Re
         ? 'Paste a shared Google Drive folder link.'
         : 'Paste a shared Dropbox folder link.';
   }
-  if (data.artworkLink && !validHttpsUrl(data.artworkLink)) {
-    errors.artworkLink = 'Enter a complete https:// link.';
+  if (raw.artworkOption !== 'plain' && raw.artworkOption !== 'full') {
+    errors.artworkOption = 'Choose Plain CD or Full Artwork Package.';
+  }
+  if (data.artworkOption === 'plain') {
+    if (!data.plainCdConfirmed) errors.plainCdConfirmed = 'Confirm that this is a plain CD with no printed artwork.';
+    if (Object.keys(data.artworkFiles).length) errors.artworkOption = 'Plain CD orders cannot include artwork files.';
+  }
+  if (data.artworkOption === 'full') {
+    if (!data.artworkPrintConfirmed) errors.artworkPrintConfirmed = 'Approve the final files before submitting.';
+    for (const slot of ARTWORK_SLOTS) {
+      const file = data.artworkFiles[slot];
+      if (!file
+          || !file.path.startsWith(`incoming/${data.idempotencyKey}/${slot}.`)
+          || !/\.(png|jpg|pdf)$/i.test(file.path)
+          || !file.name
+          || !['image/png', 'image/jpeg', 'application/pdf'].includes(file.type)
+          || file.size <= 0
+          || file.size > MAX_ARTWORK_BYTES) {
+        errors[`artwork-${slot}`] = `Upload a valid ${slot} artwork file.`;
+      }
+    }
   }
   if (data.country.toLowerCase() === 'australia' && !AUSTRALIAN_STATES.has(data.region)) {
     errors.region = 'Choose an Australian state or territory.';
@@ -170,12 +210,15 @@ function musicSourceLabel(source: OrderData['musicSource']): string {
 }
 
 function orderRows(data: OrderData): string {
+  const artworkSummary = data.artworkOption === 'plain'
+    ? 'Plain CD — no printed artwork'
+    : `Full Artwork Package — ${ARTWORK_SLOTS.map((slot) => data.artworkFiles[slot]?.name).filter(Boolean).join(', ')}`;
   const rows: Array<[string, string]> = [
     ['Name', data.fullName], ['Email', data.email], ['Phone', data.phone],
     ['Address', [data.streetAddress, data.addressExtra, data.city, data.region, data.postcode, data.country].filter(Boolean).join(', ')],
     ['CD title', data.cdTitle],
     ['Music source', musicSourceLabel(data.musicSource)],
-    ['Music link', data.musicLink], ['Artwork link', data.artworkLink || 'Blank CD'],
+    ['Music link', data.musicLink], ['Artwork', artworkSummary],
   ];
   return rows.map(([label, value]) => `<tr><td style="padding:9px 0;border-bottom:1px solid #ded9cf;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#716c61;vertical-align:top">${escapeHtml(label)}</td><td style="padding:9px 0 9px 20px;border-bottom:1px solid #ded9cf;font-size:14px;color:#16150f;word-break:break-word">${escapeHtml(value)}</td></tr>`).join('');
 }
@@ -184,7 +227,7 @@ function ownerEmail(data: OrderData, reference: string) {
   return {
     subject: `${reference} — Custom CD order from ${data.fullName}`,
     html: `<!doctype html><html><body style="margin:0;background:#f2eee6;font-family:Arial,sans-serif;color:#16150f"><div style="max-width:680px;margin:0 auto;padding:32px"><div style="background:#16150f;padding:28px 32px;color:#f2eee6"><div style="font-size:11px;font-weight:700;letter-spacing:.16em;color:#e8451c">CUSTOM CD ORDER</div><h1 style="margin:8px 0 0;font-size:32px">${reference}</h1><p style="margin:8px 0 0;color:#d8d3ca">Awaiting Etsy payment match</p></div><div style="background:#fff;padding:28px 32px"><table style="width:100%;border-collapse:collapse">${orderRows(data)}</table></div></div></body></html>`,
-    text: [`CUSTOM CD ORDER — ${reference}`, 'Status: Awaiting Etsy payment match', '', `Name: ${data.fullName}`, `Email: ${data.email}`, `Phone: ${data.phone}`, `Address: ${[data.streetAddress, data.addressExtra, data.city, data.region, data.postcode, data.country].filter(Boolean).join(', ')}`, `CD title: ${data.cdTitle}`, `Music source: ${data.musicSource}`, `Music link: ${data.musicLink}`, `Artwork: ${data.artworkLink || 'Blank CD'}`].join('\n'),
+    text: [`CUSTOM CD ORDER — ${reference}`, 'Status: Awaiting Etsy payment match', '', `Name: ${data.fullName}`, `Email: ${data.email}`, `Phone: ${data.phone}`, `Address: ${[data.streetAddress, data.addressExtra, data.city, data.region, data.postcode, data.country].filter(Boolean).join(', ')}`, `CD title: ${data.cdTitle}`, `Music source: ${data.musicSource}`, `Music link: ${data.musicLink}`, `Artwork: ${data.artworkOption === 'plain' ? 'Plain CD — no printed artwork' : 'Full Artwork Package — front, back and disc uploaded'}`].join('\n'),
   };
 }
 
@@ -234,6 +277,20 @@ async function supabaseRpc<T>(url: string, secret: string, name: string, body: u
   return (responseBody ? JSON.parse(responseBody) : undefined) as T;
 }
 
+async function verifyArtworkFiles(url: string, secret: string, files: Partial<Record<ArtworkSlot, ArtworkFile>>): Promise<boolean> {
+  const base = url.replace(/\/$/, '');
+  const results = await Promise.all(ARTWORK_SLOTS.map(async (slot) => {
+    const path = files[slot]?.path;
+    if (!path) return false;
+    const response = await fetch(
+      `${base}/storage/v1/object/info/${ARTWORK_BUCKET}/${path.split('/').map(encodeURIComponent).join('/')}`,
+      { headers: { apikey: secret, Authorization: `Bearer ${secret}` } },
+    );
+    return response.ok;
+  }));
+  return results.every(Boolean);
+}
+
 async function sendEmail(apiKey: string, payload: Record<string, unknown>, idempotencyKey?: string): Promise<ResendResult> {
   const response = await fetch('https://api.resend.com/emails', {
     method: 'POST',
@@ -273,6 +330,17 @@ export default async function handler(req: Request): Promise<Response> {
     return json({ error: 'The order service is not configured yet.' }, 503);
   }
 
+  if (data.artworkOption === 'full') {
+    try {
+      if (!await verifyArtworkFiles(supabaseUrl, supabaseSecret, data.artworkFiles)) {
+        return json({ error: 'One or more artwork files did not finish uploading. Please try again.' }, 422);
+      }
+    } catch {
+      console.error('[order] Artwork verification failed');
+      return json({ error: 'We could not verify your artwork files. Please try again.' }, 502);
+    }
+  }
+
   let rpcOrder: RpcOrder;
   try {
     const result = await supabaseRpc<RpcOrder[]>(supabaseUrl, supabaseSecret, 'create_custom_cd_order', {
@@ -288,6 +356,17 @@ export default async function handler(req: Request): Promise<Response> {
     }
     console.error('[order] Supabase order creation failed');
     return json({ error: 'We could not save your order. Please try again.' }, 502);
+  }
+
+
+  if (data.artworkOption === 'full') {
+    try {
+      await supabaseRpc<unknown>(supabaseUrl, supabaseSecret, 'finalize_custom_cd_artwork_upload', {
+        p_idempotency_key: data.idempotencyKey,
+      });
+    } catch {
+      console.error('[order] Artwork upload finalization failed');
+    }
   }
 
   if (!rpcOrder.created) {

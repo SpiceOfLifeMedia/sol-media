@@ -8,12 +8,114 @@ import {
 } from '../lib/googlePlaces';
 import './Order.css';
 
-const MASTER_TEMPLATE_URL = 'https://www.canva.com/design/DAHCUOooVnA/pb6oNxBkkWEllsadLbruyg/view?utm_content=DAHCUOooVnA&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink&mode=preview';
 const ETSY_ORDER_URL = 'https://www.etsy.com/au/listing/4382552922/personalised-burned-mixtape-cd-custom';
 const AUSTRALIAN_STATES = ['ACT', 'NSW', 'NT', 'QLD', 'SA', 'TAS', 'VIC', 'WA'];
+const MAX_ARTWORK_BYTES = 20 * 1024 * 1024;
 
 type MusicSource = '' | 'spotify' | 'google_drive' | 'dropbox';
+type ArtworkOption = '' | 'plain' | 'full';
+type ArtworkSlot = 'front' | 'back' | 'disc';
+type ArtworkFiles = Record<ArtworkSlot, File | null>;
 type FieldErrors = Record<string, string>;
+
+const ARTWORK_SPECS: Array<{
+  slot: ArtworkSlot;
+  title: string;
+  dimensions: string;
+  minWidth: number;
+  minHeight: number;
+}> = [
+  { slot: 'front', title: 'Front cover', dimensions: '120 × 120 mm · minimum 1417 × 1417 px at 300 DPI', minWidth: 1417, minHeight: 1417 },
+  { slot: 'back', title: 'Back cover', dimensions: '150 × 118 mm · minimum 1772 × 1394 px at 300 DPI', minWidth: 1772, minHeight: 1394 },
+  { slot: 'disc', title: 'Disc print', dimensions: '120 × 120 mm · minimum 1417 × 1417 px at 300 DPI', minWidth: 1417, minHeight: 1417 },
+];
+
+function fileMegabytes(size: number): string {
+  return `${(size / 1024 / 1024).toFixed(size >= 1024 * 1024 ? 1 : 2)} MB`;
+}
+
+async function validateArtworkFile(
+  file: File,
+  spec: (typeof ARTWORK_SPECS)[number],
+): Promise<string> {
+  if (!['image/png', 'image/jpeg', 'application/pdf'].includes(file.type)) {
+    return 'Choose a PNG, JPG or PDF file.';
+  }
+  if (file.size <= 0 || file.size > MAX_ARTWORK_BYTES) {
+    return 'The file must be no larger than 20 MB.';
+  }
+  if (file.type === 'application/pdf') return '';
+
+  const objectUrl = URL.createObjectURL(file);
+  try {
+    const dimensions = await new Promise<{ width: number; height: number }>((resolve, reject) => {
+      const image = new Image();
+      image.onload = () => resolve({ width: image.naturalWidth, height: image.naturalHeight });
+      image.onerror = reject;
+      image.src = objectUrl;
+    });
+    const expectedRatio = spec.minWidth / spec.minHeight;
+    const actualRatio = dimensions.width / dimensions.height;
+    if (dimensions.width < spec.minWidth || dimensions.height < spec.minHeight) {
+      return `${spec.title} is ${dimensions.width} × ${dimensions.height} px. It must be at least ${spec.minWidth} × ${spec.minHeight} px.`;
+    }
+    if (Math.abs(actualRatio - expectedRatio) / expectedRatio > 0.035) {
+      return `${spec.title} has the wrong shape. Please use ${spec.dimensions.split(' · ')[0]}.`;
+    }
+    return '';
+  } catch {
+    return 'We could not read that image. Try exporting it again as PNG, JPG or PDF.';
+  } finally {
+    URL.revokeObjectURL(objectUrl);
+  }
+}
+
+function ArtworkUploadCard({
+  spec,
+  file,
+  error,
+  onFile,
+}: {
+  spec: (typeof ARTWORK_SPECS)[number];
+  file: File | null;
+  error?: string;
+  onFile: (file: File | null) => void;
+}) {
+  const [preview, setPreview] = useState('');
+
+  useEffect(() => {
+    if (!file || file.type === 'application/pdf') {
+      setPreview('');
+      return;
+    }
+    const nextPreview = URL.createObjectURL(file);
+    setPreview(nextPreview);
+    return () => URL.revokeObjectURL(nextPreview);
+  }, [file]);
+
+  return (
+    <div className={`order-artwork-upload ${error ? 'order-artwork-upload--error' : ''}`}>
+      <div className="order-artwork-preview">
+        {preview ? <img src={preview} alt={`${spec.title} preview`} /> : <span>{file?.type === 'application/pdf' ? 'PDF' : spec.slot.toUpperCase()}</span>}
+      </div>
+      <div className="order-artwork-upload__copy">
+        <strong>{spec.title}</strong>
+        <p>{spec.dimensions}</p>
+        {file && <small>{file.name} · {fileMegabytes(file.size)}</small>}
+        <label className="order-file-button" htmlFor={`artwork-${spec.slot}`}>{file ? 'REPLACE FILE' : 'CHOOSE FILE'}</label>
+        <input
+          id={`artwork-${spec.slot}`}
+          className="order-file-input"
+          type="file"
+          accept=".png,.jpg,.jpeg,.pdf,image/png,image/jpeg,application/pdf"
+          required
+          onChange={(event) => onFile(event.target.files?.[0] ?? null)}
+        />
+        {error && <span className="order-error">{error}</span>}
+      </div>
+    </div>
+  );
+}
 
 function FieldError({ name, errors }: { name: string; errors: FieldErrors }) {
   if (!errors[name]) return null;
@@ -135,11 +237,14 @@ function Success({ reference, emailDelivered }: { reference: string; emailDelive
 
 export default function Order() {
   const [musicSource, setMusicSource] = useState<MusicSource>('');
+  const [artworkOption, setArtworkOption] = useState<ArtworkOption>('');
+  const [artworkFiles, setArtworkFiles] = useState<ArtworkFiles>({ front: null, back: null, disc: null });
   const [deliveryAddress, setDeliveryAddress] = useState<DeliveryAddress>({
     streetAddress: '', city: '', region: '', postcode: '', country: 'Australia',
   });
   const [placesReady, setPlacesReady] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [submitStage, setSubmitStage] = useState('');
   const [errors, setErrors] = useState<FieldErrors>({});
   const [serverError, setServerError] = useState('');
   const [success, setSuccess] = useState<{ reference: string; emailDelivered: boolean } | null>(null);
@@ -213,6 +318,22 @@ export default function Order() {
     };
   }, []);
 
+  async function chooseArtworkFile(slot: ArtworkSlot, file: File | null) {
+    const spec = ARTWORK_SPECS.find((item) => item.slot === slot)!;
+    if (!file) {
+      setArtworkFiles((current) => ({ ...current, [slot]: null }));
+      return;
+    }
+    const fileError = await validateArtworkFile(file, spec);
+    if (fileError) {
+      setArtworkFiles((current) => ({ ...current, [slot]: null }));
+      setErrors((current) => ({ ...current, [`artwork-${slot}`]: fileError }));
+      return;
+    }
+    setArtworkFiles((current) => ({ ...current, [slot]: file }));
+    setErrors((current) => ({ ...current, [`artwork-${slot}`]: '' }));
+  }
+
   async function submitOrder(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
@@ -233,18 +354,75 @@ export default function Order() {
       return;
     }
 
+    const selectedArtwork = String(formData.get('artworkOption') ?? '') as ArtworkOption;
+    if (selectedArtwork === 'full') {
+      const artworkErrors: FieldErrors = {};
+      for (const spec of ARTWORK_SPECS) {
+        if (!artworkFiles[spec.slot]) artworkErrors[`artwork-${spec.slot}`] = `Upload the ${spec.title.toLowerCase()} file.`;
+      }
+      if (Object.keys(artworkErrors).length) {
+        setErrors((current) => ({ ...current, ...artworkErrors }));
+        document.getElementById('artwork-front')?.focus();
+        return;
+      }
+    }
+
     if (!idempotencyKey.current) idempotencyKey.current = crypto.randomUUID();
     setSubmitting(true);
+    setSubmitStage(selectedArtwork === 'full' ? 'PREPARING PRIVATE ARTWORK UPLOAD…' : 'SAVING YOUR DETAILS…');
     setErrors({});
     setServerError('');
-    const payload = Object.fromEntries(formData.entries()) as Record<string, unknown>;
+    const payload: Record<string, unknown> = {};
+    for (const [key, value] of formData.entries()) {
+      if (typeof value === 'string') payload[key] = value;
+    }
     payload.streetAddress = streetAddress;
-    for (const checkbox of ['spotifyPublic', 'spotifyOrderConfirmed', 'driveFilesNumbered', 'under79Minutes', 'rightsConfirmed', 'shippingConfirmed', 'marketingConsent']) {
+    for (const checkbox of ['spotifyPublic', 'spotifyOrderConfirmed', 'driveFilesNumbered', 'under79Minutes', 'rightsConfirmed', 'artworkPrintConfirmed', 'plainCdConfirmed', 'shippingConfirmed', 'marketingConsent']) {
       payload[checkbox] = formData.has(checkbox);
     }
     payload.idempotencyKey = idempotencyKey.current;
 
     try {
+      if (selectedArtwork === 'full') {
+        const files = ARTWORK_SPECS.map((spec) => ({
+          slot: spec.slot,
+          name: artworkFiles[spec.slot]!.name,
+          type: artworkFiles[spec.slot]!.type,
+          size: artworkFiles[spec.slot]!.size,
+        }));
+        const prepareResponse = await fetch('/api/artwork-upload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ idempotencyKey: idempotencyKey.current, files }),
+        });
+        const prepared = await prepareResponse.json() as {
+          error?: string;
+          uploads?: Array<{ slot: ArtworkSlot; path: string; signedUrl: string }>;
+        };
+        if (!prepareResponse.ok || prepared.uploads?.length !== 3) {
+          setServerError(prepared.error ?? 'We could not prepare your artwork uploads. Please try again.');
+          return;
+        }
+
+        setSubmitStage('UPLOADING FRONT, BACK AND DISC…');
+        await Promise.all(prepared.uploads.map(async (upload) => {
+          const file = artworkFiles[upload.slot]!;
+          const uploadBody = new FormData();
+          uploadBody.append('cacheControl', '3600');
+          uploadBody.append('', file);
+          const response = await fetch(upload.signedUrl, { method: 'PUT', headers: { 'x-upsert': 'true' }, body: uploadBody });
+          if (!response.ok) throw new Error(`upload_${upload.slot}`);
+        }));
+
+        payload.artworkFiles = Object.fromEntries(prepared.uploads.map((upload) => {
+          const file = artworkFiles[upload.slot]!;
+          return [upload.slot, { path: upload.path, name: file.name, type: file.type, size: file.size }];
+        }));
+        setSubmitStage('SAVING YOUR DETAILS…');
+      } else {
+        payload.artworkFiles = {};
+      }
+
       const response = await fetch('/api/order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -264,9 +442,12 @@ export default function Order() {
       setSuccess({ reference: result.reference, emailDelivered: result.emailDelivered !== false });
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch {
-      setServerError('We could not reach the order service. Check your connection and try again.');
+      setServerError(selectedArtwork === 'full'
+        ? 'One of the artwork files could not be uploaded. Check your connection and try again.'
+        : 'We could not reach the order service. Check your connection and try again.');
     } finally {
       setSubmitting(false);
+      setSubmitStage('');
     }
   }
 
@@ -368,9 +549,56 @@ export default function Order() {
           <section className="order-section" aria-labelledby="extras-title">
             <div className="order-section__heading"><span>03</span><h2 id="extras-title">Artwork</h2></div>
             <div className="order-fields">
-              <label htmlFor="artworkLink">CANVA ARTWORK LINK</label>
-              <input id="artworkLink" name="artworkLink" type="url" placeholder="Optional — leave blank for a blank CD" />
-              <p className="order-microcopy">ARTWORK MUST USE THE <a href={MASTER_TEMPLATE_URL} target="_blank" rel="noreferrer">MASTER TEMPLATE</a>. NO LINK MEANS THE CD IS SENT BLANK.</p>
+              <fieldset onChange={(event) => {
+                if (event.target instanceof HTMLInputElement) setArtworkOption(event.target.value as ArtworkOption);
+              }}>
+                <legend>CHOOSE EXACTLY WHAT YOU ARE ORDERING <RequiredMark /></legend>
+                <div className="order-product-choice-grid">
+                  <label className={`order-product-choice ${errors.artworkOption ? 'order-product-choice--error' : ''}`}>
+                    <input type="radio" name="artworkOption" value="plain" required />
+                    <span className="order-product-choice__icon" aria-hidden="true">○</span>
+                    <span><strong>PLAIN CD</strong><small>No printed artwork. The CD is supplied plain.</small></span>
+                  </label>
+                  <label className={`order-product-choice ${errors.artworkOption ? 'order-product-choice--error' : ''}`}>
+                    <input type="radio" name="artworkOption" value="full" required />
+                    <span className="order-product-choice__icon" aria-hidden="true">●</span>
+                    <span><strong>FULL ARTWORK PACKAGE</strong><small>Printed front cover, back cover and full-colour disc.</small></span>
+                  </label>
+                </div>
+                <FieldError name="artworkOption" errors={errors} />
+              </fieldset>
+
+              {artworkOption === 'plain' && (
+                <div className="order-artwork-confirmation">
+                  <strong>PLAIN CD — NO ARTWORK</strong>
+                  <p>This option does not include a printed disc, front cover or back cover.</p>
+                  <Choice type="checkbox" name="plainCdConfirmed" required errors={errors}>I understand this is a plain CD with no printed artwork. <RequiredMark /></Choice>
+                  <FieldError name="plainCdConfirmed" errors={errors} />
+                </div>
+              )}
+
+              {artworkOption === 'full' && (
+                <div className="order-artwork-package">
+                  <div className="order-callout"><strong>UPLOAD ALL THREE PRINT-READY FILES</strong>PNG, JPG or PDF only. Maximum 20 MB each. Images are checked for the correct shape and minimum 300 DPI pixel size before upload.</div>
+                  <div className="order-artwork-uploads">
+                    {ARTWORK_SPECS.map((spec) => (
+                      <ArtworkUploadCard
+                        key={spec.slot}
+                        spec={spec}
+                        file={artworkFiles[spec.slot]}
+                        error={errors[`artwork-${spec.slot}`]}
+                        onFile={(file) => void chooseArtworkFile(spec.slot, file)}
+                      />
+                    ))}
+                  </div>
+                  <div className="order-artwork-confirmation order-artwork-confirmation--print">
+                    <strong>FINAL PRINT APPROVAL</strong>
+                    <p>We print the files exactly as supplied. Check spelling, cropping, positioning, colour and image quality before approving.</p>
+                    <Choice type="checkbox" name="artworkPrintConfirmed" required errors={errors}>I confirm these front, back and disc files are final, correctly positioned, and approved for printing exactly as uploaded. <RequiredMark /></Choice>
+                    <FieldError name="artworkPrintConfirmed" errors={errors} />
+                  </div>
+                </div>
+              )}
             </div>
           </section>
 
@@ -383,7 +611,7 @@ export default function Order() {
               <Choice type="checkbox" name="marketingConsent" errors={errors}>Yes, email me one follow-up offer from Spice of Life Media after I submit this form. I can unsubscribe at any time.</Choice>
               <p className="order-privacy">Optional. Your choice does not affect this order.</p>
               {serverError && <div className="order-server-error" role="alert">{serverError}</div>}
-              <button className="order-submit" type="submit" disabled={submitting}>{submitting ? 'SAVING YOUR DETAILS…' : 'SAVE DETAILS AND GET REFERENCE'}</button>
+              <button className="order-submit" type="submit" disabled={submitting}>{submitting ? submitStage : 'SAVE DETAILS AND GET REFERENCE'}</button>
               {/* TODO(order-launch): add a privacy-policy link only after the owner confirms its public URL. */}
               <p className="order-privacy">Your order details are used to prepare and deliver your CD. We only send the optional follow-up offer if you tick the box above.</p>
             </div>
