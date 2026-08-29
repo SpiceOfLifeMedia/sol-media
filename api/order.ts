@@ -33,7 +33,7 @@ type OrderData = {
   driveFilesNumbered: boolean;
   under79Minutes: boolean;
   rightsConfirmed: boolean;
-  artworkOption: 'plain' | 'full';
+  artworkOption: 'blank_sleeve' | 'blank_jewel' | 'full';
   artworkFiles: Partial<Record<ArtworkSlot, ArtworkFile>>;
   artworkPrintConfirmed: boolean;
   plainCdConfirmed: boolean;
@@ -112,7 +112,9 @@ function validate(raw: Record<string, unknown>): { data?: OrderData; errors?: Re
     driveFilesNumbered: booleanValue(raw.driveFilesNumbered),
     under79Minutes: booleanValue(raw.under79Minutes),
     rightsConfirmed: booleanValue(raw.rightsConfirmed),
-    artworkOption: raw.artworkOption === 'plain' || raw.artworkOption === 'full' ? raw.artworkOption : 'plain',
+    artworkOption: raw.artworkOption === 'blank_sleeve' || raw.artworkOption === 'blank_jewel' || raw.artworkOption === 'full'
+      ? raw.artworkOption
+      : 'blank_sleeve',
     artworkFiles: artworkFilesValue(raw.artworkFiles),
     artworkPrintConfirmed: booleanValue(raw.artworkPrintConfirmed),
     plainCdConfirmed: booleanValue(raw.plainCdConfirmed),
@@ -151,12 +153,12 @@ function validate(raw: Record<string, unknown>): { data?: OrderData; errors?: Re
         ? 'Paste a shared Google Drive folder link.'
         : 'Paste a shared Dropbox folder link.';
   }
-  if (raw.artworkOption !== 'plain' && raw.artworkOption !== 'full') {
-    errors.artworkOption = 'Choose Plain CD or Full Artwork Package.';
+  if (raw.artworkOption !== 'blank_sleeve' && raw.artworkOption !== 'blank_jewel' && raw.artworkOption !== 'full') {
+    errors.artworkOption = 'Choose Blank CD + Sleeve, Blank CD + Jewel Case, or Full Artwork Package.';
   }
-  if (data.artworkOption === 'plain') {
-    if (!data.plainCdConfirmed) errors.plainCdConfirmed = 'Confirm that this is a plain CD with no printed artwork.';
-    if (Object.keys(data.artworkFiles).length) errors.artworkOption = 'Plain CD orders cannot include artwork files.';
+  if (data.artworkOption === 'blank_sleeve' || data.artworkOption === 'blank_jewel') {
+    if (!data.plainCdConfirmed) errors.plainCdConfirmed = 'Confirm that this is a blank CD with no printed artwork.';
+    if (Object.keys(data.artworkFiles).length) errors.artworkOption = 'Blank CD orders cannot include artwork files.';
   }
   if (data.artworkOption === 'full') {
     if (!data.artworkPrintConfirmed) errors.artworkPrintConfirmed = 'Approve the final files before submitting.';
@@ -210,9 +212,11 @@ function musicSourceLabel(source: OrderData['musicSource']): string {
 }
 
 function orderRows(data: OrderData): string {
-  const artworkSummary = data.artworkOption === 'plain'
-    ? 'Plain CD — no printed artwork'
-    : `Full Artwork Package — ${ARTWORK_SLOTS.map((slot) => data.artworkFiles[slot]?.name).filter(Boolean).join(', ')}`;
+  const artworkSummary = data.artworkOption === 'blank_sleeve'
+    ? 'Blank CD + cardboard sleeve — no printed artwork'
+    : data.artworkOption === 'blank_jewel'
+      ? 'Blank CD + jewel case — no printed artwork'
+      : `Full Artwork Package — ${ARTWORK_SLOTS.map((slot) => data.artworkFiles[slot]?.name).filter(Boolean).join(', ')}`;
   const rows: Array<[string, string]> = [
     ['Name', data.fullName], ['Email', data.email], ['Phone', data.phone],
     ['Address', [data.streetAddress, data.addressExtra, data.city, data.region, data.postcode, data.country].filter(Boolean).join(', ')],
@@ -227,7 +231,7 @@ function ownerEmail(data: OrderData, reference: string) {
   return {
     subject: `${reference} — Custom CD order from ${data.fullName}`,
     html: `<!doctype html><html><body style="margin:0;background:#f2eee6;font-family:Arial,sans-serif;color:#16150f"><div style="max-width:680px;margin:0 auto;padding:32px"><div style="background:#16150f;padding:28px 32px;color:#f2eee6"><div style="font-size:11px;font-weight:700;letter-spacing:.16em;color:#e8451c">CUSTOM CD ORDER</div><h1 style="margin:8px 0 0;font-size:32px">${reference}</h1><p style="margin:8px 0 0;color:#d8d3ca">Awaiting Etsy payment match</p></div><div style="background:#fff;padding:28px 32px"><table style="width:100%;border-collapse:collapse">${orderRows(data)}</table></div></div></body></html>`,
-    text: [`CUSTOM CD ORDER — ${reference}`, 'Status: Awaiting Etsy payment match', '', `Name: ${data.fullName}`, `Email: ${data.email}`, `Phone: ${data.phone}`, `Address: ${[data.streetAddress, data.addressExtra, data.city, data.region, data.postcode, data.country].filter(Boolean).join(', ')}`, `CD title: ${data.cdTitle}`, `Music source: ${data.musicSource}`, `Music link: ${data.musicLink}`, `Artwork: ${data.artworkOption === 'plain' ? 'Plain CD — no printed artwork' : 'Full Artwork Package — front, back and disc uploaded'}`].join('\n'),
+    text: [`CUSTOM CD ORDER — ${reference}`, 'Status: Awaiting Etsy payment match', '', `Name: ${data.fullName}`, `Email: ${data.email}`, `Phone: ${data.phone}`, `Address: ${[data.streetAddress, data.addressExtra, data.city, data.region, data.postcode, data.country].filter(Boolean).join(', ')}`, `CD title: ${data.cdTitle}`, `Music source: ${data.musicSource}`, `Music link: ${data.musicLink}`, `Artwork: ${data.artworkOption === 'blank_sleeve' ? 'Blank CD + cardboard sleeve — no printed artwork' : data.artworkOption === 'blank_jewel' ? 'Blank CD + jewel case — no printed artwork' : 'Full Artwork Package — front, back and disc uploaded'}`].join('\n'),
   };
 }
 

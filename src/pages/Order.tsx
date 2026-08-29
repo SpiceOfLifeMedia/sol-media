@@ -13,7 +13,7 @@ const AUSTRALIAN_STATES = ['ACT', 'NSW', 'NT', 'QLD', 'SA', 'TAS', 'VIC', 'WA'];
 const MAX_ARTWORK_BYTES = 20 * 1024 * 1024;
 
 type MusicSource = '' | 'spotify' | 'google_drive' | 'dropbox';
-type ArtworkOption = '' | 'plain' | 'full';
+type ArtworkOption = '' | 'blank_sleeve' | 'blank_jewel' | 'full';
 type ArtworkSlot = 'front' | 'back' | 'disc';
 type ArtworkFiles = Record<ArtworkSlot, File | null>;
 type FieldErrors = Record<string, string>;
@@ -555,24 +555,29 @@ export default function Order() {
                 <legend>CHOOSE EXACTLY WHAT YOU ARE ORDERING <RequiredMark /></legend>
                 <div className="order-product-choice-grid">
                   <label className={`order-product-choice ${errors.artworkOption ? 'order-product-choice--error' : ''}`}>
-                    <input type="radio" name="artworkOption" value="plain" required />
+                    <input type="radio" name="artworkOption" value="blank_sleeve" required />
                     <span className="order-product-choice__icon" aria-hidden="true">○</span>
-                    <span><strong>PLAIN CD</strong><small>No printed artwork. The CD is supplied plain.</small></span>
+                    <span><strong>BLANK CD + SLEEVE</strong><small>AU$10.95 · Plain CD in a protective cardboard sleeve. No printed artwork.</small></span>
+                  </label>
+                  <label className={`order-product-choice ${errors.artworkOption ? 'order-product-choice--error' : ''}`}>
+                    <input type="radio" name="artworkOption" value="blank_jewel" required />
+                    <span className="order-product-choice__icon" aria-hidden="true">▣</span>
+                    <span><strong>BLANK CD + JEWEL CASE</strong><small>AU$14.95 · Plain CD in a clear jewel case. No printed artwork.</small></span>
                   </label>
                   <label className={`order-product-choice ${errors.artworkOption ? 'order-product-choice--error' : ''}`}>
                     <input type="radio" name="artworkOption" value="full" required />
                     <span className="order-product-choice__icon" aria-hidden="true">●</span>
-                    <span><strong>FULL ARTWORK PACKAGE</strong><small>Printed front cover, back cover and full-colour disc.</small></span>
+                    <span><strong>FULL ARTWORK PACKAGE</strong><small>AU$25.95 · Jewel case, printed front and back covers, and full-colour disc.</small></span>
                   </label>
                 </div>
                 <FieldError name="artworkOption" errors={errors} />
               </fieldset>
 
-              {artworkOption === 'plain' && (
+              {(artworkOption === 'blank_sleeve' || artworkOption === 'blank_jewel') && (
                 <div className="order-artwork-confirmation">
-                  <strong>PLAIN CD — NO ARTWORK</strong>
+                  <strong>{artworkOption === 'blank_sleeve' ? 'BLANK CD + CARDBOARD SLEEVE' : 'BLANK CD + JEWEL CASE'}</strong>
                   <p>This option does not include a printed disc, front cover or back cover.</p>
-                  <Choice type="checkbox" name="plainCdConfirmed" required errors={errors}>I understand this is a plain CD with no printed artwork. <RequiredMark /></Choice>
+                  <Choice type="checkbox" name="plainCdConfirmed" required errors={errors}>I understand this is a blank CD with no printed artwork, supplied in a {artworkOption === 'blank_sleeve' ? 'cardboard sleeve' : 'jewel case'}. <RequiredMark /></Choice>
                   <FieldError name="plainCdConfirmed" errors={errors} />
                 </div>
               )}
