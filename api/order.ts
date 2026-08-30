@@ -28,6 +28,7 @@ type OrderData = {
   cdTitle: string;
   musicSource: 'spotify' | 'google_drive' | 'dropbox';
   musicLink: string;
+  playlistDurationMinutes: number;
   spotifyPublic: boolean;
   spotifyOrderConfirmed: boolean;
   driveFilesNumbered: boolean;
@@ -58,6 +59,11 @@ function stringValue(value: unknown, maxLength: number): string {
 
 function booleanValue(value: unknown): boolean {
   return value === true;
+}
+
+function numberValue(value: unknown): number {
+  const parsed = typeof value === 'number' ? value : Number(typeof value === 'string' ? value.trim() : NaN);
+  return Number.isFinite(parsed) ? parsed : 0;
 }
 
 function validMusicLink(source: OrderData['musicSource'], value: string): boolean {
@@ -107,6 +113,7 @@ function validate(raw: Record<string, unknown>): { data?: OrderData; errors?: Re
       ? raw.musicSource
       : 'spotify',
     musicLink: stringValue(raw.musicLink, 1200),
+    playlistDurationMinutes: numberValue(raw.playlistDurationMinutes),
     spotifyPublic: booleanValue(raw.spotifyPublic),
     spotifyOrderConfirmed: booleanValue(raw.spotifyOrderConfirmed),
     driveFilesNumbered: booleanValue(raw.driveFilesNumbered),
@@ -152,6 +159,11 @@ function validate(raw: Record<string, unknown>): { data?: OrderData; errors?: Re
       : data.musicSource === 'google_drive'
         ? 'Paste a shared Google Drive folder link.'
         : 'Paste a shared Dropbox folder link.';
+  }
+  if (data.playlistDurationMinutes <= 0) {
+    errors.playlistDurationMinutes = 'Enter the total running time shown for your playlist or song folder.';
+  } else if (data.playlistDurationMinutes >= 79) {
+    errors.playlistDurationMinutes = `This music runs for ${data.playlistDurationMinutes} minutes. Shorten it to less than 79 minutes before ordering.`;
   }
   if (raw.artworkOption !== 'blank_sleeve' && raw.artworkOption !== 'blank_jewel' && raw.artworkOption !== 'full') {
     errors.artworkOption = 'Choose Blank CD + Sleeve, Blank CD + Jewel Case, or Full Artwork Package.';
@@ -222,7 +234,7 @@ function orderRows(data: OrderData): string {
     ['Address', [data.streetAddress, data.addressExtra, data.city, data.region, data.postcode, data.country].filter(Boolean).join(', ')],
     ['CD title', data.cdTitle],
     ['Music source', musicSourceLabel(data.musicSource)],
-    ['Music link', data.musicLink], ['Artwork', artworkSummary],
+    ['Music link', data.musicLink], ['Music length', `${data.playlistDurationMinutes} minutes`], ['Artwork', artworkSummary],
   ];
   return rows.map(([label, value]) => `<tr><td style="padding:9px 0;border-bottom:1px solid #ded9cf;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#716c61;vertical-align:top">${escapeHtml(label)}</td><td style="padding:9px 0 9px 20px;border-bottom:1px solid #ded9cf;font-size:14px;color:#16150f;word-break:break-word">${escapeHtml(value)}</td></tr>`).join('');
 }
@@ -231,7 +243,7 @@ function ownerEmail(data: OrderData, reference: string) {
   return {
     subject: `${reference} — Custom CD order from ${data.fullName}`,
     html: `<!doctype html><html><body style="margin:0;background:#f2eee6;font-family:Arial,sans-serif;color:#16150f"><div style="max-width:680px;margin:0 auto;padding:32px"><div style="background:#16150f;padding:28px 32px;color:#f2eee6"><div style="font-size:11px;font-weight:700;letter-spacing:.16em;color:#e8451c">CUSTOM CD ORDER</div><h1 style="margin:8px 0 0;font-size:32px">${reference}</h1><p style="margin:8px 0 0;color:#d8d3ca">Awaiting Etsy payment match</p></div><div style="background:#fff;padding:28px 32px"><table style="width:100%;border-collapse:collapse">${orderRows(data)}</table></div></div></body></html>`,
-    text: [`CUSTOM CD ORDER — ${reference}`, 'Status: Awaiting Etsy payment match', '', `Name: ${data.fullName}`, `Email: ${data.email}`, `Phone: ${data.phone}`, `Address: ${[data.streetAddress, data.addressExtra, data.city, data.region, data.postcode, data.country].filter(Boolean).join(', ')}`, `CD title: ${data.cdTitle}`, `Music source: ${data.musicSource}`, `Music link: ${data.musicLink}`, `Artwork: ${data.artworkOption === 'blank_sleeve' ? 'Blank CD + cardboard sleeve — no printed artwork' : data.artworkOption === 'blank_jewel' ? 'Blank CD + jewel case — no printed artwork' : 'Full Artwork Package — front, back and disc uploaded'}`].join('\n'),
+    text: [`CUSTOM CD ORDER — ${reference}`, 'Status: Awaiting Etsy payment match', '', `Name: ${data.fullName}`, `Email: ${data.email}`, `Phone: ${data.phone}`, `Address: ${[data.streetAddress, data.addressExtra, data.city, data.region, data.postcode, data.country].filter(Boolean).join(', ')}`, `CD title: ${data.cdTitle}`, `Music source: ${data.musicSource}`, `Music link: ${data.musicLink}`, `Music length: ${data.playlistDurationMinutes} minutes`, `Artwork: ${data.artworkOption === 'blank_sleeve' ? 'Blank CD + cardboard sleeve — no printed artwork' : data.artworkOption === 'blank_jewel' ? 'Blank CD + jewel case — no printed artwork' : 'Full Artwork Package — front, back and disc uploaded'}`].join('\n'),
   };
 }
 
