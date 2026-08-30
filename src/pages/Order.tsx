@@ -237,6 +237,7 @@ function Success({ reference, emailDelivered }: { reference: string; emailDelive
 
 export default function Order() {
   const [musicSource, setMusicSource] = useState<MusicSource>('');
+  const [playlistMinutes, setPlaylistMinutes] = useState('');
   const [artworkOption, setArtworkOption] = useState<ArtworkOption>('');
   const [artworkFiles, setArtworkFiles] = useState<ArtworkFiles>({ front: null, back: null, disc: null });
   const [deliveryAddress, setDeliveryAddress] = useState<DeliveryAddress>({
@@ -254,6 +255,8 @@ export default function Order() {
   const addressRef = useRef(deliveryAddress);
   addressRef.current = deliveryAddress;
   const isAustralia = deliveryAddress.country.trim().toLowerCase() === 'australia';
+  const parsedPlaylistMinutes = Number(playlistMinutes);
+  const playlistTooLong = playlistMinutes !== '' && Number.isFinite(parsedPlaylistMinutes) && parsedPlaylistMinutes >= 79;
 
   useEffect(() => {
     const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY?.trim();
@@ -351,6 +354,17 @@ export default function Order() {
     if (linkError) {
       setErrors((current) => ({ ...current, musicLink: linkError }));
       (form.elements.namedItem('musicLink') as HTMLInputElement | null)?.focus();
+      return;
+    }
+    const durationMinutes = Number(formData.get('playlistDurationMinutes'));
+    if (!Number.isFinite(durationMinutes) || durationMinutes <= 0) {
+      setErrors((current) => ({ ...current, playlistDurationMinutes: 'Enter the total running time shown for your playlist or song folder.' }));
+      (form.elements.namedItem('playlistDurationMinutes') as HTMLInputElement | null)?.focus();
+      return;
+    }
+    if (durationMinutes >= 79) {
+      setErrors((current) => ({ ...current, playlistDurationMinutes: `This music runs for ${durationMinutes} minutes. Shorten it to less than 79 minutes before ordering.` }));
+      (form.elements.namedItem('playlistDurationMinutes') as HTMLInputElement | null)?.focus();
       return;
     }
 
@@ -522,6 +536,27 @@ export default function Order() {
               <label htmlFor="musicLink">{musicSource === 'spotify' ? 'SPOTIFY PLAYLIST LINK' : musicSource === 'google_drive' ? 'SHARED GOOGLE DRIVE FOLDER LINK' : musicSource === 'dropbox' ? 'SHARED DROPBOX FOLDER LINK' : 'PLAYLIST OR FOLDER LINK'} <RequiredMark /></label>
               <input id="musicLink" name="musicLink" type="url" placeholder="Paste a Spotify, Google Drive or Dropbox link" required aria-invalid={Boolean(errors.musicLink)} aria-describedby={errors.musicLink ? 'musicLink-error' : undefined} />
               <FieldError name="musicLink" errors={errors} />
+              <div className={`order-duration-check ${playlistTooLong ? 'order-duration-check--blocked' : ''}`}>
+                <label htmlFor="playlistDurationMinutes">TOTAL RUNNING TIME IN MINUTES <RequiredMark /></label>
+                <p>Enter the total length shown in your playlist or music folder. Example: 1 hour 24 minutes = <strong>84</strong>.</p>
+                <input
+                  id="playlistDurationMinutes"
+                  name="playlistDurationMinutes"
+                  type="number"
+                  min="1"
+                  step="0.01"
+                  inputMode="decimal"
+                  value={playlistMinutes}
+                  onChange={(event) => {
+                    setPlaylistMinutes(event.target.value);
+                    setErrors((current) => ({ ...current, playlistDurationMinutes: '' }));
+                  }}
+                  required
+                  aria-invalid={playlistTooLong || Boolean(errors.playlistDurationMinutes)}
+                />
+                {playlistTooLong && <div className="order-duration-blocked" role="alert"><strong>ORDER BLOCKED — PLAYLIST TOO LONG</strong><span>Your music is {playlistMinutes} minutes. Shorten it to less than 79 minutes before submitting this form.</span></div>}
+                <FieldError name="playlistDurationMinutes" errors={errors} />
+              </div>
               <div className="order-callout"><strong>ONLY THESE MUSIC SOURCES ARE ACCEPTED</strong>Send a public Spotify playlist, a shared Google Drive folder, or a shared Dropbox folder. Apple Music, YouTube Music and other streaming services cannot be processed.</div>
 
               {musicSource === 'spotify' && <>
