@@ -9,6 +9,8 @@ import {
 import './Order.css';
 
 const ETSY_ORDER_URL = 'https://www.etsy.com/au/listing/4382552922/personalised-burned-mixtape-cd-custom';
+const MASTER_TEMPLATE_URL = 'https://canva.link/45tyrzes3xetnnz';
+const CANVA_FALLBACK_ACTIVE = true;
 const AUSTRALIAN_STATES = ['ACT', 'NSW', 'NT', 'QLD', 'SA', 'TAS', 'VIC', 'WA'];
 const MAX_ARTWORK_BYTES = 20 * 1024 * 1024;
 
@@ -369,7 +371,7 @@ export default function Order() {
     }
 
     const selectedArtwork = String(formData.get('artworkOption') ?? '') as ArtworkOption;
-    if (selectedArtwork === 'full') {
+    if (selectedArtwork === 'full' && !CANVA_FALLBACK_ACTIVE) {
       const artworkErrors: FieldErrors = {};
       for (const spec of ARTWORK_SPECS) {
         if (!artworkFiles[spec.slot]) artworkErrors[`artwork-${spec.slot}`] = `Upload the ${spec.title.toLowerCase()} file.`;
@@ -383,7 +385,11 @@ export default function Order() {
 
     if (!idempotencyKey.current) idempotencyKey.current = crypto.randomUUID();
     setSubmitting(true);
-    setSubmitStage(selectedArtwork === 'full' ? 'PREPARING PRIVATE ARTWORK UPLOAD…' : 'SAVING YOUR DETAILS…');
+    setSubmitStage(selectedArtwork === 'full' && CANVA_FALLBACK_ACTIVE
+      ? 'SAVING YOUR CANVA DESIGN…'
+      : selectedArtwork === 'full'
+        ? 'PREPARING PRIVATE ARTWORK UPLOAD…'
+        : 'SAVING YOUR DETAILS…');
     setErrors({});
     setServerError('');
     const payload: Record<string, unknown> = {};
@@ -397,7 +403,7 @@ export default function Order() {
     payload.idempotencyKey = idempotencyKey.current;
 
     try {
-      if (selectedArtwork === 'full') {
+      if (selectedArtwork === 'full' && !CANVA_FALLBACK_ACTIVE) {
         const files = ARTWORK_SPECS.map((spec) => ({
           slot: spec.slot,
           name: artworkFiles[spec.slot]!.name,
@@ -456,7 +462,7 @@ export default function Order() {
       setSuccess({ reference: result.reference, emailDelivered: result.emailDelivered !== false });
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch {
-      setServerError(selectedArtwork === 'full'
+      setServerError(selectedArtwork === 'full' && !CANVA_FALLBACK_ACTIVE
         ? 'One of the artwork files could not be uploaded. Check your connection and try again.'
         : 'We could not reach the order service. Check your connection and try again.');
     } finally {
@@ -619,22 +625,39 @@ export default function Order() {
 
               {artworkOption === 'full' && (
                 <div className="order-artwork-package">
-                  <div className="order-callout"><strong>UPLOAD ALL THREE PRINT-READY FILES</strong>PNG, JPG or PDF only. Maximum 20 MB each. Images are checked for the correct shape and minimum 300 DPI pixel size before upload.</div>
-                  <div className="order-artwork-uploads">
-                    {ARTWORK_SPECS.map((spec) => (
-                      <ArtworkUploadCard
-                        key={spec.slot}
-                        spec={spec}
-                        file={artworkFiles[spec.slot]}
-                        error={errors[`artwork-${spec.slot}`]}
-                        onFile={(file) => void chooseArtworkFile(spec.slot, file)}
-                      />
-                    ))}
-                  </div>
+                  {CANVA_FALLBACK_ACTIVE ? (
+                    <div className="order-canva-workflow">
+                      <div className="order-callout order-callout--canva"><strong>USE OUR CANVA TEMPLATE</strong>Artwork file uploads are temporarily unavailable. Create the front, back and disc artwork in our correctly sized Canva template, then paste your finished design link below.</div>
+                      <a className="order-canva-button" href={MASTER_TEMPLATE_URL} target="_blank" rel="noreferrer">OPEN OUR CANVA TEMPLATE <span aria-hidden="true">↗</span></a>
+                      <ol className="order-canva-steps">
+                        <li>Open the template and choose <strong>Use template for new design</strong>.</li>
+                        <li>Complete the front cover, back cover and disc pages.</li>
+                        <li>In Canva, choose <strong>Share</strong>, allow anyone with the link to view, then copy the design link.</li>
+                      </ol>
+                      <label htmlFor="artworkLink">FINISHED CANVA DESIGN LINK <RequiredMark /></label>
+                      <input id="artworkLink" name="artworkLink" type="url" placeholder="https://www.canva.com/design/…" required aria-invalid={Boolean(errors.artworkLink)} />
+                      <FieldError name="artworkLink" errors={errors} />
+                    </div>
+                  ) : (
+                    <>
+                      <div className="order-callout"><strong>UPLOAD ALL THREE PRINT-READY FILES</strong>PNG, JPG or PDF only. Maximum 20 MB each. Images are checked for the correct shape and minimum 300 DPI pixel size before upload.</div>
+                      <div className="order-artwork-uploads">
+                        {ARTWORK_SPECS.map((spec) => (
+                          <ArtworkUploadCard
+                            key={spec.slot}
+                            spec={spec}
+                            file={artworkFiles[spec.slot]}
+                            error={errors[`artwork-${spec.slot}`]}
+                            onFile={(file) => void chooseArtworkFile(spec.slot, file)}
+                          />
+                        ))}
+                      </div>
+                    </>
+                  )}
                   <div className="order-artwork-confirmation order-artwork-confirmation--print">
                     <strong>FINAL PRINT APPROVAL</strong>
-                    <p>We print the files exactly as supplied. Check spelling, cropping, positioning, colour and image quality before approving.</p>
-                    <Choice type="checkbox" name="artworkPrintConfirmed" required errors={errors}>I confirm these front, back and disc files are final, correctly positioned, and approved for printing exactly as uploaded. <RequiredMark /></Choice>
+                    <p>We print the Canva design exactly as supplied. Check spelling, cropping, positioning, colour and image quality before approving.</p>
+                    <Choice type="checkbox" name="artworkPrintConfirmed" required errors={errors}>I confirm the front, back and disc pages in my Canva link are final and approved for printing exactly as supplied. <RequiredMark /></Choice>
                     <FieldError name="artworkPrintConfirmed" errors={errors} />
                   </div>
                 </div>

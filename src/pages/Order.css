@@ -235,6 +235,25 @@
 .order-product-choice small { display: block; margin-top: 10px; color: rgb(22 21 15 / 70%); font-size: 13px; line-height: 1.45; }
 
 .order-artwork-package { margin-top: 24px; }
+.order-canva-workflow { display: grid; gap: 14px; }
+.order-callout--canva { border-color: var(--order-verm); background: rgb(232 69 28 / 8%); }
+.order-canva-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 58px;
+  padding: 0 20px;
+  background: #7d2ae8;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-decoration: none;
+}
+.order-canva-button:hover { background: #6420bd; }
+.order-canva-button span { font-size: 22px; }
+.order-canva-steps { margin: 0; padding: 16px 20px 16px 42px; border: 1px solid rgb(22 21 15 / 18%); background: #fff; color: rgb(22 21 15 / 76%); font-size: 13px; line-height: 1.55; }
+.order-canva-steps li + li { margin-top: 7px; }
 .order-artwork-uploads { display: grid; gap: 14px; margin-top: 18px; }
 .order-artwork-upload {
   display: grid;
