@@ -192,15 +192,15 @@ function Intro() {
       <OrderTopbar />
       <div className="order-hero__title">
         <h1>Build your<br />custom CD<span>.</span></h1>
-        <p>Save your music, artwork and delivery choices here first. We’ll give you a reference to use when you return to Etsy and pay.</p>
+        <p>Complete this form before paying. We’ll give you an SOL reference that must be entered in Etsy so your payment can be matched to your CD details.</p>
       </div>
       <div className="order-before">
         <div className="order-kicker"><i />BEFORE YOU PAY ON ETSY</div>
         <div className="order-steps">
           {[
             ['01', 'Complete this form.', 'Tell us exactly how your CD should be made.'],
-            ['02', 'Copy your SOL reference.', 'It connects these details to your Etsy purchase.'],
-            ['03', 'Return to Etsy and pay.', 'Your CD does not enter production until payment is matched.'],
+            ['02', 'Copy your SOL reference.', 'Enter this number—not your playlist link—in Etsy’s SOL order reference box.'],
+            ['03', 'Return to Etsy and pay.', 'Without the correct SOL reference, your order cannot enter production.'],
           ].map(([number, title, copy]) => (
             <div className="order-step" key={number}>
               <span>{number}</span><h2>{title}</h2><p>{copy}</p>
@@ -228,8 +228,11 @@ function Success({ reference, emailDelivered }: { reference: string; emailDelive
         <h1 id="order-success-title" ref={titleRef}>Your SOL reference<span>.</span></h1>
         <div className="order-reference" aria-label={`Order reference ${reference}`}>{reference}</div>
         <button className="order-copy" type="button" onClick={copyReference}>{copied ? 'COPIED' : 'COPY REFERENCE'}</button>
-        <p>Place <strong>{reference}</strong> in the Etsy personalisation box or note to seller, then complete payment.</p>
-        <p>Your CD does not enter production until we match this reference to a paid Etsy order.</p>
+        <div className="order-reference-warning" role="alert">
+          <strong>THIS NUMBER MUST GO IN ETSY</strong>
+          <p>Place <strong>{reference}</strong> in Etsy’s <em>SOL order reference</em> box. Do not paste your playlist or music link into that box.</p>
+          <p>Without this exact reference, we cannot match your payment to these details and your CD will not enter production.</p>
+        </div>
         {!emailDelivered && <p className="order-email-warning">Your details are saved, but the confirmation email may be delayed. Please copy your reference now.</p>}
         <a className="order-etsy" href={ETSY_ORDER_URL}>RETURN TO ETSY AND PAY</a>
       </div>
@@ -397,7 +400,7 @@ export default function Order() {
       if (typeof value === 'string') payload[key] = value;
     }
     payload.streetAddress = streetAddress;
-    for (const checkbox of ['spotifyPublic', 'spotifyOrderConfirmed', 'driveFilesNumbered', 'under79Minutes', 'rightsConfirmed', 'artworkPrintConfirmed', 'plainCdConfirmed', 'shippingConfirmed', 'marketingConsent']) {
+    for (const checkbox of ['spotifyPublic', 'spotifyOrderConfirmed', 'driveFilesNumbered', 'under79Minutes', 'rightsConfirmed', 'artworkPrintConfirmed', 'plainCdConfirmed', 'shippingConfirmed', 'etsyReferenceConfirmed', 'marketingConsent']) {
       payload[checkbox] = formData.has(checkbox);
     }
     payload.idempotencyKey = idempotencyKey.current;
@@ -671,6 +674,13 @@ export default function Order() {
               <div className="order-shipping"><strong>CHOOSE THE RIGHT SPEED AT ETSY CHECKOUT</strong><p>Economy shipping is the default method designed to save you money. It can take up to 14 business days, so please do not choose Economy if you need the item quickly.</p><p>We strongly recommend Tracked Standard or Express Shipping. If your Economy parcel has not arrived after 14 business days, we will replace it at no charge.</p></div>
               <Choice type="checkbox" name="shippingConfirmed" required errors={errors}>I have read and understand the shipping information. Express Post is available at checkout for urgent gifts. <RequiredMark /></Choice>
               <FieldError name="shippingConfirmed" errors={errors} />
+              <div className="order-limit-warning order-reference-rule" role="alert" aria-label="Required Etsy order reference">
+                <strong>REQUIRED AFTER YOU SUBMIT THIS FORM</strong>
+                <h3>Enter your SOL order number in Etsy—not your playlist link.</h3>
+                <p>After saving this form, copy the <strong>SOL-######</strong> reference we give you. Paste that number into Etsy’s <em>SOL order reference</em> box when you pay. If the reference is missing or replaced with a music link, we cannot match your payment and your order will not enter production; you may not receive your CD until this is corrected.</p>
+              </div>
+              <Choice type="checkbox" name="etsyReferenceConfirmed" required errors={errors}>I understand that I must enter the SOL-###### number from this form into Etsy’s SOL order reference box. I will not enter my playlist link in that box. <RequiredMark /></Choice>
+              <FieldError name="etsyReferenceConfirmed" errors={errors} />
               <Choice type="checkbox" name="marketingConsent" errors={errors}>Yes, email me one follow-up offer from Spice of Life Media after I submit this form. I can unsubscribe at any time.</Choice>
               <p className="order-privacy">Optional. Your choice does not affect this order.</p>
               {serverError && <div className="order-server-error" role="alert">{serverError}</div>}
