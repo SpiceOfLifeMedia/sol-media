@@ -9,6 +9,8 @@ import {
 import './Order.css';
 
 const ETSY_ORDER_URL = 'https://www.etsy.com/au/listing/4382552922/personalised-burned-mixtape-cd-custom';
+const MASTER_TEMPLATE_URL = 'https://canva.link/45tyrzes3xetnnz';
+const CANVA_FALLBACK_ACTIVE = true;
 const AUSTRALIAN_STATES = ['ACT', 'NSW', 'NT', 'QLD', 'SA', 'TAS', 'VIC', 'WA'];
 const MAX_ARTWORK_BYTES = 20 * 1024 * 1024;
 
@@ -190,15 +192,15 @@ function Intro() {
       <OrderTopbar />
       <div className="order-hero__title">
         <h1>Build your<br />custom CD<span>.</span></h1>
-        <p>Save your music, artwork and delivery choices here first. We’ll give you a reference to use when you return to Etsy and pay.</p>
+        <p>Complete this form before paying. We’ll give you an SOL reference that must be entered in Etsy so your payment can be matched to your CD details.</p>
       </div>
       <div className="order-before">
         <div className="order-kicker"><i />BEFORE YOU PAY ON ETSY</div>
         <div className="order-steps">
           {[
             ['01', 'Complete this form.', 'Tell us exactly how your CD should be made.'],
-            ['02', 'Copy your SOL reference.', 'It connects these details to your Etsy purchase.'],
-            ['03', 'Return to Etsy and pay.', 'Your CD does not enter production until payment is matched.'],
+            ['02', 'Copy your SOL reference.', 'Enter this number—not your playlist link—in Etsy’s SOL order reference box.'],
+            ['03', 'Return to Etsy and pay.', 'Without the correct SOL reference, your order cannot enter production.'],
           ].map(([number, title, copy]) => (
             <div className="order-step" key={number}>
               <span>{number}</span><h2>{title}</h2><p>{copy}</p>
@@ -226,8 +228,11 @@ function Success({ reference, emailDelivered }: { reference: string; emailDelive
         <h1 id="order-success-title" ref={titleRef}>Your SOL reference<span>.</span></h1>
         <div className="order-reference" aria-label={`Order reference ${reference}`}>{reference}</div>
         <button className="order-copy" type="button" onClick={copyReference}>{copied ? 'COPIED' : 'COPY REFERENCE'}</button>
-        <p>Place <strong>{reference}</strong> in the Etsy personalisation box or note to seller, then complete payment.</p>
-        <p>Your CD does not enter production until we match this reference to a paid Etsy order.</p>
+        <div className="order-reference-warning" role="alert">
+          <strong>THIS NUMBER MUST GO IN ETSY</strong>
+          <p>Place <strong>{reference}</strong> in Etsy’s <em>SOL order reference</em> box. Do not paste your playlist or music link into that box.</p>
+          <p>Without this exact reference, we cannot match your payment to these details and your CD will not enter production.</p>
+        </div>
         {!emailDelivered && <p className="order-email-warning">Your details are saved, but the confirmation email may be delayed. Please copy your reference now.</p>}
         <a className="order-etsy" href={ETSY_ORDER_URL}>RETURN TO ETSY AND PAY</a>
       </div>
@@ -369,7 +374,7 @@ export default function Order() {
     }
 
     const selectedArtwork = String(formData.get('artworkOption') ?? '') as ArtworkOption;
-    if (selectedArtwork === 'full') {
+    if (selectedArtwork === 'full' && !CANVA_FALLBACK_ACTIVE) {
       const artworkErrors: FieldErrors = {};
       for (const spec of ARTWORK_SPECS) {
         if (!artworkFiles[spec.slot]) artworkErrors[`artwork-${spec.slot}`] = `Upload the ${spec.title.toLowerCase()} file.`;
@@ -383,7 +388,11 @@ export default function Order() {
 
     if (!idempotencyKey.current) idempotencyKey.current = crypto.randomUUID();
     setSubmitting(true);
-    setSubmitStage(selectedArtwork === 'full' ? 'PREPARING PRIVATE ARTWORK UPLOAD…' : 'SAVING YOUR DETAILS…');
+    setSubmitStage(selectedArtwork === 'full' && CANVA_FALLBACK_ACTIVE
+      ? 'SAVING YOUR CANVA DESIGN…'
+      : selectedArtwork === 'full'
+        ? 'PREPARING PRIVATE ARTWORK UPLOAD…'
+        : 'SAVING YOUR DETAILS…');
     setErrors({});
     setServerError('');
     const payload: Record<string, unknown> = {};
@@ -391,13 +400,13 @@ export default function Order() {
       if (typeof value === 'string') payload[key] = value;
     }
     payload.streetAddress = streetAddress;
-    for (const checkbox of ['spotifyPublic', 'spotifyOrderConfirmed', 'driveFilesNumbered', 'under79Minutes', 'rightsConfirmed', 'artworkPrintConfirmed', 'plainCdConfirmed', 'shippingConfirmed', 'marketingConsent']) {
+    for (const checkbox of ['spotifyPublic', 'spotifyOrderConfirmed', 'driveFilesNumbered', 'under79Minutes', 'rightsConfirmed', 'artworkPrintConfirmed', 'plainCdConfirmed', 'shippingConfirmed', 'etsyReferenceConfirmed', 'marketingConsent']) {
       payload[checkbox] = formData.has(checkbox);
     }
     payload.idempotencyKey = idempotencyKey.current;
 
     try {
-      if (selectedArtwork === 'full') {
+      if (selectedArtwork === 'full' && !CANVA_FALLBACK_ACTIVE) {
         const files = ARTWORK_SPECS.map((spec) => ({
           slot: spec.slot,
           name: artworkFiles[spec.slot]!.name,
@@ -456,7 +465,7 @@ export default function Order() {
       setSuccess({ reference: result.reference, emailDelivered: result.emailDelivered !== false });
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch {
-      setServerError(selectedArtwork === 'full'
+      setServerError(selectedArtwork === 'full' && !CANVA_FALLBACK_ACTIVE
         ? 'One of the artwork files could not be uploaded. Check your connection and try again.'
         : 'We could not reach the order service. Check your connection and try again.');
     } finally {
@@ -619,22 +628,39 @@ export default function Order() {
 
               {artworkOption === 'full' && (
                 <div className="order-artwork-package">
-                  <div className="order-callout"><strong>UPLOAD ALL THREE PRINT-READY FILES</strong>PNG, JPG or PDF only. Maximum 20 MB each. Images are checked for the correct shape and minimum 300 DPI pixel size before upload.</div>
-                  <div className="order-artwork-uploads">
-                    {ARTWORK_SPECS.map((spec) => (
-                      <ArtworkUploadCard
-                        key={spec.slot}
-                        spec={spec}
-                        file={artworkFiles[spec.slot]}
-                        error={errors[`artwork-${spec.slot}`]}
-                        onFile={(file) => void chooseArtworkFile(spec.slot, file)}
-                      />
-                    ))}
-                  </div>
+                  {CANVA_FALLBACK_ACTIVE ? (
+                    <div className="order-canva-workflow">
+                      <div className="order-callout order-callout--canva"><strong>USE OUR CANVA TEMPLATE</strong>Artwork file uploads are temporarily unavailable. Create the front, back and disc artwork in our correctly sized Canva template, then paste your finished design link below.</div>
+                      <a className="order-canva-button" href={MASTER_TEMPLATE_URL} target="_blank" rel="noreferrer">OPEN OUR CANVA TEMPLATE <span aria-hidden="true">↗</span></a>
+                      <ol className="order-canva-steps">
+                        <li>Open the template and choose <strong>Use template for new design</strong>.</li>
+                        <li>Complete the front cover, back cover and disc pages.</li>
+                        <li>In Canva, choose <strong>Share</strong>, allow anyone with the link to view, then copy the design link.</li>
+                      </ol>
+                      <label htmlFor="artworkLink">FINISHED CANVA DESIGN LINK <RequiredMark /></label>
+                      <input id="artworkLink" name="artworkLink" type="url" placeholder="https://www.canva.com/design/…" required aria-invalid={Boolean(errors.artworkLink)} />
+                      <FieldError name="artworkLink" errors={errors} />
+                    </div>
+                  ) : (
+                    <>
+                      <div className="order-callout"><strong>UPLOAD ALL THREE PRINT-READY FILES</strong>PNG, JPG or PDF only. Maximum 20 MB each. Images are checked for the correct shape and minimum 300 DPI pixel size before upload.</div>
+                      <div className="order-artwork-uploads">
+                        {ARTWORK_SPECS.map((spec) => (
+                          <ArtworkUploadCard
+                            key={spec.slot}
+                            spec={spec}
+                            file={artworkFiles[spec.slot]}
+                            error={errors[`artwork-${spec.slot}`]}
+                            onFile={(file) => void chooseArtworkFile(spec.slot, file)}
+                          />
+                        ))}
+                      </div>
+                    </>
+                  )}
                   <div className="order-artwork-confirmation order-artwork-confirmation--print">
                     <strong>FINAL PRINT APPROVAL</strong>
-                    <p>We print the files exactly as supplied. Check spelling, cropping, positioning, colour and image quality before approving.</p>
-                    <Choice type="checkbox" name="artworkPrintConfirmed" required errors={errors}>I confirm these front, back and disc files are final, correctly positioned, and approved for printing exactly as uploaded. <RequiredMark /></Choice>
+                    <p>We print the Canva design exactly as supplied. Check spelling, cropping, positioning, colour and image quality before approving.</p>
+                    <Choice type="checkbox" name="artworkPrintConfirmed" required errors={errors}>I confirm the front, back and disc pages in my Canva link are final and approved for printing exactly as supplied. <RequiredMark /></Choice>
                     <FieldError name="artworkPrintConfirmed" errors={errors} />
                   </div>
                 </div>
@@ -648,6 +674,13 @@ export default function Order() {
               <div className="order-shipping"><strong>CHOOSE THE RIGHT SPEED AT ETSY CHECKOUT</strong><p>Economy shipping is the default method designed to save you money. It can take up to 14 business days, so please do not choose Economy if you need the item quickly.</p><p>We strongly recommend Tracked Standard or Express Shipping. If your Economy parcel has not arrived after 14 business days, we will replace it at no charge.</p></div>
               <Choice type="checkbox" name="shippingConfirmed" required errors={errors}>I have read and understand the shipping information. Express Post is available at checkout for urgent gifts. <RequiredMark /></Choice>
               <FieldError name="shippingConfirmed" errors={errors} />
+              <div className="order-limit-warning order-reference-rule" role="alert" aria-label="Required Etsy order reference">
+                <strong>REQUIRED AFTER YOU SUBMIT THIS FORM</strong>
+                <h3>Enter your SOL order number in Etsy—not your playlist link.</h3>
+                <p>After saving this form, copy the <strong>SOL-######</strong> reference we give you. Paste that number into Etsy’s <em>SOL order reference</em> box when you pay. If the reference is missing or replaced with a music link, we cannot match your payment and your order will not enter production; you may not receive your CD until this is corrected.</p>
+              </div>
+              <Choice type="checkbox" name="etsyReferenceConfirmed" required errors={errors}>I understand that I must enter the SOL-###### number from this form into Etsy’s SOL order reference box. I will not enter my playlist link in that box. <RequiredMark /></Choice>
+              <FieldError name="etsyReferenceConfirmed" errors={errors} />
               <Choice type="checkbox" name="marketingConsent" errors={errors}>Yes, email me one follow-up offer from Spice of Life Media after I submit this form. I can unsubscribe at any time.</Choice>
               <p className="order-privacy">Optional. Your choice does not affect this order.</p>
               {serverError && <div className="order-server-error" role="alert">{serverError}</div>}
