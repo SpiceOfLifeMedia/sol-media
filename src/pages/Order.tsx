@@ -9,7 +9,7 @@ import {
 import './Order.css';
 
 const ETSY_ORDER_URL = 'https://www.etsy.com/au/listing/4382552922/personalised-burned-mixtape-cd-custom';
-const MASTER_TEMPLATE_URL = 'https://www.canva.com/design/DAHCUOooVnA/pb6oNxBkkWEllsadLbruyg/view?utm_content=DAHCUOooVnA&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink&mode=preview';
+const MASTER_TEMPLATE_URL = 'https://canva.link/45tyrzes3xetnnz';
 const CANVA_FALLBACK_ACTIVE = true;
 const AUSTRALIAN_STATES = ['ACT', 'NSW', 'NT', 'QLD', 'SA', 'TAS', 'VIC', 'WA'];
 const MAX_ARTWORK_BYTES = 20 * 1024 * 1024;
