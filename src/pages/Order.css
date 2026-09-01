@@ -176,6 +176,8 @@
 .order-limit-warning strong { display: block; color: #fff; font-size: 11px; letter-spacing: .2em; }
 .order-limit-warning h3 { margin: 8px 0 0; color: #fff; font-size: 22px; line-height: 1.15; font-weight: 800; }
 .order-limit-warning p { margin: 10px 0 0; color: rgb(255 255 255 / 92%); font-size: 14px; line-height: 1.55; }
+.order-reference-rule { margin-top: 34px; background: #7b110b; }
+.order-reference-rule p strong { color: #fff; }
 .order-grid { display: grid; gap: 20px; margin-top: 22px; }
 .order-grid label { margin-top: 0; }
 .order-grid--city { grid-template-columns: minmax(0, 1fr) 200px; }
@@ -235,6 +237,25 @@
 .order-product-choice small { display: block; margin-top: 10px; color: rgb(22 21 15 / 70%); font-size: 13px; line-height: 1.45; }
 
 .order-artwork-package { margin-top: 24px; }
+.order-canva-workflow { display: grid; gap: 14px; }
+.order-callout--canva { border-color: var(--order-verm); background: rgb(232 69 28 / 8%); }
+.order-canva-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 58px;
+  padding: 0 20px;
+  background: #7d2ae8;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-decoration: none;
+}
+.order-canva-button:hover { background: #6420bd; }
+.order-canva-button span { font-size: 22px; }
+.order-canva-steps { margin: 0; padding: 16px 20px 16px 42px; border: 1px solid rgb(22 21 15 / 18%); background: #fff; color: rgb(22 21 15 / 76%); font-size: 13px; line-height: 1.55; }
+.order-canva-steps li + li { margin-top: 7px; }
 .order-artwork-uploads { display: grid; gap: 14px; margin-top: 18px; }
 .order-artwork-upload {
   display: grid;
@@ -330,6 +351,9 @@
 .order-reference { margin: 38px 0 0; padding: 30px 20px; border: 2px solid var(--order-ink); background: #fff; color: var(--order-ink); font-size: clamp(32px, 6vw, 58px); font-weight: 800; letter-spacing: .08em; }
 .order-copy { width: min(320px, 100%); min-height: 52px; margin: 14px auto 34px; font-size: 11.5px; }
 .order-success p { margin: 10px auto; max-width: 610px; color: rgb(22 21 15 / 75%); font-size: 16px; line-height: 1.6; }
+.order-reference-warning { max-width: 650px; margin: 0 auto; padding: 22px 24px; border: 3px solid #7b110b; background: #fff; text-align: left; }
+.order-reference-warning > strong { display: block; margin-bottom: 8px; color: #b42318; font-size: 12px; letter-spacing: .16em; }
+.order-reference-warning p { margin: 7px 0; color: var(--order-ink); font-size: 15px; }
 .order-success .order-email-warning { margin-top: 22px; padding: 14px; border-left: 3px solid var(--order-verm); background: #fff; color: var(--order-ink); text-align: left; }
 .order-etsy { width: min(440px, 100%); margin: 34px auto 0; }
 
