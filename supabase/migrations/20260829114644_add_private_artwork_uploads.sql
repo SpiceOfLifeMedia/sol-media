@@ -41,7 +41,7 @@ begin
 
   if jsonb_typeof(p_files) <> 'object'
      or not (p_files ?& array['front', 'back', 'disc'])
-     or jsonb_object_length(p_files) <> 3 then
+     or (select count(*) from jsonb_object_keys(p_files)) <> 3 then
     raise exception 'invalid_artwork_files';
   end if;
 
