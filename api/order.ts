@@ -188,7 +188,7 @@ function validate(raw: Record<string, unknown>): { data?: OrderData; errors?: Re
   if (data.artworkOption === 'full') {
     if (!data.artworkPrintConfirmed) errors.artworkPrintConfirmed = 'Approve the final artwork before submitting.';
     if (!data.artworkLink && Object.keys(data.artworkFiles).length === 0) {
-      errors.artworkLink = 'Paste your finished Canva design link.';
+      errors.artworkLink = 'Upload the front, back and disc artwork, or paste your finished Canva design link.';
     } else if (data.artworkLink && !validCanvaLink(data.artworkLink)) {
       errors.artworkLink = 'Paste a Canva design link beginning with https://www.canva.com/design/.';
     } else if (!data.artworkLink) {
