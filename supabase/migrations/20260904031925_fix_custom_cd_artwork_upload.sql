@@ -1,29 +1,3 @@
-insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-values (
-  'custom-cd-artwork',
-  'custom-cd-artwork',
-  false,
-  20971520,
-  array['image/png', 'image/jpeg', 'application/pdf']
-)
-on conflict (id) do update
-set public = false,
-    file_size_limit = excluded.file_size_limit,
-    allowed_mime_types = excluded.allowed_mime_types;
-
-create table if not exists private.custom_cd_artwork_uploads (
-  idempotency_key uuid primary key,
-  fingerprint text not null,
-  files jsonb not null,
-  created_at timestamptz not null default now(),
-  finalized_at timestamptz
-);
-
-alter table private.custom_cd_artwork_uploads enable row level security;
-
-revoke all on table private.custom_cd_artwork_uploads from public, anon, authenticated;
-grant select, insert, update on table private.custom_cd_artwork_uploads to service_role;
-
 create or replace function public.prepare_custom_cd_artwork_upload(
   p_idempotency_key uuid,
   p_fingerprint text,
@@ -77,20 +51,5 @@ begin
 end;
 $$;
 
-create or replace function public.finalize_custom_cd_artwork_upload(
-  p_idempotency_key uuid
-)
-returns void
-language sql
-security definer
-set search_path = pg_catalog, private
-as $$
-  update private.custom_cd_artwork_uploads
-  set finalized_at = coalesce(finalized_at, now())
-  where idempotency_key = p_idempotency_key;
-$$;
-
 revoke all on function public.prepare_custom_cd_artwork_upload(uuid, text, jsonb) from public, anon, authenticated;
-revoke all on function public.finalize_custom_cd_artwork_upload(uuid) from public, anon, authenticated;
 grant execute on function public.prepare_custom_cd_artwork_upload(uuid, text, jsonb) to service_role;
-grant execute on function public.finalize_custom_cd_artwork_upload(uuid) to service_role;
