@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "test": "node --test test/*.test.mjs",
     "dev": "vite",
     "build": "npm run build:client && npm run build:ssr && npm run prerender",
     "build:client": "vite build",

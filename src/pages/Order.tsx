@@ -10,7 +10,7 @@ import './Order.css';
 
 const ETSY_ORDER_URL = 'https://www.etsy.com/au/listing/4382552922/personalised-burned-mixtape-cd-custom';
 const MASTER_TEMPLATE_URL = 'https://canva.link/45tyrzes3xetnnz';
-const CANVA_FALLBACK_ACTIVE = true;
+const CANVA_FALLBACK_ACTIVE = false;
 const AUSTRALIAN_STATES = ['ACT', 'NSW', 'NT', 'QLD', 'SA', 'TAS', 'VIC', 'WA'];
 const MAX_ARTWORK_BYTES = 20 * 1024 * 1024;
 
@@ -245,6 +245,7 @@ export default function Order() {
   const [playlistMinutes, setPlaylistMinutes] = useState('');
   const [artworkOption, setArtworkOption] = useState<ArtworkOption>('');
   const [artworkFiles, setArtworkFiles] = useState<ArtworkFiles>({ front: null, back: null, disc: null });
+  const [artworkUploadFailed, setArtworkUploadFailed] = useState(false);
   const [deliveryAddress, setDeliveryAddress] = useState<DeliveryAddress>({
     streetAddress: '', city: '', region: '', postcode: '', country: 'Australia',
   });
@@ -262,6 +263,7 @@ export default function Order() {
   const isAustralia = deliveryAddress.country.trim().toLowerCase() === 'australia';
   const parsedPlaylistMinutes = Number(playlistMinutes);
   const playlistTooLong = playlistMinutes !== '' && Number.isFinite(parsedPlaylistMinutes) && parsedPlaylistMinutes >= 79;
+  const useCanvaFallback = CANVA_FALLBACK_ACTIVE || artworkUploadFailed;
 
   useEffect(() => {
     const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY?.trim();
@@ -374,7 +376,7 @@ export default function Order() {
     }
 
     const selectedArtwork = String(formData.get('artworkOption') ?? '') as ArtworkOption;
-    if (selectedArtwork === 'full' && !CANVA_FALLBACK_ACTIVE) {
+    if (selectedArtwork === 'full' && !useCanvaFallback) {
       const artworkErrors: FieldErrors = {};
       for (const spec of ARTWORK_SPECS) {
         if (!artworkFiles[spec.slot]) artworkErrors[`artwork-${spec.slot}`] = `Upload the ${spec.title.toLowerCase()} file.`;
@@ -388,7 +390,7 @@ export default function Order() {
 
     if (!idempotencyKey.current) idempotencyKey.current = crypto.randomUUID();
     setSubmitting(true);
-    setSubmitStage(selectedArtwork === 'full' && CANVA_FALLBACK_ACTIVE
+    setSubmitStage(selectedArtwork === 'full' && useCanvaFallback
       ? 'SAVING YOUR CANVA DESIGN…'
       : selectedArtwork === 'full'
         ? 'PREPARING PRIVATE ARTWORK UPLOAD…'
@@ -406,7 +408,7 @@ export default function Order() {
     payload.idempotencyKey = idempotencyKey.current;
 
     try {
-      if (selectedArtwork === 'full' && !CANVA_FALLBACK_ACTIVE) {
+      if (selectedArtwork === 'full' && !useCanvaFallback) {
         const files = ARTWORK_SPECS.map((spec) => ({
           slot: spec.slot,
           name: artworkFiles[spec.slot]!.name,
@@ -423,19 +425,26 @@ export default function Order() {
           uploads?: Array<{ slot: ArtworkSlot; path: string; signedUrl: string }>;
         };
         if (!prepareResponse.ok || prepared.uploads?.length !== 3) {
-          setServerError(prepared.error ?? 'We could not prepare your artwork uploads. Please try again.');
+          setArtworkUploadFailed(true);
+          setServerError('The secure upload could not be completed. Your details are still here—please use our Canva template below instead.');
           return;
         }
 
         setSubmitStage('UPLOADING FRONT, BACK AND DISC…');
-        await Promise.all(prepared.uploads.map(async (upload) => {
-          const file = artworkFiles[upload.slot]!;
-          const uploadBody = new FormData();
-          uploadBody.append('cacheControl', '3600');
-          uploadBody.append('', file);
-          const response = await fetch(upload.signedUrl, { method: 'PUT', headers: { 'x-upsert': 'true' }, body: uploadBody });
-          if (!response.ok) throw new Error(`upload_${upload.slot}`);
-        }));
+        try {
+          await Promise.all(prepared.uploads.map(async (upload) => {
+            const file = artworkFiles[upload.slot]!;
+            const uploadBody = new FormData();
+            uploadBody.append('cacheControl', '3600');
+            uploadBody.append('', file);
+            const response = await fetch(upload.signedUrl, { method: 'PUT', headers: { 'x-upsert': 'true' }, body: uploadBody });
+            if (!response.ok) throw new Error(`upload_${upload.slot}`);
+          }));
+        } catch {
+          setArtworkUploadFailed(true);
+          setServerError('One or more artwork files could not be uploaded. Your details are still here—please use our Canva template below instead.');
+          return;
+        }
 
         payload.artworkFiles = Object.fromEntries(prepared.uploads.map((upload) => {
           const file = artworkFiles[upload.slot]!;
@@ -465,9 +474,7 @@ export default function Order() {
       setSuccess({ reference: result.reference, emailDelivered: result.emailDelivered !== false });
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch {
-      setServerError(selectedArtwork === 'full' && !CANVA_FALLBACK_ACTIVE
-        ? 'One of the artwork files could not be uploaded. Check your connection and try again.'
-        : 'We could not reach the order service. Check your connection and try again.');
+      setServerError('We could not reach the order service. Your details remain on this page; check your connection and try again.');
     } finally {
       setSubmitting(false);
       setSubmitStage('');
@@ -628,9 +635,9 @@ export default function Order() {
 
               {artworkOption === 'full' && (
                 <div className="order-artwork-package">
-                  {CANVA_FALLBACK_ACTIVE ? (
+                  {useCanvaFallback ? (
                     <div className="order-canva-workflow">
-                      <div className="order-callout order-callout--canva"><strong>USE OUR CANVA TEMPLATE</strong>Artwork file uploads are temporarily unavailable. Create the front, back and disc artwork in our correctly sized Canva template, then paste your finished design link below.</div>
+                      <div className="order-callout order-callout--canva"><strong>USE OUR CANVA TEMPLATE</strong>{artworkUploadFailed ? 'The secure artwork upload did not complete. Your other form details are still here. Create the front, back and disc artwork in our correctly sized Canva template, then paste your finished design link below.' : 'Create the front, back and disc artwork in our correctly sized Canva template, then paste your finished design link below.'}</div>
                       <a className="order-canva-button" href={MASTER_TEMPLATE_URL} target="_blank" rel="noreferrer">OPEN OUR CANVA TEMPLATE <span aria-hidden="true">↗</span></a>
                       <ol className="order-canva-steps">
                         <li>Open the template and choose <strong>Use template for new design</strong>.</li>
@@ -659,8 +666,8 @@ export default function Order() {
                   )}
                   <div className="order-artwork-confirmation order-artwork-confirmation--print">
                     <strong>FINAL PRINT APPROVAL</strong>
-                    <p>We print the Canva design exactly as supplied. Check spelling, cropping, positioning, colour and image quality before approving.</p>
-                    <Choice type="checkbox" name="artworkPrintConfirmed" required errors={errors}>I confirm the front, back and disc pages in my Canva link are final and approved for printing exactly as supplied. <RequiredMark /></Choice>
+                    <p>We print the artwork exactly as supplied. Check every preview, spelling, cropping, positioning, colour and image quality before approving.</p>
+                    <Choice type="checkbox" name="artworkPrintConfirmed" required errors={errors}>I have checked the front, back and disc artwork and approve it for printing exactly as supplied. <RequiredMark /></Choice>
                     <FieldError name="artworkPrintConfirmed" errors={errors} />
                   </div>
                 </div>
