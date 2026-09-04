@@ -642,10 +642,11 @@ export default function Order() {
                       <ol className="order-canva-steps">
                         <li>Open the live Canva backup and follow the instructions shown there.</li>
                         <li>Complete the front cover, back cover and disc pages.</li>
-                        <li>In Canva, choose <strong>Share</strong>, allow anyone with the link to view, then copy the design link.</li>
+                        <li>In Canva, choose <strong>Share</strong>, allow anyone with the link to view, then copy the public view link.</li>
+                        <li><strong>Private /edit links are rejected.</strong> Test the copied link in a private browser window before submitting.</li>
                       </ol>
-                      <label htmlFor="artworkLink">FINISHED CANVA DESIGN LINK <RequiredMark /></label>
-                      <input id="artworkLink" name="artworkLink" type="url" placeholder="https://www.canva.com/design/…" required aria-invalid={Boolean(errors.artworkLink)} />
+                      <label htmlFor="artworkLink">PUBLIC CANVA VIEW LINK <RequiredMark /></label>
+                      <input id="artworkLink" name="artworkLink" type="url" pattern="https://(www\\.)?canva\\.com/design/.+/view.*" title="Paste a public Canva view link ending in /view. Private /edit links are not accepted." placeholder="https://www.canva.com/design/…/view" required aria-invalid={Boolean(errors.artworkLink)} />
                       <FieldError name="artworkLink" errors={errors} />
                     </div>
                   ) : (
