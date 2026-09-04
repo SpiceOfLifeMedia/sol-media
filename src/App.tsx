@@ -18,6 +18,7 @@ import Insights from '@/pages/Insights';
 import InsightArticle from '@/pages/InsightArticle';
 import Work from '@/pages/Work';
 import FullCircleCaseStudy from '@/pages/FullCircleCaseStudy';
+import HillierCaseStudy from '@/pages/HillierCaseStudy';
 import Order from '@/pages/Order';
 import LandingPageSprint from '@/pages/LandingPageSprint';
 import WebsiteSprintTerms from '@/pages/WebsiteSprintTerms';
@@ -84,6 +85,7 @@ function Router() {
       <Route path="/insights" component={Insights} />
       <Route path="/work" component={Work} />
       <Route path="/work/full-circle-hair-society" component={FullCircleCaseStudy} />
+      <Route path="/work/hillier-plumbing-excavation" component={HillierCaseStudy} />
       <Route path="/custom-cds" component={DirectCustomCdOrder} />
       <Route path="/custom-cd-order" component={EtsyCustomCdOrder} />
       <Route path="/order" component={LegacyOrderRedirect} />

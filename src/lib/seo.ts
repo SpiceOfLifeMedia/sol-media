@@ -115,7 +115,7 @@ export const SEO_ROUTES: Record<string, SeoConfig> = {
       'Australian brand and digital agency helping established businesses sharpen their identity, rebuild better websites, grow in search and create consistent content systems.',
     index: true,
     pageType: 'WebPage',
-    lastModified: '2026-08-09',
+    lastModified: '2026-09-05',
   },
   '/capabilities': {
     title: 'Brand, Web, SEO & Content Services | Spice of Life Media',
@@ -253,7 +253,7 @@ export const SEO_ROUTES: Record<string, SeoConfig> = {
       'Explore selected website rebuild, digital strategy, SEO and content work delivered by Spice of Life Media for Australian businesses.',
     index: true,
     pageType: 'CollectionPage',
-    lastModified: '2026-08-14',
+    lastModified: '2026-09-05',
   },
   '/work/full-circle-hair-society': {
     title: 'Full Circle Hair Society Website Rebuild | SOL Media',
@@ -269,6 +269,21 @@ export const SEO_ROUTES: Record<string, SeoConfig> = {
       height: 900,
     },
     lastModified: '2026-08-14',
+  },
+  '/work/hillier-plumbing-excavation': {
+    title: 'Hillier Plumbing Website Design Case Study | SOL Media',
+    description:
+      'See how Spice of Life Media positioned, designed and built a responsive lead-generation website for Hillier Plumbing & Excavation in South Australia.',
+    index: true,
+    pageType: 'WebPage',
+    socialImage: {
+      url: `${SITE_URL}/assets/work/hillier-website-desktop.webp`,
+      alt: 'Hillier Plumbing and Excavation website designed by Spice of Life Media',
+      type: 'image/webp',
+      width: 1512,
+      height: 900,
+    },
+    lastModified: '2026-09-05',
   },
   '/insights/when-should-an-established-business-rebrand': {
     title: 'When Should an Established Business Rebrand? | SOL Media',
@@ -488,7 +503,12 @@ export function structuredDataForPath(pathname: string) {
     webpage.breadcrumb = { '@id': `${canonical}#breadcrumb` };
   }
 
-  if (path === '/work/full-circle-hair-society') {
+  const workNames: Record<string, string> = {
+    '/work/full-circle-hair-society': 'Full Circle Hair Society',
+    '/work/hillier-plumbing-excavation': 'Hillier Plumbing & Excavation',
+  };
+
+  if (workNames[path]) {
     graph.push({
       '@type': 'BreadcrumbList',
       '@id': `${canonical}#breadcrumb`,
@@ -508,7 +528,7 @@ export function structuredDataForPath(pathname: string) {
         {
           '@type': 'ListItem',
           position: 3,
-          name: 'Full Circle Hair Society',
+          name: workNames[path],
           item: canonical,
         },
       ],
