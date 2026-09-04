@@ -84,7 +84,12 @@ function validCanvaLink(value: string): boolean {
   try {
     const url = new URL(value);
     const host = url.hostname.toLowerCase().replace(/^www\./, '');
-    return url.protocol === 'https:' && host === 'canva.com' && url.pathname.startsWith('/design/');
+    const parts = url.pathname.split('/').filter(Boolean);
+    return url.protocol === 'https:'
+      && host === 'canva.com'
+      && parts[0] === 'design'
+      && parts.length >= 4
+      && parts.at(-1) === 'view';
   } catch {
     return false;
   }
@@ -190,7 +195,7 @@ function validate(raw: Record<string, unknown>): { data?: OrderData; errors?: Re
     if (!data.artworkLink && Object.keys(data.artworkFiles).length === 0) {
       errors.artworkLink = 'Upload the front, back and disc artwork, or paste your finished Canva design link.';
     } else if (data.artworkLink && !validCanvaLink(data.artworkLink)) {
-      errors.artworkLink = 'Paste a Canva design link beginning with https://www.canva.com/design/.';
+      errors.artworkLink = 'Paste a public Canva view link ending in /view. Private /edit links are not accepted.';
     } else if (!data.artworkLink) {
       for (const slot of ARTWORK_SLOTS) {
         const file = data.artworkFiles[slot];
