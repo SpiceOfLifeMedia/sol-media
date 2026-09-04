@@ -213,7 +213,7 @@
 .order-choice__caps { color: var(--order-ink); font-size: 11.5px; font-weight: 800; letter-spacing: .12em; line-height: 1.4; }
 .order-error { display: block; margin-top: 7px; color: #9f1710; font-size: 12px; font-weight: 700; }
 
-.order-product-choice-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
+.order-product-choice-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
 .order-product-choice {
   position: relative;
   display: grid;
@@ -307,6 +307,16 @@
 .order-shipping { padding: 24px 26px; background: var(--order-ink); color: rgb(242 238 230 / 82%); font-size: 14.5px; line-height: 1.55; }
 .order-shipping strong { color: var(--order-verm); font-size: 10.5px; letter-spacing: .2em; }
 .order-shipping p { margin: 12px 0 0; }
+.order-shipping-options { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 12px; }
+.order-shipping-options .order-choice { margin-top: 0; }
+.order-checkout-option { display: grid; gap: 4px; }
+.order-checkout-option strong { color: var(--order-ink); font-size: 12px; letter-spacing: .12em; }
+.order-checkout-option small { color: rgb(22 21 15 / 65%); font-size: 13px; }
+.order-total { display: grid; gap: 7px; margin-top: 24px; padding: 24px 26px; border: 2px solid var(--order-ink); background: #fff; }
+.order-total > span { color: var(--order-verm); font-size: 11px; font-weight: 800; letter-spacing: .18em; }
+.order-total > strong { color: var(--order-ink); font-size: clamp(25px, 4vw, 38px); line-height: 1.05; }
+.order-total > small { color: rgb(22 21 15 / 62%); font-size: 12.5px; }
+.order-notice { margin: 0 0 22px; padding: 16px 18px; border-left: 4px solid var(--order-verm); background: #fff; color: var(--order-ink); font-size: 14px; font-weight: 700; line-height: 1.5; }
 .order-server-error { margin-top: 18px; padding: 14px 16px; border: 1px solid #9f1710; color: #7b110b; font-size: 14px; font-weight: 700; }
 .order-submit,
 .order-copy,
@@ -357,6 +367,29 @@
 .order-success .order-email-warning { margin-top: 22px; padding: 14px; border-left: 3px solid var(--order-verm); background: #fff; color: var(--order-ink); text-align: left; }
 .order-etsy { width: min(440px, 100%); margin: 34px auto 0; }
 
+.order-seo {
+  display: grid;
+  grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
+  gap: clamp(48px, 8vw, 120px);
+  padding: clamp(72px, 8vw, 120px) clamp(24px, 6.95vw, 100px);
+  background: var(--order-ink);
+  color: var(--order-paper);
+}
+.order-seo__intro > span { color: var(--order-verm); font-size: 11px; font-weight: 800; letter-spacing: .2em; }
+.order-seo__intro h2,
+.order-faq h2 { margin: 18px 0 0; color: var(--order-paper); font-size: clamp(38px, 5.2vw, 74px); line-height: .98; font-weight: 800; letter-spacing: -.035em; }
+.order-seo__intro p { max-width: 620px; margin: 28px 0 0; color: rgb(242 238 230 / 70%); font-size: 17px; line-height: 1.65; }
+.order-seo__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-content: start; gap: 30px; }
+.order-seo__grid article { padding-top: 18px; border-top: 1px solid rgb(242 238 230 / 30%); }
+.order-seo__grid article > span { color: var(--order-verm); font-size: 11px; font-weight: 800; letter-spacing: .16em; }
+.order-seo__grid h3 { margin: 11px 0 0; color: var(--order-paper); font-size: 22px; line-height: 1.15; }
+.order-seo__grid p { margin: 10px 0 0; color: rgb(242 238 230 / 65%); font-size: 14px; line-height: 1.55; }
+.order-faq { grid-column: 1 / -1; padding-top: 28px; border-top: 1px solid rgb(242 238 230 / 18%); }
+.order-faq h2 { font-size: clamp(34px, 4vw, 58px); }
+.order-faq details { border-bottom: 1px solid rgb(242 238 230 / 22%); }
+.order-faq summary { padding: 22px 34px 22px 0; color: var(--order-paper); font-size: 17px; font-weight: 750; cursor: pointer; }
+.order-faq details p { max-width: 900px; margin: -4px 0 24px; color: rgb(242 238 230 / 68%); font-size: 14px; line-height: 1.6; }
+
 @media (max-width: 767px) {
   .order-topbar { height: 68px; }
   .order-brand { gap: 12px; font-size: 9px; letter-spacing: .18em; }
@@ -387,6 +420,8 @@
   .order-footer > a:last-child { font-size: 9.5px; letter-spacing: .1em; }
   .order-success__inner { padding: 64px 0 76px; }
   .order-reference { padding: 24px 10px; font-size: clamp(29px, 9.5vw, 44px); }
+  .order-seo { grid-template-columns: 1fr; gap: 48px; }
+  .order-seo__grid { grid-template-columns: 1fr; }
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {

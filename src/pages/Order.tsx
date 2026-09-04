@@ -1,4 +1,5 @@
-import { FormEvent, ReactNode, useEffect, useRef, useState } from 'react';
+import { FormEvent, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { useSeo } from '../hooks/useSeo';
 import {
   addressFromPlace,
   DeliveryAddress,
@@ -6,6 +7,8 @@ import {
   loadPlacesLibrary,
   PlaceAutocompleteElementInstance,
 } from '../lib/googlePlaces';
+import { trackAnalyticsEvent } from '../lib/analytics';
+import { ANALYTICS_ENABLED_EVENT } from '../lib/privacyConsent';
 import './Order.css';
 
 const ETSY_ORDER_URL = 'https://www.etsy.com/au/listing/4382552922/personalised-burned-mixtape-cd-custom';
@@ -14,11 +17,44 @@ const CANVA_FALLBACK_ACTIVE = false;
 const AUSTRALIAN_STATES = ['ACT', 'NSW', 'NT', 'QLD', 'SA', 'TAS', 'VIC', 'WA'];
 const MAX_ARTWORK_BYTES = 20 * 1024 * 1024;
 
+const CD_OPTIONS = {
+  blank_sleeve: { label: 'Blank CD + Sleeve', description: 'Plain CD in a protective cardboard sleeve. No printed artwork.', cents: 1095 },
+  blank_jewel: { label: 'Blank CD + Jewel Case', description: 'Plain CD in a clear jewel case. No printed artwork.', cents: 1495 },
+  full: { label: 'Full Artwork Package', description: 'Jewel case, printed front and back covers, and full-colour disc.', cents: 2595 },
+  custom: { label: 'Custom Artwork Setup', description: 'SOL designs the printed CD package from your supplied brief and approved material.', cents: 4895 },
+} as const;
+
+const SHIPPING_OPTIONS = {
+  'au-economy': { label: 'Economy — untracked', description: 'Allow up to 14 business days.', cents: 680, destination: 'au' },
+  'au-standard': { label: 'Tracked Standard', description: 'Recommended for most gifts and orders.', cents: 1095, destination: 'au' },
+  'au-express': { label: 'Express Post', description: 'Best for urgent orders. Production time still applies.', cents: 1320, destination: 'au' },
+  'nz-standard': { label: 'New Zealand shipping', description: 'International delivery from Australia.', cents: 1895, destination: 'nz' },
+  'global-standard': { label: 'Worldwide shipping', description: 'International delivery from Australia.', cents: 3495, destination: 'global' },
+} as const;
+
 type MusicSource = '' | 'spotify' | 'google_drive' | 'dropbox';
-type ArtworkOption = '' | 'blank_sleeve' | 'blank_jewel' | 'full';
+type ArtworkOption = '' | keyof typeof CD_OPTIONS;
+type ShippingMethod = '' | keyof typeof SHIPPING_OPTIONS;
+type CheckoutMode = 'etsy' | 'site';
 type ArtworkSlot = 'front' | 'back' | 'disc';
 type ArtworkFiles = Record<ArtworkSlot, File | null>;
 type FieldErrors = Record<string, string>;
+type PaymentReturn = {
+  state: 'checking' | 'paid' | 'processing' | 'error';
+  reference?: string;
+  value?: number;
+} | null;
+
+function formatAud(cents: number): string {
+  return new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD' }).format(cents / 100);
+}
+
+function destinationFor(country: string): 'au' | 'nz' | 'global' {
+  const normalized = country.trim().toLowerCase();
+  if (normalized === 'australia') return 'au';
+  if (normalized === 'new zealand' || normalized === 'nz') return 'nz';
+  return 'global';
+}
 
 const ARTWORK_SPECS: Array<{
   slot: ArtworkSlot;
@@ -186,22 +222,33 @@ function OrderTopbar() {
   );
 }
 
-function Intro() {
+function Intro({ checkoutMode }: { checkoutMode: CheckoutMode }) {
+  const isDirect = checkoutMode === 'site';
+  const steps = isDirect
+    ? [
+        ['01', 'Choose your CD.', 'Pick the finish that suits your playlist, gift or project.'],
+        ['02', 'Send your music.', 'Use a public Spotify playlist or your own authorised audio files.'],
+        ['03', 'Pay securely.', 'Review the total and complete payment through Stripe.'],
+      ]
+    : [
+        ['01', 'Complete this form.', 'Tell us exactly how your CD should be made.'],
+        ['02', 'Copy your SOL reference.', 'Enter this number—not your playlist link—in Etsy’s SOL order reference box.'],
+        ['03', 'Return to Etsy and pay.', 'Without the correct SOL reference, your order cannot enter production.'],
+      ];
+
   return (
     <header className="order-hero">
       <OrderTopbar />
       <div className="order-hero__title">
-        <h1>Build your<br />custom CD<span>.</span></h1>
-        <p>Complete this form before paying. We’ll give you an SOL reference that must be entered in Etsy so your payment can be matched to your CD details.</p>
+        <h1>{isDirect ? <>Buy a custom<br />CD online<span>.</span></> : <>Build your<br />custom CD<span>.</span></>}</h1>
+        <p>{isDirect
+          ? 'Turn an authorised Spotify playlist or your own audio files into a real personalised CD, made in Australia and shipped worldwide.'
+          : 'Complete this form before paying. We’ll give you an SOL reference that must be entered in Etsy so your payment can be matched to your CD details.'}</p>
       </div>
       <div className="order-before">
-        <div className="order-kicker"><i />BEFORE YOU PAY ON ETSY</div>
+        <div className="order-kicker"><i />{isDirect ? 'YOUR PLAYLIST · ON A REAL CD' : 'BEFORE YOU PAY ON ETSY'}</div>
         <div className="order-steps">
-          {[
-            ['01', 'Complete this form.', 'Tell us exactly how your CD should be made.'],
-            ['02', 'Copy your SOL reference.', 'Enter this number—not your playlist link—in Etsy’s SOL order reference box.'],
-            ['03', 'Return to Etsy and pay.', 'Without the correct SOL reference, your order cannot enter production.'],
-          ].map(([number, title, copy]) => (
+          {steps.map(([number, title, copy]) => (
             <div className="order-step" key={number}>
               <span>{number}</span><h2>{title}</h2><p>{copy}</p>
             </div>
@@ -209,6 +256,57 @@ function Intro() {
         </div>
       </div>
     </header>
+  );
+}
+
+function SitePaymentReturn({ payment }: { payment: Exclude<PaymentReturn, null> }) {
+  const isPaid = payment.state === 'paid';
+  const isProcessing = payment.state === 'checking' || payment.state === 'processing';
+
+  return (
+    <main className="order-success" aria-labelledby="order-success-title">
+      <div className="order-success__inner">
+        <span className="order-success__eyebrow">{isPaid ? 'PAYMENT RECEIVED' : isProcessing ? 'CONFIRMING PAYMENT' : 'PAYMENT CHECK'}</span>
+        <h1 id="order-success-title">{isPaid ? 'Your CD is ordered' : isProcessing ? 'Nearly there' : 'We need to check this'}<span>.</span></h1>
+        {payment.reference && <div className="order-reference" aria-label={`Order reference ${payment.reference}`}>{payment.reference}</div>}
+        {isPaid ? (
+          <>
+            <p>Thank you. Your order is now in the Spice of Life Media production queue.</p>
+            <p>Keep the payment confirmation and SOL reference until your CD arrives.</p>
+          </>
+        ) : isProcessing ? (
+          <p>Stripe is still confirming the payment. Keep this page open for a moment and check your email for the final confirmation.</p>
+        ) : (
+          <p>We could not confirm the payment from this page. If Stripe charged your card, do not pay again—email us and we will match the payment to your SOL reference.</p>
+        )}
+        <a className="order-etsy" href="mailto:info@spiceoflifemedia.com.au">CONTACT SOL MEDIA</a>
+      </div>
+    </main>
+  );
+}
+
+function DirectSeoContent() {
+  return (
+    <section className="order-seo" aria-labelledby="custom-cd-guide-title">
+      <div className="order-seo__intro">
+        <span>PERSONALISED CDS · MADE IN AUSTRALIA</span>
+        <h2 id="custom-cd-guide-title">A custom mixtape you can actually hold.</h2>
+        <p>Choose a simple burned disc, a jewel case, a complete printed package or custom artwork support. Every CD is assembled, burned, tested and packed to order by Spice of Life Media.</p>
+      </div>
+      <div className="order-seo__grid">
+        <article><span>01</span><h3>Spotify playlist to CD</h3><p>Share a public playlist in the exact track order you want, within the 79-minute audio-CD limit.</p></article>
+        <article><span>02</span><h3>Your own audio files</h3><p>Send original, licensed, public-domain or otherwise authorised files through Google Drive or Dropbox.</p></article>
+        <article><span>03</span><h3>Four clear price options</h3><p>Start at AU$10.95 or choose printed packaging and custom artwork support. Shipping is calculated from your selection.</p></article>
+        <article><span>04</span><h3>Worldwide delivery</h3><p>Choose Australian Economy, Tracked Standard or Express delivery, plus New Zealand and worldwide shipping.</p></article>
+      </div>
+      <div className="order-faq">
+        <h2>Custom CD questions.</h2>
+        <details><summary>Can I order a personalised CD from a Spotify playlist?</summary><p>Yes. Send a public Spotify playlist with no more than 20 tracks and a total running time under 79 minutes. You must have permission to reproduce the supplied music.</p></details>
+        <details><summary>Can I send my own songs or audio files?</summary><p>Yes. Send authorised audio in a shared Google Drive or Dropbox folder and number every filename in the order it should play.</p></details>
+        <details><summary>What custom CD options are available?</summary><p>Choose a blank CD with cardboard sleeve, a blank CD with jewel case, a full printed artwork package, or a custom artwork setup created with Spice of Life Media.</p></details>
+        <details><summary>Do you ship custom CDs outside Australia?</summary><p>Yes. Custom CDs are made in South Australia and can be shipped within Australia, to New Zealand and worldwide.</p></details>
+      </div>
+    </section>
   );
 }
 
@@ -240,12 +338,15 @@ function Success({ reference, emailDelivered }: { reference: string; emailDelive
   );
 }
 
-export default function Order() {
+export default function Order({ checkoutMode = 'etsy' }: { checkoutMode?: CheckoutMode }) {
+  useSeo();
+
   const [musicSource, setMusicSource] = useState<MusicSource>('');
   const [playlistMinutes, setPlaylistMinutes] = useState('');
   const [artworkOption, setArtworkOption] = useState<ArtworkOption>('');
   const [artworkFiles, setArtworkFiles] = useState<ArtworkFiles>({ front: null, back: null, disc: null });
   const [artworkUploadFailed, setArtworkUploadFailed] = useState(false);
+  const [shippingMethod, setShippingMethod] = useState<ShippingMethod>('');
   const [deliveryAddress, setDeliveryAddress] = useState<DeliveryAddress>({
     streetAddress: '', city: '', region: '', postcode: '', country: 'Australia',
   });
@@ -254,16 +355,86 @@ export default function Order() {
   const [submitStage, setSubmitStage] = useState('');
   const [errors, setErrors] = useState<FieldErrors>({});
   const [serverError, setServerError] = useState('');
+  const [notice, setNotice] = useState('');
   const [success, setSuccess] = useState<{ reference: string; emailDelivered: boolean } | null>(null);
+  const [paymentReturn, setPaymentReturn] = useState<PaymentReturn>(null);
   const idempotencyKey = useRef('');
+  const formStarted = useRef(false);
+  const purchaseTracked = useRef(false);
   const autocompleteHost = useRef<HTMLDivElement>(null);
   const autocompleteElement = useRef<PlaceAutocompleteElementInstance | null>(null);
   const addressRef = useRef(deliveryAddress);
   addressRef.current = deliveryAddress;
   const isAustralia = deliveryAddress.country.trim().toLowerCase() === 'australia';
+  const destination = destinationFor(deliveryAddress.country);
+  const availableShipping = useMemo(
+    () => Object.entries(SHIPPING_OPTIONS).filter(([, option]) => option.destination === destination),
+    [destination],
+  );
+  const selectedProduct = artworkOption ? CD_OPTIONS[artworkOption] : null;
+  const selectedShipping = shippingMethod ? SHIPPING_OPTIONS[shippingMethod] : null;
+  const orderTotal = (selectedProduct?.cents ?? 0) + (checkoutMode === 'site' ? selectedShipping?.cents ?? 0 : 0);
   const parsedPlaylistMinutes = Number(playlistMinutes);
   const playlistTooLong = playlistMinutes !== '' && Number.isFinite(parsedPlaylistMinutes) && parsedPlaylistMinutes >= 79;
   const useCanvaFallback = CANVA_FALLBACK_ACTIVE || artworkUploadFailed;
+
+  useEffect(() => {
+    setShippingMethod('');
+  }, [destination]);
+
+  useEffect(() => {
+    if (checkoutMode !== 'site') return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('checkout') === 'cancelled') {
+      const reference = params.get('reference');
+      setNotice(`Checkout was cancelled${reference ? ` for ${reference}` : ''}. Your order has not been paid.`);
+    }
+
+    const sessionId = params.get('session_id');
+    if (params.get('checkout') === 'success' && sessionId) {
+      setPaymentReturn({ state: 'checking' });
+      fetch(`/api/checkout-status?session_id=${encodeURIComponent(sessionId)}`)
+        .then(async (response) => {
+          const result = await response.json() as { paid?: boolean; processing?: boolean; reference?: string; value?: number };
+          if (!response.ok) throw new Error('Payment status is unavailable.');
+          setPaymentReturn({
+            state: result.paid ? 'paid' : result.processing ? 'processing' : 'error',
+            reference: result.reference,
+            value: result.value,
+          });
+        })
+        .catch(() => setPaymentReturn({ state: 'error' }));
+    }
+  }, [checkoutMode]);
+
+  useEffect(() => {
+    if (checkoutMode !== 'site' || paymentReturn?.state !== 'paid' || !paymentReturn.reference) return;
+
+    const trackPurchase = () => {
+      if (purchaseTracked.current) return;
+      purchaseTracked.current = trackAnalyticsEvent('purchase', {
+        transaction_id: paymentReturn.reference!,
+        value: paymentReturn.value ?? 0,
+        currency: 'AUD',
+      });
+    };
+
+    trackPurchase();
+    window.addEventListener(ANALYTICS_ENABLED_EVENT, trackPurchase);
+    return () => window.removeEventListener(ANALYTICS_ENABLED_EVENT, trackPurchase);
+  }, [checkoutMode, paymentReturn]);
+
+  function handleFormStart(event: React.SyntheticEvent<HTMLFormElement>) {
+    if (
+      checkoutMode !== 'site'
+      || formStarted.current
+      || !(event.target instanceof HTMLElement)
+      || event.target.matches('[name="websiteConfirm"]')
+      || !event.target.matches('input:not([type="hidden"]), select, textarea, gmp-place-autocomplete')
+    ) return;
+
+    formStarted.current = trackAnalyticsEvent('form_start', { form_name: 'custom_cd_direct' });
+  }
 
   useEffect(() => {
     const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY?.trim();
@@ -376,6 +547,11 @@ export default function Order() {
     }
 
     const selectedArtwork = String(formData.get('artworkOption') ?? '') as ArtworkOption;
+    if (selectedArtwork === 'custom' && !String(formData.get('artworkBrief') ?? '').trim()) {
+      setErrors((current) => ({ ...current, artworkBrief: 'Tell us what you want the custom artwork to look and feel like.' }));
+      (form.elements.namedItem('artworkBrief') as HTMLTextAreaElement | null)?.focus();
+      return;
+    }
     if (selectedArtwork === 'full' && !useCanvaFallback) {
       const artworkErrors: FieldErrors = {};
       for (const spec of ARTWORK_SPECS) {
@@ -386,6 +562,11 @@ export default function Order() {
         document.getElementById('artwork-front')?.focus();
         return;
       }
+    }
+    if (checkoutMode === 'site' && !String(formData.get('shippingMethod') ?? '')) {
+      setErrors((current) => ({ ...current, shippingMethod: 'Choose a shipping option.' }));
+      document.querySelector<HTMLInputElement>('input[name="shippingMethod"]')?.focus();
+      return;
     }
 
     if (!idempotencyKey.current) idempotencyKey.current = crypto.randomUUID();
@@ -406,6 +587,7 @@ export default function Order() {
       payload[checkbox] = formData.has(checkbox);
     }
     payload.idempotencyKey = idempotencyKey.current;
+    payload.checkoutMethod = checkoutMode;
 
     try {
       if (selectedArtwork === 'full' && !useCanvaFallback) {
@@ -465,10 +647,21 @@ export default function Order() {
         fields?: FieldErrors;
         reference?: string;
         emailDelivered?: boolean;
+        checkoutUrl?: string;
       };
       if (!response.ok || !result.reference) {
         setErrors(result.fields ?? {});
         setServerError(result.error ?? 'We could not save your order. Please try again.');
+        return;
+      }
+      if (result.checkoutUrl) {
+        trackAnalyticsEvent('begin_checkout', {
+          form_name: 'custom_cd_direct',
+          value: orderTotal / 100,
+          currency: 'AUD',
+          product_name: selectedProduct?.label ?? 'Custom CD',
+        });
+        window.location.assign(result.checkoutUrl);
         return;
       }
       setSuccess({ reference: result.reference, emailDelivered: result.emailDelivered !== false });
@@ -481,14 +674,16 @@ export default function Order() {
     }
   }
 
+  if (paymentReturn) return <div className="order-page"><header className="order-hero"><OrderTopbar /></header><SitePaymentReturn payment={paymentReturn} /><OrderFooter /></div>;
   if (success) return <div className="order-page"><header className="order-hero"><OrderTopbar /></header><Success {...success} /><OrderFooter /></div>;
 
   return (
     <div className="order-page">
-      <Intro />
+      <Intro checkoutMode={checkoutMode} />
       <main className="order-form-wrap">
         <p className="order-required-note"><RequiredMark /> indicates a required answer.</p>
-        <form onSubmit={submitOrder} noValidate={false}>
+        {notice && <div className="order-notice" role="status">{notice}</div>}
+        <form onSubmit={submitOrder} onFocusCapture={handleFormStart} noValidate={false}>
           <div className="order-honeypot" aria-hidden="true">
             <label htmlFor="websiteConfirm">Website</label>
             <input id="websiteConfirm" name="websiteConfirm" tabIndex={-1} autoComplete="off" />
@@ -588,9 +783,9 @@ export default function Order() {
               <div className="order-limit-warning" role="note" aria-label="79-minute hard limit">
                 <strong>79-MINUTE HARD LIMIT</strong>
                 <h3>Over 79 minutes means the order is automatically rejected.</h3>
-                <p>Your Spotify playlist or uploaded song files must total less than 79 minutes. Audio over this limit cannot fit on the CD, and the Etsy order will be cancelled and refunded.</p>
+                <p>Your Spotify playlist or uploaded song files must total less than 79 minutes. Audio over this limit cannot fit on the CD, and the order will be cancelled and refunded.</p>
               </div>
-              <Choice type="checkbox" name="under79Minutes" required errors={errors}>I have checked the total running time and confirm that my music is under 79 minutes. I understand that an order over 79 minutes will be automatically rejected and refunded. <RequiredMark /></Choice>
+              <Choice type="checkbox" name="under79Minutes" required errors={errors}>I have checked the total running time and confirm that my music is under 79 minutes. I understand that an order over 79 minutes will be rejected and refunded. <RequiredMark /></Choice>
               <FieldError name="under79Minutes" errors={errors} />
               <Choice type="checkbox" name="rightsConfirmed" required errors={errors}>I confirm that any audio and artwork I supply is original, licensed, public domain, or otherwise authorised for reproduction. <RequiredMark /></Choice>
               <FieldError name="rightsConfirmed" errors={errors} />
@@ -619,6 +814,11 @@ export default function Order() {
                     <input type="radio" name="artworkOption" value="full" required />
                     <span className="order-product-choice__icon" aria-hidden="true">●</span>
                     <span><strong>FULL ARTWORK PACKAGE</strong><small>AU$25.95 · Jewel case, printed front and back covers, and full-colour disc.</small></span>
+                  </label>
+                  <label className={`order-product-choice ${errors.artworkOption ? 'order-product-choice--error' : ''}`}>
+                    <input type="radio" name="artworkOption" value="custom" required />
+                    <span className="order-product-choice__icon" aria-hidden="true">✦</span>
+                    <span><strong>CUSTOM ARTWORK SETUP</strong><small>AU$48.95 · SOL creates the printed package from your brief and approved material.</small></span>
                   </label>
                 </div>
                 <FieldError name="artworkOption" errors={errors} />
@@ -673,32 +873,68 @@ export default function Order() {
                   </div>
                 </div>
               )}
+
+              {artworkOption === 'custom' && (
+                <div className="order-artwork-package">
+                  <div className="order-callout"><strong>CUSTOM ARTWORK BY SOL</strong>Describe the direction, colours, occasion and any wording you want included. We will contact you if we need approved images or more detail before production.</div>
+                  <label htmlFor="artworkBrief">CUSTOM ARTWORK BRIEF <RequiredMark /></label>
+                  <textarea id="artworkBrief" name="artworkBrief" rows={6} maxLength={1200} placeholder="Example: a bright Y2K birthday mix in pink and silver, with the title ‘Mia’s 21st’…" required aria-invalid={Boolean(errors.artworkBrief)} />
+                  <FieldError name="artworkBrief" errors={errors} />
+                </div>
+              )}
             </div>
           </section>
 
           <section className="order-section order-section--last" aria-labelledby="shipping-title">
             <div className="order-section__heading"><span>04</span><h2 id="shipping-title">Shipping</h2></div>
             <div className="order-fields">
-              <div className="order-shipping"><strong>CHOOSE THE RIGHT SPEED AT ETSY CHECKOUT</strong><p>Economy shipping is the default method designed to save you money. It can take up to 14 business days, so please do not choose Economy if you need the item quickly.</p><p>We strongly recommend Tracked Standard or Express Shipping. If your Economy parcel has not arrived after 14 business days, we will replace it at no charge.</p></div>
-              <Choice type="checkbox" name="shippingConfirmed" required errors={errors}>I have read and understand the shipping information. Express Post is available at checkout for urgent gifts. <RequiredMark /></Choice>
+              {checkoutMode === 'site' ? (
+                <fieldset onChange={(event) => {
+                  if (event.target instanceof HTMLInputElement) setShippingMethod(event.target.value as ShippingMethod);
+                }}>
+                  <legend>CHOOSE YOUR DELIVERY METHOD <RequiredMark /></legend>
+                  <div className="order-shipping-options">
+                    {availableShipping.map(([value, option]) => (
+                      <Choice key={value} name="shippingMethod" value={value} required errors={errors}>
+                        <span className="order-checkout-option"><strong>{option.label.toUpperCase()}</strong><small>{formatAud(option.cents)} · {option.description}</small></span>
+                      </Choice>
+                    ))}
+                  </div>
+                  <FieldError name="shippingMethod" errors={errors} />
+                </fieldset>
+              ) : (
+                <div className="order-shipping"><strong>CHOOSE THE RIGHT SPEED AT ETSY CHECKOUT</strong><p>Economy shipping is the default method designed to save you money. It can take up to 14 business days, so please do not choose Economy if you need the item quickly.</p><p>We strongly recommend Tracked Standard or Express Shipping. If your Economy parcel has not arrived after 14 business days, we will replace it at no charge.</p></div>
+              )}
+              <Choice type="checkbox" name="shippingConfirmed" required errors={errors}>I have read and understand the shipping information. {checkoutMode === 'etsy' && 'Express Post is available at checkout for urgent gifts. '}<RequiredMark /></Choice>
               <FieldError name="shippingConfirmed" errors={errors} />
-              <div className="order-limit-warning order-reference-rule" role="alert" aria-label="Required Etsy order reference">
-                <strong>REQUIRED AFTER YOU SUBMIT THIS FORM</strong>
-                <h3>Enter your SOL order number in Etsy—not your playlist link.</h3>
-                <p>After saving this form, copy the <strong>SOL-######</strong> reference we give you. Paste that number into Etsy’s <em>SOL order reference</em> box when you pay. If the reference is missing or replaced with a music link, we cannot match your payment and your order will not enter production; you may not receive your CD until this is corrected.</p>
-              </div>
-              <Choice type="checkbox" name="etsyReferenceConfirmed" required errors={errors}>I understand that I must enter the SOL-###### number from this form into Etsy’s SOL order reference box. I will not enter my playlist link in that box. <RequiredMark /></Choice>
-              <FieldError name="etsyReferenceConfirmed" errors={errors} />
+              {checkoutMode === 'etsy' ? (
+                <>
+                  <div className="order-limit-warning order-reference-rule" role="alert" aria-label="Required Etsy order reference">
+                    <strong>REQUIRED AFTER YOU SUBMIT THIS FORM</strong>
+                    <h3>Enter your SOL order number in Etsy—not your playlist link.</h3>
+                    <p>After saving this form, copy the <strong>SOL-######</strong> reference we give you. Paste that number into Etsy’s <em>SOL order reference</em> box when you pay. If the reference is missing or replaced with a music link, we cannot match your payment and your order will not enter production; you may not receive your CD until this is corrected.</p>
+                  </div>
+                  <Choice type="checkbox" name="etsyReferenceConfirmed" required errors={errors}>I understand that I must enter the SOL-###### number from this form into Etsy’s SOL order reference box. I will not enter my playlist link in that box. <RequiredMark /></Choice>
+                  <FieldError name="etsyReferenceConfirmed" errors={errors} />
+                </>
+              ) : (
+                <div className="order-total" aria-live="polite">
+                  <span>ORDER TOTAL</span>
+                  <strong>{orderTotal > 0 ? formatAud(orderTotal) : 'Choose your CD and shipping'}</strong>
+                  <small>Australian dollars. Secure payment is processed by Stripe.</small>
+                </div>
+              )}
               <Choice type="checkbox" name="marketingConsent" errors={errors}>Yes, email me one follow-up offer from Spice of Life Media after I submit this form. I can unsubscribe at any time.</Choice>
               <p className="order-privacy">Optional. Your choice does not affect this order.</p>
               {serverError && <div className="order-server-error" role="alert">{serverError}</div>}
-              <button className="order-submit" type="submit" disabled={submitting}>{submitting ? submitStage : 'SAVE DETAILS AND GET REFERENCE'}</button>
+              <button className="order-submit" type="submit" disabled={submitting}>{submitting ? submitStage : checkoutMode === 'site' ? 'CONTINUE TO SECURE CHECKOUT' : 'SAVE DETAILS AND GET REFERENCE'}</button>
               {/* TODO(order-launch): add a privacy-policy link only after the owner confirms its public URL. */}
               <p className="order-privacy">Your order details are used to prepare and deliver your CD. We only send the optional follow-up offer if you tick the box above.</p>
             </div>
           </section>
         </form>
       </main>
+      {checkoutMode === 'site' && <DirectSeoContent />}
       <OrderFooter />
     </div>
   );

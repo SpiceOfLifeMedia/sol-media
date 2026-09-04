@@ -1,5 +1,7 @@
 /** Vercel Edge Function — /api/order */
 
+import Stripe from 'stripe';
+
 export const config = { runtime: 'edge' };
 
 const OWNER_EMAIL = 'info@spiceoflifemedia.com.au';
@@ -11,9 +13,24 @@ const AUSTRALIAN_STATES = new Set(['ACT', 'NSW', 'NT', 'QLD', 'SA', 'TAS', 'VIC'
 const ARTWORK_BUCKET = 'custom-cd-artwork';
 const ARTWORK_SLOTS = ['front', 'back', 'disc'] as const;
 const MAX_ARTWORK_BYTES = 20 * 1024 * 1024;
+const CD_OPTIONS = {
+  blank_sleeve: { label: 'Blank CD + Sleeve', cents: 1095 },
+  blank_jewel: { label: 'Blank CD + Jewel Case', cents: 1495 },
+  full: { label: 'Full Artwork Package', cents: 2595 },
+  custom: { label: 'Custom Artwork Setup', cents: 4895 },
+} as const;
+const SHIPPING_OPTIONS = {
+  'au-economy': { label: 'Economy shipping — untracked', cents: 680, destination: 'au' },
+  'au-standard': { label: 'Tracked Standard shipping', cents: 1095, destination: 'au' },
+  'au-express': { label: 'Express Post', cents: 1320, destination: 'au' },
+  'nz-standard': { label: 'New Zealand shipping', cents: 1895, destination: 'nz' },
+  'global-standard': { label: 'Worldwide shipping', cents: 3495, destination: 'global' },
+} as const;
 
 type ArtworkSlot = typeof ARTWORK_SLOTS[number];
 type ArtworkFile = { path: string; name: string; type: string; size: number };
+type ArtworkOption = keyof typeof CD_OPTIONS;
+type ShippingMethod = keyof typeof SHIPPING_OPTIONS;
 
 type OrderData = {
   fullName: string;
@@ -34,19 +51,28 @@ type OrderData = {
   driveFilesNumbered: boolean;
   under79Minutes: boolean;
   rightsConfirmed: boolean;
-  artworkOption: 'blank_sleeve' | 'blank_jewel' | 'full';
+  artworkOption: ArtworkOption;
   artworkLink: string;
+  artworkBrief: string;
   artworkFiles: Partial<Record<ArtworkSlot, ArtworkFile>>;
   artworkPrintConfirmed: boolean;
   plainCdConfirmed: boolean;
   shippingConfirmed: boolean;
+  shippingMethod: ShippingMethod | '';
+  checkoutMethod: 'etsy' | 'site';
   marketingConsent: boolean;
   idempotencyKey: string;
 };
 
-type RpcOrder = { reference: string; created: boolean };
+type RpcOrder = {
+  reference: string;
+  created: boolean;
+  payment_channel: 'etsy' | 'site';
+  stripe_checkout_session_id: string | null;
+};
 type RpcPromo = { promo_code: string | null };
 type ResendResult = { ok: boolean; id?: string };
+type PricedOrder = { amountTotal: number; lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] };
 
 const jsonHeaders = { 'Content-Type': 'application/json; charset=utf-8' };
 
@@ -65,6 +91,13 @@ function booleanValue(value: unknown): boolean {
 function numberValue(value: unknown): number {
   const parsed = typeof value === 'number' ? value : Number(typeof value === 'string' ? value.trim() : NaN);
   return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function destinationFor(country: string): 'au' | 'nz' | 'global' {
+  const normalized = country.trim().toLowerCase();
+  if (normalized === 'australia') return 'au';
+  if (normalized === 'new zealand' || normalized === 'nz') return 'nz';
+  return 'global';
 }
 
 function validMusicLink(source: OrderData['musicSource'], value: string): boolean {
@@ -135,14 +168,17 @@ function validate(raw: Record<string, unknown>): { data?: OrderData; errors?: Re
     driveFilesNumbered: booleanValue(raw.driveFilesNumbered),
     under79Minutes: booleanValue(raw.under79Minutes),
     rightsConfirmed: booleanValue(raw.rightsConfirmed),
-    artworkOption: raw.artworkOption === 'blank_sleeve' || raw.artworkOption === 'blank_jewel' || raw.artworkOption === 'full'
+    artworkOption: raw.artworkOption === 'blank_sleeve' || raw.artworkOption === 'blank_jewel' || raw.artworkOption === 'full' || raw.artworkOption === 'custom'
       ? raw.artworkOption
       : 'blank_sleeve',
     artworkLink: stringValue(raw.artworkLink, 1200),
+    artworkBrief: stringValue(raw.artworkBrief, 1200),
     artworkFiles: artworkFilesValue(raw.artworkFiles),
     artworkPrintConfirmed: booleanValue(raw.artworkPrintConfirmed),
     plainCdConfirmed: booleanValue(raw.plainCdConfirmed),
     shippingConfirmed: booleanValue(raw.shippingConfirmed),
+    shippingMethod: stringValue(raw.shippingMethod, 40) as ShippingMethod | '',
+    checkoutMethod: raw.checkoutMethod === 'site' ? 'site' : 'etsy',
     marketingConsent: booleanValue(raw.marketingConsent),
     idempotencyKey: stringValue(raw.idempotencyKey, 36),
   };
@@ -182,8 +218,8 @@ function validate(raw: Record<string, unknown>): { data?: OrderData; errors?: Re
   } else if (data.playlistDurationMinutes >= 79) {
     errors.playlistDurationMinutes = `This music runs for ${data.playlistDurationMinutes} minutes. Shorten it to less than 79 minutes before ordering.`;
   }
-  if (raw.artworkOption !== 'blank_sleeve' && raw.artworkOption !== 'blank_jewel' && raw.artworkOption !== 'full') {
-    errors.artworkOption = 'Choose Blank CD + Sleeve, Blank CD + Jewel Case, or Full Artwork Package.';
+  if (raw.artworkOption !== 'blank_sleeve' && raw.artworkOption !== 'blank_jewel' && raw.artworkOption !== 'full' && raw.artworkOption !== 'custom') {
+    errors.artworkOption = 'Choose one of the four custom CD options.';
   }
   if (data.artworkOption === 'blank_sleeve' || data.artworkOption === 'blank_jewel') {
     if (!data.plainCdConfirmed) errors.plainCdConfirmed = 'Confirm that this is a blank CD with no printed artwork.';
@@ -211,6 +247,9 @@ function validate(raw: Record<string, unknown>): { data?: OrderData; errors?: Re
       }
     }
   }
+  if (data.artworkOption === 'custom' && !data.artworkBrief) {
+    errors.artworkBrief = 'Tell us what you want the custom artwork to look and feel like.';
+  }
   if (data.country.toLowerCase() === 'australia' && !AUSTRALIAN_STATES.has(data.region)) {
     errors.region = 'Choose an Australian state or territory.';
   }
@@ -228,6 +267,16 @@ function validate(raw: Record<string, unknown>): { data?: OrderData; errors?: Re
   }
   if (!data.rightsConfirmed) errors.rightsConfirmed = 'Confirm that you may reproduce the supplied files.';
   if (!data.shippingConfirmed) errors.shippingConfirmed = 'Confirm that you understand the shipping information.';
+  if (data.checkoutMethod === 'site') {
+    if (!Object.hasOwn(SHIPPING_OPTIONS, data.shippingMethod)) {
+      errors.shippingMethod = 'Choose a shipping option.';
+    } else if (SHIPPING_OPTIONS[data.shippingMethod as ShippingMethod].destination !== destinationFor(data.country)) {
+      errors.shippingMethod = 'Choose a shipping option that matches the delivery country.';
+    }
+  }
+  if (raw.checkoutMethod !== 'etsy' && raw.checkoutMethod !== 'site') {
+    errors.checkoutMethod = 'Choose a valid checkout method.';
+  }
   if (!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(data.idempotencyKey)) {
     errors.idempotencyKey = 'Refresh the page and try again.';
   }
@@ -241,6 +290,31 @@ function escapeHtml(value: string): string {
   })[character] ?? character);
 }
 
+function formatAud(cents: number): string {
+  return new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD' }).format(cents / 100);
+}
+
+function priceOrder(data: OrderData): PricedOrder {
+  const product = CD_OPTIONS[data.artworkOption];
+  const shipping = data.shippingMethod ? SHIPPING_OPTIONS[data.shippingMethod] : null;
+  const pricedItems = [
+    { label: product.label, description: `Custom audio CD — ${data.cdTitle}`, cents: product.cents },
+    ...(shipping ? [{ label: shipping.label, description: `Delivery to ${data.country}`, cents: shipping.cents }] : []),
+  ];
+
+  return {
+    amountTotal: pricedItems.reduce((total, item) => total + item.cents, 0),
+    lineItems: pricedItems.map((item) => ({
+      quantity: 1,
+      price_data: {
+        currency: 'aud',
+        unit_amount: item.cents,
+        product_data: { name: item.label, description: item.description.slice(0, 500) },
+      },
+    })),
+  };
+}
+
 function musicSourceLabel(source: OrderData['musicSource']): string {
   if (source === 'spotify') return 'Spotify playlist';
   if (source === 'google_drive') return 'Google Drive folder';
@@ -252,15 +326,19 @@ function orderRows(data: OrderData): string {
     ? 'Blank CD + cardboard sleeve — no printed artwork'
     : data.artworkOption === 'blank_jewel'
       ? 'Blank CD + jewel case — no printed artwork'
-      : data.artworkLink
-        ? `Full Artwork Package — Canva design: ${data.artworkLink}`
-        : `Full Artwork Package — ${ARTWORK_SLOTS.map((slot) => data.artworkFiles[slot]?.name).filter(Boolean).join(', ')}`;
+      : data.artworkOption === 'custom'
+        ? `Custom Artwork Setup — ${data.artworkBrief}`
+        : data.artworkLink
+          ? `Full Artwork Package — Canva design: ${data.artworkLink}`
+          : `Full Artwork Package — ${ARTWORK_SLOTS.map((slot) => data.artworkFiles[slot]?.name).filter(Boolean).join(', ')}`;
   const rows: Array<[string, string]> = [
     ['Name', data.fullName], ['Email', data.email], ['Phone', data.phone],
     ['Address', [data.streetAddress, data.addressExtra, data.city, data.region, data.postcode, data.country].filter(Boolean).join(', ')],
     ['CD title', data.cdTitle],
+    ['CD option', `${CD_OPTIONS[data.artworkOption].label} — ${formatAud(CD_OPTIONS[data.artworkOption].cents)}`],
     ['Music source', musicSourceLabel(data.musicSource)],
     ['Music link', data.musicLink], ['Music length', `${data.playlistDurationMinutes} minutes`], ['Artwork', artworkSummary],
+    ...(data.shippingMethod ? [['Shipping', `${SHIPPING_OPTIONS[data.shippingMethod].label} — ${formatAud(SHIPPING_OPTIONS[data.shippingMethod].cents)}`] as [string, string]] : []),
   ];
   return rows.map(([label, value]) => `<tr><td style="padding:9px 0;border-bottom:1px solid #ded9cf;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#716c61;vertical-align:top">${escapeHtml(label)}</td><td style="padding:9px 0 9px 20px;border-bottom:1px solid #ded9cf;font-size:14px;color:#16150f;word-break:break-word">${escapeHtml(value)}</td></tr>`).join('');
 }
@@ -269,7 +347,7 @@ function ownerEmail(data: OrderData, reference: string) {
   return {
     subject: `${reference} — Custom CD order from ${data.fullName}`,
     html: `<!doctype html><html><body style="margin:0;background:#f2eee6;font-family:Arial,sans-serif;color:#16150f"><div style="max-width:680px;margin:0 auto;padding:32px"><div style="background:#16150f;padding:28px 32px;color:#f2eee6"><div style="font-size:11px;font-weight:700;letter-spacing:.16em;color:#e8451c">CUSTOM CD ORDER</div><h1 style="margin:8px 0 0;font-size:32px">${reference}</h1><p style="margin:8px 0 0;color:#d8d3ca">Awaiting Etsy payment match</p></div><div style="background:#fff;padding:28px 32px"><table style="width:100%;border-collapse:collapse">${orderRows(data)}</table></div></div></body></html>`,
-    text: [`CUSTOM CD ORDER — ${reference}`, 'Status: Awaiting Etsy payment match', '', `Name: ${data.fullName}`, `Email: ${data.email}`, `Phone: ${data.phone}`, `Address: ${[data.streetAddress, data.addressExtra, data.city, data.region, data.postcode, data.country].filter(Boolean).join(', ')}`, `CD title: ${data.cdTitle}`, `Music source: ${data.musicSource}`, `Music link: ${data.musicLink}`, `Music length: ${data.playlistDurationMinutes} minutes`, `Artwork: ${data.artworkOption === 'blank_sleeve' ? 'Blank CD + cardboard sleeve — no printed artwork' : data.artworkOption === 'blank_jewel' ? 'Blank CD + jewel case — no printed artwork' : data.artworkLink ? `Full Artwork Package — Canva design: ${data.artworkLink}` : 'Full Artwork Package — front, back and disc uploaded'}`].join('\n'),
+    text: [`CUSTOM CD ORDER — ${reference}`, 'Status: Awaiting Etsy payment match', '', `Name: ${data.fullName}`, `Email: ${data.email}`, `Phone: ${data.phone}`, `Address: ${[data.streetAddress, data.addressExtra, data.city, data.region, data.postcode, data.country].filter(Boolean).join(', ')}`, `CD title: ${data.cdTitle}`, `Music source: ${data.musicSource}`, `Music link: ${data.musicLink}`, `Music length: ${data.playlistDurationMinutes} minutes`, `Artwork: ${data.artworkOption === 'blank_sleeve' ? 'Blank CD + cardboard sleeve — no printed artwork' : data.artworkOption === 'blank_jewel' ? 'Blank CD + jewel case — no printed artwork' : data.artworkOption === 'custom' ? `Custom Artwork Setup — ${data.artworkBrief}` : data.artworkLink ? `Full Artwork Package — Canva design: ${data.artworkLink}` : 'Full Artwork Package — front, back and disc uploaded'}`].join('\n'),
   };
 }
 
@@ -348,6 +426,27 @@ async function sendEmail(apiKey: string, payload: Record<string, unknown>, idemp
   return { ok: true, id: result.id };
 }
 
+async function findOrCreateStripeCustomer(stripe: Stripe, data: OrderData): Promise<Stripe.Customer> {
+  const existing = await stripe.customers.list({ email: data.email, limit: 1 });
+  const customer = existing.data.find((item) => !item.deleted);
+  if (customer) return customer;
+
+  return stripe.customers.create({
+    email: data.email,
+    name: data.fullName,
+    phone: data.phone,
+    address: {
+      line1: data.streetAddress,
+      line2: data.addressExtra || undefined,
+      city: data.city,
+      state: data.region,
+      postal_code: data.postcode,
+      country: destinationFor(data.country) === 'au' ? 'AU' : destinationFor(data.country) === 'nz' ? 'NZ' : undefined,
+    },
+    metadata: { source: 'sol-custom-cds' },
+  }, { idempotencyKey: `sol-customer-${data.idempotencyKey}` });
+}
+
 export default async function handler(req: Request): Promise<Response> {
   if (req.method !== 'POST') return json({ error: 'Method not allowed.' }, 405);
 
@@ -383,10 +482,12 @@ export default async function handler(req: Request): Promise<Response> {
     }
   }
 
+  const priced = priceOrder(data);
+  const storedPayload = { ...data, amountTotal: priced.amountTotal };
   let rpcOrder: RpcOrder;
   try {
     const result = await supabaseRpc<RpcOrder[]>(supabaseUrl, supabaseSecret, 'create_custom_cd_order', {
-      p_payload: data,
+      p_payload: storedPayload,
       p_fingerprint: await fingerprint(req, rateLimitSalt),
       p_idempotency_key: data.idempotencyKey,
     });
@@ -408,6 +509,59 @@ export default async function handler(req: Request): Promise<Response> {
       });
     } catch {
       console.error('[order] Artwork upload finalization failed');
+    }
+  }
+
+  if (rpcOrder.payment_channel !== data.checkoutMethod) {
+    return json({ error: 'This saved order already uses a different checkout method. Refresh the page and try again.' }, 409);
+  }
+
+  if (data.checkoutMethod === 'site') {
+    const stripeSecret = (process.env['STRIPE_SECRET_KEY'] ?? '').trim();
+    if (!stripeSecret) {
+      console.error('[order] Stripe configuration is missing');
+      return json({ error: 'Secure website checkout is not configured yet.' }, 503);
+    }
+
+    try {
+      const stripe = new Stripe(stripeSecret, { httpClient: Stripe.createFetchHttpClient() });
+      if (rpcOrder.stripe_checkout_session_id) {
+        const existingSession = await stripe.checkout.sessions.retrieve(rpcOrder.stripe_checkout_session_id);
+        if (existingSession.url) {
+          return json({ ok: true, reference: rpcOrder.reference, checkoutUrl: existingSession.url });
+        }
+      }
+
+      const customer = await findOrCreateStripeCustomer(stripe, data);
+      const origin = new URL(req.url).origin;
+      const session = await stripe.checkout.sessions.create({
+        mode: 'payment',
+        customer: customer.id,
+        line_items: priced.lineItems,
+        allow_promotion_codes: true,
+        client_reference_id: rpcOrder.reference,
+        metadata: {
+          sol_reference: rpcOrder.reference,
+          order_type: 'custom_cd',
+          marketing_consent: data.marketingConsent ? 'yes' : 'no',
+        },
+        payment_intent_data: { metadata: { sol_reference: rpcOrder.reference, order_type: 'custom_cd' } },
+        success_url: `${origin}/custom-cds?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${origin}/custom-cds?checkout=cancelled&reference=${encodeURIComponent(rpcOrder.reference)}`,
+      }, { idempotencyKey: `sol-checkout-${rpcOrder.reference}` });
+
+      if (!session.url) throw new Error('missing_checkout_url');
+      await supabaseRpc<unknown>(supabaseUrl, supabaseSecret, 'attach_custom_cd_checkout', {
+        p_reference: rpcOrder.reference,
+        p_checkout_session_id: session.id,
+        p_customer_id: customer.id,
+        p_amount_total: priced.amountTotal,
+      });
+
+      return json({ ok: true, reference: rpcOrder.reference, checkoutUrl: session.url });
+    } catch {
+      console.error('[order] Stripe Checkout creation failed');
+      return json({ error: 'We saved your order but could not open secure checkout. Please try again.' }, 502);
     }
   }
 

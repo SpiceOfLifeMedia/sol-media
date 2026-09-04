@@ -89,6 +89,25 @@ export const LANDING_PAGE_SPRINT_FAQS = [
   },
 ];
 
+export const CUSTOM_CD_FAQS = [
+  {
+    question: 'Can I order a personalised CD from a Spotify playlist?',
+    answer: 'Yes. Send a public Spotify playlist with no more than 20 tracks and a total running time under 79 minutes. You must have permission to reproduce the supplied music.',
+  },
+  {
+    question: 'Can I send my own songs or audio files?',
+    answer: 'Yes. You can provide original, licensed, public-domain or otherwise authorised audio in a shared Google Drive or Dropbox folder. Number every filename in the order it should play.',
+  },
+  {
+    question: 'What custom CD options are available?',
+    answer: 'Choose a blank CD with cardboard sleeve, a blank CD with jewel case, a full printed artwork package, or a custom artwork setup created with Spice of Life Media.',
+  },
+  {
+    question: 'Do you ship custom CDs outside Australia?',
+    answer: 'Yes. Custom CDs are made in South Australia and can be shipped within Australia, to New Zealand and worldwide.',
+  },
+];
+
 export const SEO_ROUTES: Record<string, SeoConfig> = {
   '/': {
     title: 'Australian Brand, Web & SEO Agency | Spice of Life Media',
@@ -164,6 +183,15 @@ export const SEO_ROUTES: Record<string, SeoConfig> = {
     follow: false,
     pageType: 'WebPage',
     lastModified: '2026-08-12',
+  },
+  '/custom-cds': {
+    title: 'Buy Custom CDs Online Australia | Spice of Life Media',
+    description:
+      'Order a personalised custom CD online from your authorised Spotify playlist or audio files. Four options from AU$10.95, with secure checkout and worldwide shipping.',
+    index: true,
+    pageType: 'WebPage',
+    faq: CUSTOM_CD_FAQS,
+    lastModified: '2026-09-04',
   },
   '/services/digital-presence-audit': {
     title: 'Digital Presence Audit Australia | Spice of Life Media',
@@ -357,6 +385,48 @@ export function structuredDataForPath(pathname: string) {
     },
     webpage,
   ];
+
+  if (path === '/custom-cds') {
+    const productId = `${canonical}#product`;
+    webpage.mainEntity = { '@id': productId };
+    graph.push({
+      '@type': 'Product',
+      '@id': productId,
+      name: 'Personalised Custom CD',
+      description: seo.description,
+      url: canonical,
+      brand: { '@id': organizationId },
+      category: 'Custom audio CDs',
+      offers: {
+        '@type': 'AggregateOffer',
+        priceCurrency: 'AUD',
+        lowPrice: '10.95',
+        highPrice: '48.95',
+        offerCount: 4,
+        availability: 'https://schema.org/InStock',
+        url: canonical,
+      },
+    });
+    graph.push({
+      '@type': 'BreadcrumbList',
+      '@id': `${canonical}#breadcrumb`,
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Home',
+          item: `${SITE_URL}/`,
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: 'Custom CDs',
+          item: canonical,
+        },
+      ],
+    });
+    webpage.breadcrumb = { '@id': `${canonical}#breadcrumb` };
+  }
 
   if (path.startsWith('/services/')) {
     const itemListElement: Record<string, unknown>[] = [

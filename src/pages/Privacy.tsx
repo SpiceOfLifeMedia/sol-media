@@ -53,6 +53,13 @@ export default function Privacy() {
                 (if supplied).
               </p>
               <p className="mt-4">
+                When you submit a custom CD order, we collect the contact,
+                delivery, music-link, artwork, product and shipping information
+                required to prepare the order. We also store the SOL reference,
+                checkout channel and payment status. Uploaded artwork is stored
+                privately for order production.
+              </p>
+              <p className="mt-4">
                 We also save one minimal, versioned choice in essential browser
                 storage so the site can remember whether you selected essential
                 storage only or allowed analytics. This normally uses local
@@ -80,6 +87,13 @@ export default function Privacy() {
                 We use enquiry information to review your request, respond to
                 you, discuss possible work and manage any business relationship
                 that follows.
+              </p>
+              <p className="mt-4">
+                We use custom CD order information to validate, price, produce,
+                deliver and support the order. If you choose website checkout,
+                Stripe processes the payment and returns the payment status to
+                us. Spice of Life Media does not receive or store your full card
+                number.
               </p>
               <p className="mt-4">
                 We use Google Analytics 4 through Google Tag Manager on a
@@ -114,8 +128,10 @@ export default function Privacy() {
                 Service providers and overseas processing
               </h2>
               <p>
-                Vercel hosts this website and its contact-form endpoint. Resend
-                delivers project enquiries by email to Spice of Life Media. The
+                Vercel hosts this website and its form endpoints. Supabase
+                stores custom CD order records and private artwork files. Resend
+                delivers project enquiries and order messages by email. Stripe
+                processes payments made through the custom CD website checkout. The
                 site also loads its Archivo typeface from Google Fonts, so your
                 browser connects to Google’s font service when rendering the
                 site. When you allow analytics, Google processes related usage,
@@ -127,7 +143,8 @@ export default function Privacy() {
                 Australia, depending on where their services and infrastructure
                 operate. We only share information with service providers where
                 it is needed to host and render the website, deliver an enquiry
-                or provide analytics you have allowed.
+                or order, process a payment, fulfil a custom CD or provide
+                analytics you have allowed.
               </p>
               <p className="mt-4 font-[700] text-[var(--ink)]">
                 We do not sell personal information.

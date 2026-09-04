@@ -13,7 +13,18 @@ type AnalyticsEventMap = {
     currency?: 'AUD';
   };
   form_start: {
-    form_name: 'start_a_project' | 'landing_page_sprint';
+    form_name: 'start_a_project' | 'landing_page_sprint' | 'custom_cd_direct';
+  };
+  begin_checkout: {
+    form_name: 'custom_cd_direct';
+    value: number;
+    currency: 'AUD';
+    product_name: string;
+  };
+  purchase: {
+    transaction_id: string;
+    value: number;
+    currency: 'AUD';
   };
   start_project_click: {
     source_path: string;
@@ -59,6 +70,27 @@ export function trackAnalyticsEvent<EventName extends keyof AnalyticsEventMap>(
         page_location: `${window.location.origin}${pagePath}`,
         page_path: pagePath,
         page_title: safePageTitle(pageView.page_title),
+      });
+      break;
+    }
+    case 'begin_checkout': {
+      const checkout = parameters as AnalyticsEventMap['begin_checkout'];
+      window.dataLayer.push({
+        event: eventName,
+        form_name: checkout.form_name,
+        value: Number.isFinite(checkout.value) ? Math.max(0, checkout.value) : 0,
+        currency: checkout.currency,
+        product_name: safePageTitle(checkout.product_name),
+      });
+      break;
+    }
+    case 'purchase': {
+      const purchase = parameters as AnalyticsEventMap['purchase'];
+      window.dataLayer.push({
+        event: eventName,
+        transaction_id: safePageTitle(purchase.transaction_id),
+        value: Number.isFinite(purchase.value) ? Math.max(0, purchase.value) : 0,
+        currency: purchase.currency,
       });
       break;
     }

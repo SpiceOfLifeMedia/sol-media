@@ -50,6 +50,14 @@ function LegacyOrderRedirect() {
   return null;
 }
 
+function DirectCustomCdOrder() {
+  return <Order checkoutMode="site" />;
+}
+
+function EtsyCustomCdOrder() {
+  return <Order />;
+}
+
 function LegacyWebSprintRedirect() {
   const [, navigate] = useLocation();
 
@@ -76,7 +84,8 @@ function Router() {
       <Route path="/insights" component={Insights} />
       <Route path="/work" component={Work} />
       <Route path="/work/full-circle-hair-society" component={FullCircleCaseStudy} />
-      <Route path="/custom-cd-order" component={Order} />
+      <Route path="/custom-cds" component={DirectCustomCdOrder} />
+      <Route path="/custom-cd-order" component={EtsyCustomCdOrder} />
       <Route path="/order" component={LegacyOrderRedirect} />
       <Route path="/insights/when-should-an-established-business-rebrand">
         <InsightArticle slug="when-should-an-established-business-rebrand" />
