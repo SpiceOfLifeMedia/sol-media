@@ -50,9 +50,9 @@ export function BrandKitOffer() {
             </div>
 
             <div className="grid grid-rows-[1fr_0.9fr] gap-3 sm:gap-5">
-              <div className="rounded-[18px] bg-[var(--verm)] p-4 text-[var(--ink)] sm:p-6">
+              <div className="flex flex-col rounded-[18px] bg-[var(--verm)] p-4 text-[var(--ink)] sm:p-6">
                 <span className="block text-center text-[12px] font-[850] uppercase tracking-[0.14em] sm:text-[13px]">02 / Colour</span>
-                <div className="mt-4 grid h-[calc(100%-28px)] grid-cols-2 gap-2 sm:mt-6 sm:gap-3">
+                <div className="mx-auto mt-4 grid min-h-0 w-full flex-1 grid-cols-2 grid-rows-2 gap-2 sm:mt-6 sm:gap-3">
                   <div className="flex items-center justify-center rounded-[10px] bg-[var(--ink)] p-2 text-center text-[11px] font-[800] text-[var(--paper)] sm:p-3 sm:text-[13px]">#16150F</div>
                   <div className="flex items-center justify-center rounded-[10px] bg-[var(--paper)] p-2 text-center text-[11px] font-[800] sm:p-3 sm:text-[13px]">#F2EEE6</div>
                   <div className="col-span-2 flex items-center justify-center rounded-[10px] bg-white p-2 text-center text-[11px] font-[800] sm:p-3 sm:text-[13px]">#FFFFFF</div>
