@@ -39,12 +39,22 @@
     },
     {
       "source": "/website-sprint",
-      "destination": "/website-launch-special",
+      "destination": "/services/websites-rebuilds",
       "permanent": true
     },
     {
       "source": "/websprint",
-      "destination": "/website-launch-special",
+      "destination": "/services/websites-rebuilds",
+      "permanent": true
+    },
+    {
+      "source": "/website-launch-special",
+      "destination": "/services/websites-rebuilds",
+      "permanent": true
+    },
+    {
+      "source": "/website-sprint-terms",
+      "destination": "/services/websites-rebuilds",
       "permanent": true
     }
   ],
