@@ -22,10 +22,9 @@ test('Hillier has an indexable, prerendered case-study route', () => {
 });
 
 test('Hillier is visible on both selected-work surfaces', () => {
-  assert.match(selectedWork, /HILLIER PLUMBING &amp; EXCAVATION/);
-  assert.match(selectedWork, /href="\/work\/hillier-plumbing-excavation"/);
-  assert.match(workPage, /02 · HILLIER PLUMBING &amp; EXCAVATION/);
-  assert.match(workPage, /href="\/work\/hillier-plumbing-excavation"/);
+  assert.match(selectedWork, /name: 'Hillier Plumbing & Excavation'/);
+  assert.match(selectedWork, /href: '\/work\/hillier-plumbing-excavation'/);
+  assert.match(workPage, /<SelectedWork showAllLink=\{false\} \/>/);
 });
 
 test('case study uses real desktop and mobile captures without claiming performance results', () => {
@@ -44,10 +43,9 @@ test('Petiola Wilson has an indexable, prerendered case-study route', () => {
 });
 
 test('Petiola Wilson is visible on both selected-work surfaces', () => {
-  assert.match(selectedWork, /PETIOLA WILSON · CULTURAL SPEAKER &amp; EDUCATOR/);
-  assert.match(selectedWork, /href="\/work\/petiola-wilson"/);
-  assert.match(workPage, /03 · PETIOLA WILSON/);
-  assert.match(workPage, /href="\/work\/petiola-wilson"/);
+  assert.match(selectedWork, /name: 'Petiola Wilson'/);
+  assert.match(selectedWork, /href: '\/work\/petiola-wilson'/);
+  assert.match(workPage, /<SelectedWork showAllLink=\{false\} \/>/);
 });
 
 test('Petiola Wilson case study stays factual and links to the live website', () => {

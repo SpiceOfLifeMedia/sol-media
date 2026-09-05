@@ -28,19 +28,10 @@ export function Footer() {
         {/* Centre Nav */}
         <nav className="flex flex-col md:flex-row gap-4 md:gap-8">
           <Link href="/capabilities" className="text-[14px] font-medium text-[rgba(242,238,230,0.7)] hover:text-white transition-colors">
-            CAPABILITIES
-          </Link>
-          <Link href="/approach" className="text-[14px] font-medium text-[rgba(242,238,230,0.7)] hover:text-white transition-colors">
-            APPROACH
-          </Link>
-          <Link href="/agency" className="text-[14px] font-medium text-[rgba(242,238,230,0.7)] hover:text-white transition-colors">
-            AGENCY
+            SERVICES
           </Link>
           <Link href="/work" className="text-[14px] font-medium text-[rgba(242,238,230,0.7)] hover:text-white transition-colors">
             WORK
-          </Link>
-          <Link href="/insights" className="text-[14px] font-medium text-[rgba(242,238,230,0.7)] hover:text-white transition-colors">
-            INSIGHTS
           </Link>
           <Link href="/privacy" className="text-[14px] font-medium text-[rgba(242,238,230,0.7)] hover:text-white transition-colors">
             Privacy

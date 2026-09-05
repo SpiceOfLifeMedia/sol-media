@@ -63,23 +63,7 @@ export function Header() {
                 usesLightHeader ? 'text-[var(--ink)] hover:text-[var(--verm)]' : 'text-[rgba(242,238,230,0.82)] hover:text-white'
               } ${location === '/capabilities' ? 'border-b-2 border-[var(--verm)] pb-1' : ''}`}
             >
-              CAPABILITIES
-            </Link>
-            <Link
-              href="/approach"
-              className={`text-[14px] font-medium transition-colors ${
-                usesLightHeader ? 'text-[var(--ink)] hover:text-[var(--verm)]' : 'text-[rgba(242,238,230,0.82)] hover:text-white'
-              } ${location === '/approach' ? 'border-b-2 border-[var(--verm)] pb-1' : ''}`}
-            >
-              APPROACH
-            </Link>
-            <Link
-              href="/agency"
-              className={`text-[14px] font-medium transition-colors ${
-                usesLightHeader ? 'text-[var(--ink)] hover:text-[var(--verm)]' : 'text-[rgba(242,238,230,0.82)] hover:text-white'
-              } ${location === '/agency' ? 'border-b-2 border-[var(--verm)] pb-1' : ''}`}
-            >
-              AGENCY
+              SERVICES
             </Link>
             <Link
               href="/work"
@@ -90,21 +74,11 @@ export function Header() {
               WORK
             </Link>
             <Link
-              href="/insights"
-              className={`text-[14px] font-medium transition-colors ${
-                usesLightHeader ? 'text-[var(--ink)] hover:text-[var(--verm)]' : 'text-[rgba(242,238,230,0.82)] hover:text-white'
-              } ${location.startsWith('/insights') ? 'border-b-2 border-[var(--verm)] pb-1' : ''}`}
+              href="/start-a-project"
+              className="ml-2 bg-[var(--verm)] px-6 py-2.5 text-[14px] font-bold text-[var(--ink)] transition-colors hover:bg-[var(--paper)]"
             >
-              INSIGHTS
+              Get a quote
             </Link>
-            {usesLightHeader && (
-              <Link
-                href="/start-a-project"
-                className="bg-[var(--verm)] text-[var(--ink)] text-[14px] font-bold px-6 py-2.5 ml-4 hover:bg-[var(--verm-pressed)] transition-colors"
-              >
-                Start a project
-              </Link>
-            )}
           </nav>
         </div>
       </header>
@@ -160,31 +134,19 @@ export function Header() {
               href="/start-a-project"
               className="w-full bg-[var(--verm)] text-[var(--ink)] font-bold text-center py-5 text-[15px] hover:bg-[var(--verm-pressed)] transition-colors mb-8"
             >
-              Start a project
+              Get a website quote
             </Link>
             
             <nav className="flex flex-col px-5">
               <Link href="/capabilities" className="text-[26px] font-bold text-[var(--paper)] leading-[56px]">
-                CAPABILITIES
-              </Link>
-              <Link href="/approach" className="text-[26px] font-bold text-[var(--paper)] leading-[56px]">
-                APPROACH
-              </Link>
-              <Link href="/agency" className="text-[26px] font-bold text-[var(--paper)] leading-[56px]">
-                AGENCY
+                SERVICES
               </Link>
               <Link href="/work" className="text-[26px] font-bold text-[var(--paper)] leading-[56px]">
                 WORK
               </Link>
-              <Link href="/insights" className="text-[26px] font-bold text-[var(--paper)] leading-[56px]">
-                INSIGHTS
-              </Link>
             </nav>
             
             <div className="mt-auto px-5 pb-12 flex flex-col gap-6">
-              <div className="text-[11.5px] font-bold tracking-[0.2em] text-[rgba(242,238,230,0.65)] flex items-center gap-2">
-                BRAND <span className="text-[var(--verm)]">•</span> WEB <span className="text-[var(--verm)]">•</span> SEARCH <span className="text-[var(--verm)]">•</span> CONTENT
-              </div>
               <a href="mailto:info@spiceoflifemedia.com.au" className="text-[14px] text-[rgba(242,238,230,0.8)] border-b border-[rgba(242,238,230,0.2)] pb-1 w-max">
                 info@spiceoflifemedia.com.au
               </a>

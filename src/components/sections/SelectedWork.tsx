@@ -1,121 +1,86 @@
 import { Link } from 'wouter';
 
-const FULL_CIRCLE_POSTER = 'https://www.fullcirclehairsociety.com/images/hero-reel-poster.jpg';
+const FULL_CIRCLE_DESKTOP = '/assets/work/full-circle-website-desktop.png';
 const HILLIER_DESKTOP = '/assets/work/hillier-website-desktop.webp';
 const HILLIER_MOBILE = '/assets/work/hillier-website-mobile.webp';
 const PETIOLA_DESKTOP = '/assets/work/petiola-wilson-desktop.webp';
 const PETIOLA_MOBILE = '/assets/work/petiola-wilson-mobile.webp';
 
-export function SelectedWork() {
+type SelectedWorkProps = {
+  showAllLink?: boolean;
+};
+
+export function SelectedWork({ showAllLink = true }: SelectedWorkProps) {
+  const projects = [
+    {
+      href: '/work/full-circle-hair-society',
+      name: 'Full Circle Hair Society',
+      type: 'Hair salon',
+      desktop: FULL_CIRCLE_DESKTOP,
+      mobile: FULL_CIRCLE_DESKTOP,
+      alt: 'Full Circle Hair Society website designed by Spice of Life Media',
+    },
+    {
+      href: '/work/hillier-plumbing-excavation',
+      name: 'Hillier Plumbing & Excavation',
+      type: 'Trades and excavation',
+      desktop: HILLIER_DESKTOP,
+      mobile: HILLIER_MOBILE,
+      alt: 'Hillier Plumbing and Excavation website designed by Spice of Life Media',
+    },
+    {
+      href: '/work/petiola-wilson',
+      name: 'Petiola Wilson',
+      type: 'Cultural speaker and educator',
+      desktop: PETIOLA_DESKTOP,
+      mobile: PETIOLA_MOBILE,
+      alt: 'Petiola Wilson website designed by Spice of Life Media',
+    },
+  ];
+
   return (
-    <section className="bg-[var(--paper)] px-5 py-20 text-[var(--ink)] md:px-12 md:py-28">
+    <section className="bg-[var(--paper)] px-5 py-20 text-[var(--ink)] md:px-12 md:py-24">
       <div className="mx-auto max-w-[1440px]">
-        <div className="mb-10 flex flex-col gap-5 border-b border-[rgba(22,21,15,0.18)] pb-8 md:flex-row md:items-end md:justify-between">
+        <div className="mb-10 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
           <div>
-            <div className="caps-label mb-5 text-[var(--verm-text-light)]">SELECTED WORK</div>
-            <h2 className="max-w-[12ch] text-[44px] font-[800] leading-[0.98] tracking-[-0.03em] md:text-[68px]">
-              Strategy made visible<span className="text-[var(--verm)]">.</span>
+            <div className="caps-label mb-4 text-[var(--verm-text-light)]">OUR WORK</div>
+            <h2 className="text-[38px] font-[800] leading-none tracking-[-0.03em] md:text-[56px]">
+              Real websites for real businesses<span className="text-[var(--verm)]">.</span>
             </h2>
           </div>
-          <Link href="/work" className="group inline-flex items-center gap-2 text-[14px] font-[800] text-[var(--verm-text-light)]">
-            View selected work <span className="transition-transform group-hover:translate-x-1">→</span>
-          </Link>
+          {showAllLink && (
+            <Link href="/work" className="group inline-flex items-center gap-2 text-[14px] font-[800] text-[var(--verm-text-light)]">
+              See all work <span className="transition-transform group-hover:translate-x-1">→</span>
+            </Link>
+          )}
         </div>
 
-        <div className="space-y-4">
-          <Link href="/work/full-circle-hair-society" className="group grid overflow-hidden bg-[var(--ink)] text-[var(--paper)] lg:grid-cols-[1.2fr_0.8fr]">
-            <div className="relative min-h-[360px] overflow-hidden lg:min-h-[560px]">
-              <img
-                src={FULL_CIRCLE_POSTER}
-                alt="Full Circle Hair Society salon storefront in Seacliff Park, Adelaide, featured in an SOL Media website rebuild"
-                title="Full Circle Hair Society website rebuild and social media strategy"
-                className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.025]"
-                loading="lazy"
-                decoding="async"
-                width="1600"
-                height="900"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent" aria-hidden="true" />
-            </div>
-            <div className="flex flex-col justify-between p-8 md:p-12 lg:p-14">
-              <div>
-                <div className="caps-label mb-8 text-[var(--verm)]">FULL CIRCLE HAIR SOCIETY · ADELAIDE</div>
-                <h3 className="mb-7 text-[36px] font-[800] leading-[1.02] tracking-[-0.025em] md:text-[52px]">
-                  A calmer digital home for a more conscious salon.
-                </h3>
-                <p className="max-w-[460px] text-[16px] leading-[1.7] text-[rgba(242,238,230,0.72)]">
-                  Website rebuild and social media strategy connecting local search, service discovery, team storytelling and direct online booking.
-                </p>
+        <div className="grid gap-5 md:grid-cols-3">
+          {projects.map((project) => (
+            <Link key={project.name} href={project.href} className="group overflow-hidden border border-[rgba(22,21,15,0.16)] bg-white">
+              <div className="relative aspect-[4/3] overflow-hidden bg-[var(--ink)]">
+                <picture>
+                  <source media="(max-width: 767px)" srcSet={project.mobile} />
+                  <img
+                    src={project.desktop}
+                    alt={project.alt}
+                    className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.025]"
+                    loading="lazy"
+                    decoding="async"
+                    width="1512"
+                    height="900"
+                  />
+                </picture>
               </div>
-              <div className="mt-12 flex flex-wrap gap-2 text-[11px] font-[800] tracking-[0.12em] text-[rgba(242,238,230,0.62)]">
-                <span>WEB STRATEGY</span><span aria-hidden="true">·</span><span>DESIGN & BUILD</span><span aria-hidden="true">·</span><span>SOCIAL STRATEGY</span>
+              <div className="flex items-end justify-between gap-5 p-6">
+                <div>
+                  <div className="mb-2 text-[12px] font-[700] uppercase tracking-[0.08em] text-[rgba(22,21,15,0.55)]">{project.type}</div>
+                  <h3 className="text-[22px] font-[800] leading-[1.1] tracking-[-0.02em]">{project.name}</h3>
+                </div>
+                <span className="text-[20px] text-[var(--verm-text-light)] transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
               </div>
-            </div>
-          </Link>
-
-          <Link href="/work/hillier-plumbing-excavation" className="group grid overflow-hidden bg-[var(--ink)] text-[var(--paper)] lg:grid-cols-[0.8fr_1.2fr]">
-            <div className="relative min-h-[360px] overflow-hidden lg:order-2 lg:min-h-[560px]">
-              <picture>
-                <source media="(max-width: 767px)" srcSet={HILLIER_MOBILE} />
-                <img
-                  src={HILLIER_DESKTOP}
-                  alt="Hillier Plumbing and Excavation responsive website designed by SOL Media"
-                  title="Hillier Plumbing and Excavation website design and lead-generation build"
-                  className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.025]"
-                  loading="lazy"
-                  decoding="async"
-                  width="1512"
-                  height="900"
-                />
-              </picture>
-            </div>
-            <div className="flex flex-col justify-between p-8 md:p-12 lg:order-1 lg:p-14">
-              <div>
-                <div className="caps-label mb-8 text-[var(--verm)]">HILLIER PLUMBING &amp; EXCAVATION · SOUTH AUSTRALIA</div>
-                <h3 className="mb-7 text-[36px] font-[800] leading-[1.02] tracking-[-0.025em] md:text-[52px]">
-                  A clearer digital foundation for a hands-on service business.
-                </h3>
-                <p className="max-w-[460px] text-[16px] leading-[1.7] text-[rgba(242,238,230,0.72)]">
-                  A responsive website built around owner-led trust, clear service pathways and a direct route from a real household problem to an enquiry.
-                </p>
-              </div>
-              <div className="mt-12 flex flex-wrap gap-2 text-[11px] font-[800] tracking-[0.12em] text-[rgba(242,238,230,0.62)]">
-                <span>POSITIONING</span><span aria-hidden="true">·</span><span>WEBSITE DESIGN</span><span aria-hidden="true">·</span><span>LEAD CAPTURE</span>
-              </div>
-            </div>
-          </Link>
-
-          <Link href="/work/petiola-wilson" className="group grid overflow-hidden bg-[var(--ink)] text-[var(--paper)] lg:grid-cols-[1.2fr_0.8fr]">
-            <div className="relative min-h-[360px] overflow-hidden lg:min-h-[560px]">
-              <picture>
-                <source media="(max-width: 767px)" srcSet={PETIOLA_MOBILE} />
-                <img
-                  src={PETIOLA_DESKTOP}
-                  alt="Petiola Wilson cultural speaker and educator website designed by SOL Media"
-                  title="Petiola Wilson website strategy, design and enquiry experience"
-                  className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.025]"
-                  loading="lazy"
-                  decoding="async"
-                  width="1512"
-                  height="900"
-                />
-              </picture>
-            </div>
-            <div className="flex flex-col justify-between p-8 md:p-12 lg:p-14">
-              <div>
-                <div className="caps-label mb-8 text-[var(--verm)]">PETIOLA WILSON · CULTURAL SPEAKER &amp; EDUCATOR</div>
-                <h3 className="mb-7 text-[36px] font-[800] leading-[1.02] tracking-[-0.025em] md:text-[52px]">
-                  A respectful digital presence for culture, story and connection.
-                </h3>
-                <p className="max-w-[460px] text-[16px] leading-[1.7] text-[rgba(242,238,230,0.72)]">
-                  A responsive website that brings cultural identity, services, real-world imagery and a considered organisational enquiry journey into one clear experience.
-                </p>
-              </div>
-              <div className="mt-12 flex flex-wrap gap-2 text-[11px] font-[800] tracking-[0.12em] text-[rgba(242,238,230,0.62)]">
-                <span>CONTENT ARCHITECTURE</span><span aria-hidden="true">·</span><span>WEBSITE DESIGN</span><span aria-hidden="true">·</span><span>ENQUIRY UX</span>
-              </div>
-            </div>
-          </Link>
+            </Link>
+          ))}
         </div>
       </div>
     </section>

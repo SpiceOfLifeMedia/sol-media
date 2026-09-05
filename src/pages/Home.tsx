@@ -2,11 +2,6 @@ import { useSeo } from '@/hooks/useSeo';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Hero } from '@/components/sections/Hero';
-import { ReelStage } from '@/components/sections/ReelStage';
-import { Disconnect } from '@/components/sections/Disconnect';
-import { Capabilities } from '@/components/sections/Capabilities';
-import { Process } from '@/components/sections/Process';
-import { WorkingWith } from '@/components/sections/WorkingWith';
 import { SelectedWork } from '@/components/sections/SelectedWork';
 import { FinalCTA } from '@/components/sections/FinalCTA';
 
@@ -18,12 +13,7 @@ export default function Home() {
       <Header />
       <main className="flex-1 w-full">
         <Hero />
-        <ReelStage />
-        <Disconnect />
-        <Capabilities />
-        <Process />
         <SelectedWork />
-        <WorkingWith />
         <FinalCTA />
       </main>
       <Footer />

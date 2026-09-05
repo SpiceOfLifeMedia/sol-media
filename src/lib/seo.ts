@@ -67,9 +67,9 @@ export const CUSTOM_CD_FAQS = [
 
 export const SEO_ROUTES: Record<string, SeoConfig> = {
   '/': {
-    title: 'Australian Brand, Web & SEO Agency | Spice of Life Media',
+    title: 'Website Design Adelaide & Australia | Spice of Life Media',
     description:
-      'Australian brand and digital agency helping established businesses sharpen their identity, rebuild better websites, grow in search and create consistent content systems.',
+      'Clear, professional websites that help customers understand your business, find you online and get in touch. Built in Adelaide for businesses across Australia.',
     index: true,
     pageType: 'WebPage',
     lastModified: '2026-09-05',
