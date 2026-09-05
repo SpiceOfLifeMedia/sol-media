@@ -3,25 +3,6 @@ import { Link } from 'wouter';
 export function Hero() {
   return (
     <section className="bg-[var(--ink)] pt-[60px] md:pt-[76px] pb-0 flex flex-col justify-end min-h-max border-b border-transparent">
-      <Link
-        href="/website-launch-special"
-        className="group block bg-[var(--verm)] px-5 py-4 text-[var(--ink)] transition-colors hover:bg-[var(--verm-pressed)] md:px-12"
-        aria-label="View the $879 Website Launch Special"
-      >
-        <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-5">
-          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-4">
-            <span className="text-[11px] font-[800] uppercase tracking-[0.16em]">Website Launch Special</span>
-            <span className="hidden h-4 w-px bg-[rgba(22,21,15,0.28)] sm:block" aria-hidden="true" />
-            <span className="text-[14px] font-[650] leading-[1.45] md:text-[15px]">
-              A focused website, Brand Starter Kit and essential SEO — $879. Limited to 20 accepted projects.
-            </span>
-          </div>
-          <span className="shrink-0 text-[12px] font-[800] uppercase tracking-[0.12em] underline decoration-[1.5px] underline-offset-4 transition-transform group-hover:translate-x-1">
-            View the special →
-          </span>
-        </div>
-      </Link>
-
       <div className="px-5 pt-[54px] md:px-12 md:pt-[74px]">
         <div className="max-w-[1440px] mx-auto w-full flex flex-col md:flex-row md:justify-between md:items-end gap-10 md:gap-0 pb-12">
           {/* Left column */}
