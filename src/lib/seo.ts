@@ -46,49 +46,6 @@ export const BRAND_SYSTEMS_FAQS = [
   },
 ];
 
-export const LANDING_PAGE_SPRINT_FAQS = [
-  {
-    question: 'What is included for $879?',
-    answer: 'The $879 project price includes a custom responsive service-business website build or strategic rebuild of up to five core pages, a focused Brand Starter Kit, editable branded invoice template, essential SEO launch setup, enquiry pathways, analytics and lead tracking, launch support and three consolidated change rounds.',
-  },
-  {
-    question: 'Why is the Website Sprint available for $879?',
-    answer: 'Spice of Life Media has completed a major rebrand and is opening the launch offer to the first 20 accepted Website Sprint projects. In return for the reduced launch price, clients agree that we may showcase the finished public website, business name and approved project story in our portfolio and marketing. We never publish private business information, credentials or confidential project material.',
-  },
-  {
-    question: 'When does the 48-hour turnaround begin?',
-    answer: 'The first complete working draft is delivered within 48 business hours after the $59 deposit, approved written brief, essential content and required access are received. The clock excludes client response time, weekends and public holidays.',
-  },
-  {
-    question: 'How does payment work?',
-    answer: 'Pay a $59 deposit to begin. It is credited toward the $879 total. After receiving the first complete working draft, you can request up to three consolidated change rounds. The $820 balance is due only after approval and before the website is launched, connected to a domain, transferred or handed over.',
-  },
-  {
-    question: 'What do I need to provide?',
-    answer: 'Share whatever you already have—even if that is only the business idea and the result you want. The guided brief includes a “Choose for me” option wherever you would prefer us to recommend the strategy, content direction or visual approach.',
-  },
-  {
-    question: 'Is the Brand Starter Kit included?',
-    answer: 'Yes. The Website Launch Sprint includes a focused logo refresh, practical colour and typography direction, essential logo files and an editable branded invoice template. It is a focused visual identity refresh rather than a full strategic rebrand.',
-  },
-  {
-    question: 'Which projects are eligible for the Website Sprint?',
-    answer: 'The Website Sprint is designed for straightforward service-business websites that can be delivered through our streamlined custom-development workflow. It includes up to five core pages, standard enquiry pathways and supplied or approved content. Spice of Life Media selects the technical architecture, build method and managed deployment stack best suited to the project. Every project is reviewed for suitability before payment is accepted.',
-  },
-  {
-    question: 'Do you build the website in Wix or Squarespace?',
-    answer: 'No. Website Sprint projects are custom-developed in Spice of Life Media’s managed build and deployment stack rather than assembled in Wix, Squarespace or another drag-and-drop website builder. This keeps the build fast, focused and technically consistent. If an existing project must remain inside a specific third-party builder, it is outside this offer and can be quoted separately.',
-  },
-  {
-    question: 'What is not included?',
-    answer: 'Ecommerce, complex integrations, extensive copywriting, paid third-party services, ongoing SEO and work beyond the agreed five-page scope are quoted separately. Domain registration or renewal and web-hosting fees are not included because these charges are set and billed by third-party providers. We can connect the completed website to an existing domain and suitable hosting environment when the required access is supplied. The 48-hour clock begins only after the approved brief, essential content, access and payment are received.',
-  },
-  {
-    question: 'How does the money-back guarantee work?',
-    answer: 'You receive three consolidated sets of changes. If you are still unhappy after all three rounds, we will refund the $59 deposit. The unused website and brand assets will not launch and remain the property of Spice of Life Media. Feedback must come from one nominated decision-maker and remain within the agreed five-page scope.',
-  },
-];
-
 export const SEO_ROUTES: Record<string, SeoConfig> = {
   '/': {
     title: 'Australian Brand, Web & SEO Agency | Spice of Life Media',
@@ -129,24 +86,6 @@ export const SEO_ROUTES: Record<string, SeoConfig> = {
     index: true,
     pageType: 'ContactPage',
     lastModified: '2026-08-09',
-  },
-  '/website-launch-special': {
-    title: 'Website Launch Special | 48-Hour Website for $879',
-    description:
-      'Rebrand launch offer: the first 20 accepted projects can get a custom website build or rebuild, Brand Starter Kit, invoice template and SEO foundations for $879.',
-    index: false,
-    pageType: 'WebPage',
-    serviceName: '48-Hour Website Launch Sprint',
-    faq: LANDING_PAGE_SPRINT_FAQS,
-    lastModified: '2026-08-17',
-  },
-  '/website-sprint-terms': {
-    title: 'Website Sprint Terms | Spice of Life Media',
-    description:
-      'Terms applying to the Spice of Life Media Website Sprint offer, including scope, timing, revisions, payment and customer rights.',
-    index: false,
-    pageType: 'WebPage',
-    lastModified: '2026-08-17',
   },
   '/privacy': {
     title: 'Privacy Policy | Spice of Life Media',
