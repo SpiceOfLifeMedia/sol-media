@@ -8,6 +8,8 @@ import { useSeo } from '@/hooks/useSeo';
 const FULL_CIRCLE_POSTER = 'https://www.fullcirclehairsociety.com/images/hero-reel-poster.jpg';
 const HILLIER_DESKTOP = '/assets/work/hillier-website-desktop.webp';
 const HILLIER_MOBILE = '/assets/work/hillier-website-mobile.webp';
+const PETIOLA_DESKTOP = '/assets/work/petiola-wilson-desktop.webp';
+const PETIOLA_MOBILE = '/assets/work/petiola-wilson-mobile.webp';
 
 export default function Work() {
   useSeo();
@@ -86,6 +88,38 @@ export default function Work() {
                     </h2>
                     <p className="text-[16px] leading-[1.7] text-[rgba(22,21,15,0.68)]">
                       A direct, owner-led website for an Adelaide trade business—clear services, real trust signals and an enquiry path shaped around the way customers actually ask for help.
+                    </p>
+                  </div>
+                  <div className="mt-12 inline-flex items-center gap-2 text-[14px] font-[800] text-[var(--verm-text-light)]">
+                    Read the case study <span className="transition-transform group-hover:translate-x-1">→</span>
+                  </div>
+                </div>
+              </Link>
+
+              <Link href="/work/petiola-wilson" className="group grid overflow-hidden border border-[rgba(22,21,15,0.16)] lg:grid-cols-[1.35fr_0.65fr]">
+                <div className="relative min-h-[420px] overflow-hidden bg-[var(--ink)] lg:min-h-[620px]">
+                  <picture>
+                    <source media="(max-width: 767px)" srcSet={PETIOLA_MOBILE} />
+                    <img
+                      src={PETIOLA_DESKTOP}
+                      alt="Petiola Wilson cultural speaker and educator website designed by SOL Media"
+                      title="Petiola Wilson website case study"
+                      className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.025]"
+                      width="1512"
+                      height="900"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </picture>
+                </div>
+                <div className="flex flex-col justify-between bg-white p-8 md:p-12">
+                  <div>
+                    <div className="caps-label mb-8 text-[var(--verm-text-light)]">03 · PETIOLA WILSON</div>
+                    <h2 className="mb-7 text-[38px] font-[800] leading-[1.02] tracking-[-0.025em] md:text-[54px]">
+                      Cultural storytelling, service clarity and enquiry UX.
+                    </h2>
+                    <p className="text-[16px] leading-[1.7] text-[rgba(22,21,15,0.68)]">
+                      A considered website for a cultural speaker and educator—centred on Petiola’s story, a broad service practice and the context organisations need to make a respectful enquiry.
                     </p>
                   </div>
                   <div className="mt-12 inline-flex items-center gap-2 text-[14px] font-[800] text-[var(--verm-text-light)]">

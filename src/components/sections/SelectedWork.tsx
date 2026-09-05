@@ -3,6 +3,8 @@ import { Link } from 'wouter';
 const FULL_CIRCLE_POSTER = 'https://www.fullcirclehairsociety.com/images/hero-reel-poster.jpg';
 const HILLIER_DESKTOP = '/assets/work/hillier-website-desktop.webp';
 const HILLIER_MOBILE = '/assets/work/hillier-website-mobile.webp';
+const PETIOLA_DESKTOP = '/assets/work/petiola-wilson-desktop.webp';
+const PETIOLA_MOBILE = '/assets/work/petiola-wilson-mobile.webp';
 
 export function SelectedWork() {
   return (
@@ -79,6 +81,38 @@ export function SelectedWork() {
               </div>
               <div className="mt-12 flex flex-wrap gap-2 text-[11px] font-[800] tracking-[0.12em] text-[rgba(242,238,230,0.62)]">
                 <span>POSITIONING</span><span aria-hidden="true">·</span><span>WEBSITE DESIGN</span><span aria-hidden="true">·</span><span>LEAD CAPTURE</span>
+              </div>
+            </div>
+          </Link>
+
+          <Link href="/work/petiola-wilson" className="group grid overflow-hidden bg-[var(--ink)] text-[var(--paper)] lg:grid-cols-[1.2fr_0.8fr]">
+            <div className="relative min-h-[360px] overflow-hidden lg:min-h-[560px]">
+              <picture>
+                <source media="(max-width: 767px)" srcSet={PETIOLA_MOBILE} />
+                <img
+                  src={PETIOLA_DESKTOP}
+                  alt="Petiola Wilson cultural speaker and educator website designed by SOL Media"
+                  title="Petiola Wilson website strategy, design and enquiry experience"
+                  className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.025]"
+                  loading="lazy"
+                  decoding="async"
+                  width="1512"
+                  height="900"
+                />
+              </picture>
+            </div>
+            <div className="flex flex-col justify-between p-8 md:p-12 lg:p-14">
+              <div>
+                <div className="caps-label mb-8 text-[var(--verm)]">PETIOLA WILSON · CULTURAL SPEAKER &amp; EDUCATOR</div>
+                <h3 className="mb-7 text-[36px] font-[800] leading-[1.02] tracking-[-0.025em] md:text-[52px]">
+                  A respectful digital presence for culture, story and connection.
+                </h3>
+                <p className="max-w-[460px] text-[16px] leading-[1.7] text-[rgba(242,238,230,0.72)]">
+                  A responsive website that brings cultural identity, services, real-world imagery and a considered organisational enquiry journey into one clear experience.
+                </p>
+              </div>
+              <div className="mt-12 flex flex-wrap gap-2 text-[11px] font-[800] tracking-[0.12em] text-[rgba(242,238,230,0.62)]">
+                <span>CONTENT ARCHITECTURE</span><span aria-hidden="true">·</span><span>WEBSITE DESIGN</span><span aria-hidden="true">·</span><span>ENQUIRY UX</span>
               </div>
             </div>
           </Link>
