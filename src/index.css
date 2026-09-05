@@ -100,3 +100,58 @@
   from { transform: translateY(20px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
+
+@keyframes service-ticker {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes hero-float-left {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-8deg); }
+  50% { transform: translate3d(16px, -12px, 0) rotate(-6deg); }
+}
+
+@keyframes hero-float-centre {
+  0%, 100% { transform: translate3d(-50%, 0, 0) rotate(2deg); }
+  50% { transform: translate3d(-50%, -14px, 0) rotate(0deg); }
+}
+
+@keyframes hero-float-right {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(8deg); }
+  50% { transform: translate3d(-16px, 12px, 0) rotate(6deg); }
+}
+
+@keyframes brand-kit-float {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0.35deg); }
+  50% { transform: translate3d(0, -9px, 0) rotate(-0.35deg); }
+}
+
+.service-ticker {
+  animation: service-ticker 24s linear infinite;
+}
+
+.hero-float-left {
+  animation: hero-float-left 9s ease-in-out infinite;
+}
+
+.hero-float-centre {
+  animation: hero-float-centre 8s ease-in-out infinite;
+}
+
+.hero-float-right {
+  animation: hero-float-right 10s ease-in-out infinite;
+}
+
+.brand-kit-board {
+  animation: brand-kit-float 9s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .service-ticker,
+  .hero-float-left,
+  .hero-float-centre,
+  .hero-float-right,
+  .brand-kit-board {
+    animation: none;
+  }
+}

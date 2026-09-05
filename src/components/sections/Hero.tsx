@@ -2,37 +2,43 @@ import { Link } from 'wouter';
 
 export function Hero() {
   return (
-    <section className="flex min-h-[720px] flex-col justify-end border-b border-transparent bg-[var(--ink)] pb-0 pt-[60px] md:min-h-[760px] md:pt-[76px]">
-      <div className="px-5 pb-16 pt-[80px] md:px-12 md:pb-24 md:pt-[110px]">
-        <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-10 md:flex-row md:items-end md:justify-between md:gap-16">
-          {/* Left column */}
-          <div className="flex flex-col">
-            <h1 className="max-w-[13ch] text-[48px] font-[800] leading-[0.96] tracking-[-0.035em] text-[var(--paper)] md:text-[88px]" style={{ fontStretch: '125%' }}>
-              Websites that help you win more work<span className="text-[var(--verm)]">.</span>
-            </h1>
-          </div>
+    <section className="relative flex min-h-[720px] items-center justify-center overflow-hidden bg-[var(--ink)] px-5 pb-24 pt-[96px] text-center text-[var(--paper)] md:min-h-[760px] md:px-12 md:pb-28 md:pt-[120px]">
+      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(232,69,28,0.13),transparent_48%)]" />
 
-          {/* Right column */}
-          <div className="flex flex-col items-start gap-7 md:w-[390px]">
-            <p className="text-[17px] leading-[1.6] text-[rgba(242,238,230,0.78)] md:text-[19px]">
-              We design and build clear, professional websites for Australian businesses. Branding and SEO are included when you need them.
-            </p>
-            <div className="flex w-full flex-col items-start gap-5 sm:flex-row sm:items-center">
-              <Link
-                href="/start-a-project"
-                className="inline-block w-full bg-[var(--verm)] px-[30px] py-[17px] text-center text-[15px] font-[800] text-[var(--ink)] transition-colors hover:bg-[var(--paper)] sm:w-auto"
-              >
-                Get a website quote
-              </Link>
-              <Link
-                href="/work"
-                className="inline-block border-b border-[rgba(242,238,230,0.4)] pb-0.5 text-[15px] font-[700] text-[var(--paper)] transition-colors hover:border-[var(--verm)] hover:text-[var(--verm)]"
-              >
-                See our work →
-              </Link>
-            </div>
-          </div>
+        <div className="hero-float-left absolute left-[-12%] top-[24%] hidden w-[40vw] max-w-[590px] -rotate-[8deg] overflow-hidden rounded-[20px] border-[8px] border-black opacity-25 shadow-2xl md:block">
+          <img src="/assets/work/full-circle-website-desktop.png" alt="" className="aspect-[4/3] w-full object-contain object-center" width="1200" height="900" />
         </div>
+
+        <div className="hero-float-centre absolute left-1/2 top-[18%] w-[76vw] max-w-[600px] -translate-x-1/2 rotate-[2deg] overflow-hidden rounded-[24px] border-[9px] border-black opacity-35 shadow-2xl sm:w-[58vw] md:w-[38vw]">
+          <img src="/assets/work/hillier-tablet-showcase.webp" alt="" className="aspect-[4/3] w-full object-cover" width="1200" height="900" fetchPriority="high" />
+        </div>
+
+        <div className="hero-float-right absolute right-[-12%] top-[29%] hidden w-[40vw] max-w-[590px] rotate-[8deg] overflow-hidden rounded-[20px] border-[8px] border-black opacity-25 shadow-2xl md:block">
+          <img src="/assets/work/petiola-wilson-desktop.webp" alt="" className="aspect-[4/3] w-full object-contain object-center" width="1200" height="900" />
+        </div>
+      </div>
+
+      <div className="absolute inset-0 bg-[rgba(11,10,7,0.48)]" aria-hidden="true" />
+
+      <div className="relative z-10 mx-auto flex w-full max-w-[1680px] flex-col items-center">
+        <h1 className="text-[clamp(44px,8vw,132px)] font-[850] uppercase leading-[0.86] tracking-[-0.065em]" style={{ fontStretch: '125%' }}>
+          <span className="block">Websites that</span>
+          <span className="block md:whitespace-nowrap">
+            Win <span className="text-[var(--verm)]">more work.</span>
+          </span>
+        </h1>
+
+        <p className="mt-8 max-w-[620px] text-[17px] font-[550] leading-[1.55] text-[rgba(242,238,230,0.86)] md:text-[20px]">
+          Designed and built in Adelaide for businesses across Australia.
+        </p>
+
+        <Link
+          href="/start-a-project"
+          className="mt-8 inline-block bg-[var(--verm)] px-9 py-[18px] text-[15px] font-[850] uppercase tracking-[0.03em] text-[var(--ink)] transition-colors hover:bg-[var(--paper)]"
+        >
+          Start a project
+        </Link>
       </div>
     </section>
   );

@@ -2,8 +2,9 @@ import { useSeo } from '@/hooks/useSeo';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Hero } from '@/components/sections/Hero';
+import { ServiceTicker } from '@/components/sections/ServiceTicker';
 import { SelectedWork } from '@/components/sections/SelectedWork';
-import { FinalCTA } from '@/components/sections/FinalCTA';
+import { BrandKitOffer } from '@/components/sections/BrandKitOffer';
 
 export default function Home() {
   useSeo();
@@ -13,8 +14,9 @@ export default function Home() {
       <Header />
       <main className="flex-1 w-full">
         <Hero />
+        <ServiceTicker />
         <SelectedWork />
-        <FinalCTA />
+        <BrandKitOffer />
       </main>
       <Footer />
     </div>
