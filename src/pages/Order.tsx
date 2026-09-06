@@ -9,7 +9,7 @@ import {
 import './Order.css';
 
 const ETSY_ORDER_URL = 'https://www.etsy.com/au/listing/4382552922/personalised-burned-mixtape-cd-custom';
-const MASTER_TEMPLATE_URL = 'https://canva.link/45tyrzes3xetnnz';
+const CANVA_BACKUP_URL = 'https://canva.link/frqsqm7tyke26c4';
 const CANVA_FALLBACK_ACTIVE = false;
 const AUSTRALIAN_STATES = ['ACT', 'NSW', 'NT', 'QLD', 'SA', 'TAS', 'VIC', 'WA'];
 const MAX_ARTWORK_BYTES = 20 * 1024 * 1024;
@@ -637,15 +637,16 @@ export default function Order() {
                 <div className="order-artwork-package">
                   {useCanvaFallback ? (
                     <div className="order-canva-workflow">
-                      <div className="order-callout order-callout--canva"><strong>USE OUR CANVA TEMPLATE</strong>{artworkUploadFailed ? 'The secure artwork upload did not complete. Your other form details are still here. Create the front, back and disc artwork in our correctly sized Canva template, then paste your finished design link below.' : 'Create the front, back and disc artwork in our correctly sized Canva template, then paste your finished design link below.'}</div>
-                      <a className="order-canva-button" href={MASTER_TEMPLATE_URL} target="_blank" rel="noreferrer">OPEN OUR CANVA TEMPLATE <span aria-hidden="true">↗</span></a>
+                      <div className="order-callout order-callout--canva"><strong>CANVA EMERGENCY BACKUP</strong>{artworkUploadFailed ? 'The secure artwork upload did not complete. Your other form details are still here. Use our live Canva backup to supply the front, back and disc artwork, then paste your finished design link below.' : 'Use our live Canva backup to supply the front, back and disc artwork, then paste your finished design link below.'}</div>
+                      <a className="order-canva-button" href={CANVA_BACKUP_URL} target="_blank" rel="noreferrer">OPEN CANVA BACKUP <span aria-hidden="true">↗</span></a>
                       <ol className="order-canva-steps">
-                        <li>Open the template and choose <strong>Use template for new design</strong>.</li>
+                        <li>Open the live Canva backup and follow the instructions shown there.</li>
                         <li>Complete the front cover, back cover and disc pages.</li>
-                        <li>In Canva, choose <strong>Share</strong>, allow anyone with the link to view, then copy the design link.</li>
+                        <li>In Canva, choose <strong>Share</strong>, allow anyone with the link to view, then copy the public view link.</li>
+                        <li><strong>Private /edit links are rejected.</strong> Test the copied link in a private browser window before submitting.</li>
                       </ol>
-                      <label htmlFor="artworkLink">FINISHED CANVA DESIGN LINK <RequiredMark /></label>
-                      <input id="artworkLink" name="artworkLink" type="url" placeholder="https://www.canva.com/design/…" required aria-invalid={Boolean(errors.artworkLink)} />
+                      <label htmlFor="artworkLink">PUBLIC CANVA VIEW LINK <RequiredMark /></label>
+                      <input id="artworkLink" name="artworkLink" type="url" pattern="https://(www\\.)?canva\\.com/design/.+/view.*" title="Paste a public Canva view link ending in /view. Private /edit links are not accepted." placeholder="https://www.canva.com/design/…/view" required aria-invalid={Boolean(errors.artworkLink)} />
                       <FieldError name="artworkLink" errors={errors} />
                     </div>
                   ) : (

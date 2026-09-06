@@ -28,7 +28,11 @@ test('any artwork upload failure retains the form and reveals Canva fallback', (
   assert.match(orderPage, /setArtworkUploadFailed\(true\)/);
   assert.match(orderPage, /Your details are still here/);
   assert.match(orderPage, /useCanvaFallback \?/);
-  assert.match(orderPage, /OPEN OUR CANVA TEMPLATE/);
+  assert.match(orderPage, /CANVA_BACKUP_URL = 'https:\/\/canva\.link\/frqsqm7tyke26c4'/);
+  assert.match(orderPage, /OPEN CANVA BACKUP/);
+  assert.match(orderPage, /Private \/edit links are rejected/);
+  assert.match(orderApi, /parts\.at\(-1\) === 'view'/);
+  assert.match(orderApi, /Private \/edit links are not accepted/);
 });
 
 test('database migration counts JSON object keys using supported PostgreSQL functions', () => {
